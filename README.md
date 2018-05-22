@@ -1,2 +1,2 @@
-# graphdener
-Graph visualization software
+# perigraphos
+graph mining viewer software for thesis project
