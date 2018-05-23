@@ -38,7 +38,7 @@ class App(QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
-        self.ctrlWidgets.button6.clicked.connect(self.canvasWidget.create_canvas)
+        self.ctrlWidgets.button7.clicked.connect(self.canvasWidget.create_canvas)
 
     def closeEvent(self, event):
         quit_msg = "Are you sure you want to exit the program?"
