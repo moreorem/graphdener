@@ -30,11 +30,14 @@ class Database(object):
                 print('Unable to stop server ', e)
 
     @staticmethod
-    def connect_client(self):
-        Database.client = Client('0.0.0.0:8000', request_timeout=60, scheme='http')
-        print(Database.client._session)
+    def import_data(self):
+        trans = Transaction()
+        Database.client.mapreduce('~/Workspace/bin/indradb/script/import-edge-list.lua', '/home/orestes/Work…/bin/data/facebook/facebook_combined.txt')
 
     # TEST METHOD
+    def test_script():
+        trans = Transaction()
+        print(Database.client.mapreduce('/home/orestes/Workspace/bin/indradb/script/commit_first.lua', '/home/orestes/Work…/bin/data/test.json'))
 
     def create_random_dataset(self):
         trans = Transaction()
@@ -83,9 +86,6 @@ class Database(object):
         v = Database.client.transaction(trans)[0]
         Database.nodesID = tuple(x.id for x in v)
         print(Database.nodesID)
-        # Database.nodesID = tuple(x.id for x in v)
-        # # return Database.nodesID
-        # print(Database.nodesID)
 
     def list_all_edges():
         trans = Transaction()

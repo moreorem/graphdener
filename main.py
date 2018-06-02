@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+# !/usr/bin/python3
 import sys
 import os
 from subprocess import Popen, PIPE, call as call_ext
@@ -28,7 +28,6 @@ class App(QMainWindow):
 
         self.canvasLayout = QHBoxLayout()
         self.mainLayout.addLayout(self.canvasWidget.get_layout())
-
         self.initUI()
 
     def initUI(self):

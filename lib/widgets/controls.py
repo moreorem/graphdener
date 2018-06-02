@@ -15,7 +15,7 @@ class ControlWidgets(QWidget):
 
         self.button1.clicked.connect(Database.start_server)
         self.button2.clicked.connect(self.stop_server)
-        self.button3.clicked.connect(Database.connect_client)
+        self.button3.clicked.connect(Database.test_script)
 
         self.button4.clicked.connect(Database.create_random_dataset)
         self.button5.clicked.connect(Database.list_all_vertices)
@@ -24,7 +24,7 @@ class ControlWidgets(QWidget):
     def __controls(self):
         self.button1 = QPushButton("start")
         self.button2 = QPushButton("stop")
-        self.button3 = QPushButton("connect")
+        self.button3 = QPushButton("Import Data")
 
         self.button4 = QPushButton("Create Node")
         self.button5 = QPushButton("Get Vert")
