@@ -3,7 +3,6 @@ QWidget, QFileDialog, QMainWindow,
 QPushButton, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
 from ..services.indra import Database
 
-print(Database.proc)
 
 class ControlWidgets(QWidget):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
@@ -15,7 +14,6 @@ class ControlWidgets(QWidget):
 
         self.button1.clicked.connect(Database.start_server)
         self.button2.clicked.connect(self.stop_server)
-        self.button3.clicked.connect(Database.test_script)
 
         self.button4.clicked.connect(Database.create_random_dataset)
         self.button5.clicked.connect(Database.list_all_vertices)
@@ -24,7 +22,7 @@ class ControlWidgets(QWidget):
     def __controls(self):
         self.button1 = QPushButton("start")
         self.button2 = QPushButton("stop")
-        self.button3 = QPushButton("Import Data")
+        self.button3 = QPushButton("Import Wizard")
 
         self.button4 = QPushButton("Create Node")
         self.button5 = QPushButton("Get Vert")
@@ -55,3 +53,10 @@ class ControlWidgets(QWidget):
 
     def stop_server(self):
         Database.stop_server()
+
+    # def import_wizard(self):
+    #     name = 'Import Wizard'
+    #     exPopup = ImportWizard(name)
+    #     exPopup.setGeometry(100, 200, 100, 100)
+    #     exPopup.show()
+

@@ -7,7 +7,7 @@ QWidget, QFileDialog, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
-
+from lib.graphics.wizard import ImportWizard
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -38,6 +38,8 @@ class App(QMainWindow):
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         self.ctrlWidgets.button7.clicked.connect(self.canvasWidget.create_canvas)
+        self.ctrlWidgets.button3.clicked.connect(self.import_wizard)
+
 
     def closeEvent(self, event):
         quit_msg = "Are you sure you want to exit the program?"
@@ -48,6 +50,13 @@ class App(QMainWindow):
 
         else:
             event.ignore()
+
+    
+    def import_wizard(self):
+        name = 'Import Wizard'
+        exPopup = ImportWizard(self)
+        exPopup.setGeometry(100, 200, 100, 100)
+        exPopup.show()
 
 
 if __name__ == '__main__':

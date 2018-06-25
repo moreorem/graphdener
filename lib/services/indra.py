@@ -14,7 +14,7 @@ class Database(object):
     @staticmethod
     def start_server(self):
         Database.proc = QProcess(Database.parent)
-        Database.proc.start(Database.dbPath + "indradb-server")
+        Database.proc.start(Database.dbPath + "indradb")
         # Wait for server to start and then connect
         if Database.proc.waitForStarted(msecs=3000):
             Database.client = Client('0.0.0.0:8000', request_timeout=60, scheme='http')

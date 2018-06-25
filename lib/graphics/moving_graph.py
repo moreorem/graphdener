@@ -4,20 +4,17 @@
 """
 Plot clusters of data points and a graph of connections
 """
-from vispy import app, scene, color, gloo
+from vispy import app, scene, color
 import numpy as np
 from vispy.visuals.collections import SegmentCollection
 
 data = [[1, 2], [5, 4], [1, 4], [2, 6], [3, 4]]
 print(set(data[0]))
-# a = tuple(zip(*list(set(data))))
 
-print(a)
-quit()
 # Initialize arrays for position, color, edges, and types for each point in
 # the graph.
-npts = 8
-nedges = 2
+npts = 100
+nedges = 20
 ngroups = 1
 np.random.seed(127396)
 pos = np.empty((npts, 2), dtype='float32')
@@ -56,6 +53,9 @@ while len(conn) < nedges:
 # Edges are stored as an edge list
 edges[:] = conn
 
+# Uses edge list as indexes to create pairs of x,y coordinates for the edge lines and connect pair of nodes
+connections = np.array([[pos[i] for i in edges[j]] for j in range(len(edges))])
+
 # Assign colors to each point based on its type
 cmap = color.get_colormap('cubehelix')
 typ_colors = np.array([cmap.map(x)[0, :3] for x in np.linspace(0.2, 0.8, typ)])
@@ -64,9 +64,6 @@ colors[:] = typ_colors[types]
 # Add some RGB noise and clip
 colors *= 1.1 ** np.random.normal(size=colors.shape)
 colors = np.clip(colors, 0, 1)
-
-# Add segment collection
-segments = SegmentCollection("agg", linewidth="local")
 
 # Display the data
 canvas = scene.SceneCanvas(keys='interactive', show=True, bgcolor='white')
@@ -77,49 +74,33 @@ view.camera.aspect = 1
 # Lines made using agg, that can have variable width
 # lines = scene.Line(pos=pos, width=1., antialias=True, method='agg',
 #                    color=(1, 1, 1, 0.8), parent=view.scene)
-print(edges[0])
-print(pos[5], pos[3])
 
-print([ [ j for j in i] for i in edges] )
-
-a = np.vstack([ [ list(zip(pos[j])) for j in i ] for i in edges])
-
-print(a)
-print(a.shape)
-# print(np.vstack([np.array(i) for i in edges]) )
-# print( np.vstack([ np.array(i) for i in edges ]) )
-
-# print([ [ pos[j] for j in i] for i in edges[i] [:] ])
-
-# print(list(np.array(pos)[edges][0]))
-print(np.array((7.3297157, 6.3043547)))
-
-# quit()
-# Standard lines of width 1
-lines = scene.Line(pos=np.array( [[(-2.3609583, 3.546692),(7.3297157, 6.3043547)], [(-2.1943018, -2.402215), (-2.325184, -1.6532228)]] )
-    , width=5., connect='segments', antialias=True, method='gl',
+# Draw edge connections between nodes
+lines = scene.Line(pos=connections, width=2., connect='segments',
+                   antialias=False, method='gl',
                    color=(1, 0, 1, 1), parent=view.scene)
 
+# Draw node markers
 markers = scene.Markers(pos=pos, face_color=colors, symbol='o',
                         parent=view.scene)
 
+# segments = SegmentCollection("agg", linewidth="local")
+# n = 100
+# P0 = np.dstack(
+#     (np.linspace(100, 1100, n), np.ones(n) * 50, np.zeros(n))).reshape(n, 3)
+# P0 = 2 * (P0 / (1200, 600, 1)) - 1
+# P1 = np.dstack(
+#     (np.linspace(110, 1110, n), np.ones(n) * 550, np.zeros(n))).reshape(n, 3)
+# P1 = 2 * (P1 / (1200, 600, 1)) - 1
+
+# segments.append(P0, P1, linewidth=np.linspace(1, 8, n))
+
 view.camera.set_range()
 
-# i = 1
 
-
-# self.set_state(clear_color='white', depth_test=False, blend=True,
-#                   blend_func=('src_alpha', 'one_minus_src_alpha'))
-
-
-
-@canvas.connect
-def on_draw(e):
-    gloo.clear('white')
-    segments.draw()
-
+# Activates in each timer tick
 def update(ev):
-    global pos, edges, lines, markers, view, force, dist, i
+    global connections, pos, edges, lines, markers, view, force, dist, i
 
     dx = np.empty((npts, npts, 2), dtype='float32')
     dx[:] = pos[:, np.newaxis, :]
@@ -137,9 +118,9 @@ def update(ev):
     # connected points pull toward each other
     # pulsed force helps to settle faster:
     s = 0.1
-    #s = 0.05 * 5 ** (np.sin(i/20.) / (i/100.))
+    # s = 0.05 * 5 ** (np.sin(i/20.) / (i/100.))
 
-    #s = 0.05 + 1 * 0.99 ** i
+    # s = 0.05 + 1 * 0.99 ** i
     mask = np.zeros((npts, npts, 1), dtype='float32')
     mask[edges[:, 0], edges[:, 1]] = s
     mask[edges[:, 1], edges[:, 0]] = s
@@ -149,21 +130,21 @@ def update(ev):
     force[np.arange(npts), np.arange(npts)] = 0
 
     force = force.sum(axis=0)
-    pos += np.clip(force, -3, 3) * 0.09
+    pos += np.clip(force, -2, 2) * 0.02
 
-    lines.set_data(pos=pos)
+    lines.set_data(pos=connections)
     markers.set_data(pos=pos, face_color=colors)
 
     i += 1
 
-@canvas.connect
-def on_mouse_move(event):
-    print_mouse_event(event, 'Mouse move')
+# @canvas.connect
+# def on_mouse_move(event):
+#     print_mouse_event(event, 'Mouse move')
 
 def print_mouse_event(event, what):
     modifiers = ', '.join([key.name for key in event.modifiers])
     print('%s - pos: %r, button: %s, modifiers: %s, delta: %r' %
-  (what, event.pos, event.button, modifiers, event.delta))
+    (what, event.pos, event.button, modifiers, event.delta))
 
 
 # timer = app.Timer(interval=0, connect=update, start=True)
