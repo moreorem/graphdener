@@ -48,15 +48,8 @@ class ControlWidgets(QWidget):
     def connect_client(self):
         try:
             Database.connect_client()
-        except Error as e:
+        except Database.Error as e:
             print(e)
 
     def stop_server(self):
         Database.stop_server()
-
-    # def import_wizard(self):
-    #     name = 'Import Wizard'
-    #     exPopup = ImportWizard(name)
-    #     exPopup.setGeometry(100, 200, 100, 100)
-    #     exPopup.show()
-

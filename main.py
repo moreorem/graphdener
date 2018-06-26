@@ -3,7 +3,7 @@ import sys
 import os
 from subprocess import Popen, PIPE, call as call_ext
 from PyQt5.QtWidgets import (QApplication,
-QWidget, QFileDialog, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
+                             QWidget, QFileDialog, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
@@ -37,13 +37,14 @@ class App(QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
-        self.ctrlWidgets.button7.clicked.connect(self.canvasWidget.create_canvas)
+        self.ctrlWidgets.button7.clicked.connect(
+            self.canvasWidget.create_canvas)
         self.ctrlWidgets.button3.clicked.connect(self.import_wizard)
-
 
     def closeEvent(self, event):
         quit_msg = "Are you sure you want to exit the program?"
-        reply = QMessageBox.question(self, 'Message', quit_msg, QMessageBox.Yes, QMessageBox.No)
+        reply = QMessageBox.question(
+            self, 'Message', quit_msg, QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
             self.ctrlWidgets.stop_server()
@@ -51,11 +52,10 @@ class App(QMainWindow):
         else:
             event.ignore()
 
-    
     def import_wizard(self):
         name = 'Import Wizard'
         exPopup = ImportWizard(self)
-        exPopup.setGeometry(100, 200, 100, 100)
+        exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
 
 
