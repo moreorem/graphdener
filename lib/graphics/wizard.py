@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import (QMainWindow, QLayout, QPushButton,
-                             QHBoxLayout, QMessageBox, QLabel, QFileDialog)
+from PyQt5.QtWidgets import (QMainWindow, QLayout, QPushButton, QHBoxLayout, QMessageBox, QLabel, QFileDialog)
 from PyQt5 import QtWidgets
 from ..services.bendcomm import *
+
 
 class QIComboBox(QtWidgets.QComboBox):
     def __init__(self, parent=None):
@@ -14,21 +14,19 @@ class ImportWizard(QtWidgets.QWizard):
         self.addPage(Page1(self))
         self.addPage(Page2(self))
         self.setWindowTitle("Import Wizard")
-
         # Trigger close event when pressing Finish button to redirect variables to backend
-        self.finished.connect(self.closeEvent)
+        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.onFinished)
+        self.variable = None
 
-    def closeEvent(self):
-        print("hallelujah!")
-        if len(self.edgeListPath):
-            print(self.edgeListPath)
-            Client.send_paths(self.edgeListPath)
-
-    def set_edgeListPath(self, path):
-        self.edgeListPath = path
+    def onFinished(self):
+        print("Finish")
+        # Return variables to use in main
+        print(self.variable)
+        Communicator.send_paths(self.variable)
 
 
 class Page1(QtWidgets.QWizardPage):
+
     def __init__(self, parent=None):
         super(Page1, self).__init__(parent)
         self.comboBox = QIComboBox(self)
@@ -39,9 +37,7 @@ class Page1(QtWidgets.QWizardPage):
         layout.addWidget(self.comboBox)
         layout.addWidget(self.openFileBtn)
         self.setLayout(layout)
-
         self.openFileBtn.clicked.connect(self.openFileNameDialog)
-        parent.edgeListPath = ''
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
@@ -49,11 +45,9 @@ class Page1(QtWidgets.QWizardPage):
         fileName, _ = QFileDialog.getOpenFileName(
             self, "QFileDialog.getOpenFileName()", "",
             "All Files (*);;Python Files (*.py)", options=options)
+        # if user selected a file store its path to a variable
         if fileName:
-            self.parent.set_edgeListPath(fileName)
-
-    def get_parent(self):
-        return self.parent
+            self.wizard().variable = fileName
 
 
 class Page2(QtWidgets.QWizardPage):
@@ -69,7 +63,6 @@ class Page2(QtWidgets.QWizardPage):
     def initializePage(self):
         self.label1.setText("Example text")
         self.label2.setText("Example text")
-
 
 
 if __name__ == '__main__':

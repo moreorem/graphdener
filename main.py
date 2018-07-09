@@ -1,9 +1,8 @@
 # !/usr/bin/python3
 import sys
 import os
-from subprocess import Popen, PIPE, call as call_ext
-from PyQt5.QtWidgets import (QApplication,
-                             QWidget, QFileDialog, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
+# from subprocess import Popen, PIPE, call as call_ext
+from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
