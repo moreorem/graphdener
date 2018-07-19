@@ -16,13 +16,25 @@ class ImportWizard(QtWidgets.QWizard):
         self.setWindowTitle("Import Wizard")
         # Trigger close event when pressing Finish button to redirect variables to backend
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.onFinished)
-        self.variable = None
+        self.filepath1 = None
+        self.filepath2 = 'path1'
+        self.filepath3 = 'path2'
 
     def onFinished(self):
         print("Finish")
         # Return variables to use in main
-        print(self.variable)
-        Communicator.send_paths(self.variable)
+        all_paths = [self.filepath1, self.filepath2, self.filepath3]
+
+        Communicator.connect()
+        # Transmit paths to backend
+        Communicator.send_paths(all_paths)
+        # Communicator.initialize()
+        Communicator.create_vertex()
+        Communicator.create_vertex()
+        Communicator.create_vertex()
+        Communicator.create_vertex()
+        Communicator.create_vertex()
+        
 
 
 class Page1(QtWidgets.QWizardPage):
@@ -47,7 +59,7 @@ class Page1(QtWidgets.QWizardPage):
             "All Files (*);;Python Files (*.py)", options=options)
         # if user selected a file store its path to a variable
         if fileName:
-            self.wizard().variable = fileName
+            self.wizard().filepath1 = fileName
 
 
 class Page2(QtWidgets.QWizardPage):
