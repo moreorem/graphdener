@@ -25,10 +25,10 @@ class Communicator():
         print(result)
 
     @classmethod
-    def create_vertex(cls):
+    def create_vertex(cls, vertexType):
         c = cls.client
         print("creating vertex...")
-        result = c.call('c_vert', None)
+        result = c.call('c_vert', vertexType)
         print(result)
 
     @classmethod

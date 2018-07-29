@@ -27,9 +27,9 @@ class ImportWizard(QtWidgets.QWizard):
 
         Communicator.connect()
         # Transmit paths to backend
-        Communicator.send_paths(all_paths)
+        # Communicator.send_paths(all_paths)
         # Communicator.initialize()
-        # Communicator.create_vertex()
+        Communicator.create_vertex("SHIT")
 
 
 
