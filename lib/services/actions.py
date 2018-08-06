@@ -1,6 +1,7 @@
 from indradb import *
 from PyQt5.QtCore import QProcess
 import random
+from . import backend
 
 # static class for database communication (indradb)
 class Database(object):
@@ -81,10 +82,9 @@ class Database(object):
 
     @staticmethod
     def list_all_vertices(self):
-        trans = Transaction()
-        vertices = trans.get_vertices(VertexQuery.all(None, 100))
-        v = Database.client.transaction(trans)[0]
-        Database.nodesID = tuple(x.id for x in v)
+        # trans = Transaction()
+        vertices = backend.Communicator.get_vertex(None)
+        Database.nodesID = tuple(x.id for x in vertices)
         print(Database.nodesID)
 
     def list_all_edges():

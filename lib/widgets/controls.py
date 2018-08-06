@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QApplication,
 QWidget, QFileDialog, QMainWindow,
 QPushButton, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
-from ..services.indra import Database
+from ..services.actions import Database
 
 
 class ControlWidgets(QWidget):
@@ -25,7 +25,7 @@ class ControlWidgets(QWidget):
         self.button3 = QPushButton("Import Wizard")
 
         self.button4 = QPushButton("Create Node")
-        self.button5 = QPushButton("Get Vert")
+        self.button5 = QPushButton("Get Vertices")
         self.button6 = QPushButton("Get Edges")
 
         self.button7 = QPushButton("Re-Draw")

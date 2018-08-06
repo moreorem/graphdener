@@ -37,3 +37,13 @@ class Communicator():
         print("creating vertex...")
         result = c.call('c_edge', None)
         print(result)
+
+    @classmethod
+    def get_vertex(cls, id):
+        c = cls.client
+        print("creating vertex...")
+        if id:
+            result = c.call('get_vert', id)
+        else:
+            result = c.call('get_vert', [])
+        print(result)
