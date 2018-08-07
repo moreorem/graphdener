@@ -39,11 +39,11 @@ class Communicator():
         print(result)
 
     @classmethod
-    def get_vertex(cls, id):
+    def get_vertex(cls, id, detail_type):
         c = cls.client
         print("creating vertex...")
         if id:
-            result = c.call('get_vert', id)
+            result = c.call('get_vert', id, detail_type)
         else:
-            result = c.call('get_vert', [])
+            result = c.call('get_vert', [], detail_type)
         print(result)
