@@ -147,7 +147,7 @@ def print_mouse_event(event, what):
     (what, event.pos, event.button, modifiers, event.delta))
 
 
-# timer = app.Timer(interval=0, connect=update, start=True)
+timer = app.Timer(interval=0, connect=update, start=True)
 
 if __name__ == '__main__':
     app.run()

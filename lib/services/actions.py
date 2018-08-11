@@ -4,11 +4,13 @@ import random
 from . import backend
 
 # static class for database communication (indradb)
+
+
 class Database(object):
     proc = None
     client = None
     nodesID = '00000000-0000-0000-0000-000000000000'
-    dbPath = '/home/orestes/Workspace/bin/indradb/'
+    dbPath = '/home/orestes/Workspace/github.com/moreorem/graphdener-backend/target/debug/graphdener-backend'
     parent = None
     adj = None
 
@@ -33,12 +35,7 @@ class Database(object):
     @staticmethod
     def import_data(self):
         trans = Transaction()
-        Database.client.mapreduce('~/Workspace/bin/indradb/script/import-edge-list.lua', '/home/orestes/Work…/bin/data/facebook/facebook_combined.txt')
 
-    # TEST METHOD
-    def test_script():
-        trans = Transaction()
-        print(Database.client.mapreduce('/home/orestes/Workspace/bin/indradb/script/commit_first.lua', '/home/orestes/Work…/bin/data/test.json'))
 
     def create_random_dataset(self):
         trans = Transaction()
@@ -51,7 +48,7 @@ class Database(object):
         ed = list(ed)
 
         # List of dict that contains edgekeys
-        edgeDict = [ {"outbound_id" : ed[0], "type" : "relation", "inbound_id" : ed[1]} for i in ed]
+        edgeDict = [{"outbound_id": ed[0], "type": "relation", "inbound_id": ed[1]} for i in ed]
 
         trans = Transaction()
         # print('the key of this edge is: {}'.format(ek.to_dict()))
@@ -65,7 +62,7 @@ class Database(object):
         return
 
     def make_edges(lst, max_iter):
-        ed = ([],[])
+        ed = ([], [])
 
         for j in range(2):
             temp_lst = lst[:]
@@ -78,7 +75,7 @@ class Database(object):
                 else:
                     ed[j].append(temp_lst[idx])
 
-        return zip(ed[0],ed[1])
+        return zip(ed[0], ed[1])
 
     @staticmethod
     def list_all_vertices(self):
