@@ -17,7 +17,7 @@ class ControlWidgets(QWidget):
 
         self.button4.clicked.connect(Backend.create_random_dataset)
         self.button5.clicked.connect(Backend.list_all_vertices)
-        self.button6.clicked.connect(Backend.list_all_edges)
+        # self.button6.clicked.connect(Backend.list_all_edges)
 
     def __controls(self):
         self.button1 = QPushButton("start")

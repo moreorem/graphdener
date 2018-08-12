@@ -16,18 +16,15 @@ class ImportWizard(QtWidgets.QWizard):
         self.setWindowTitle("Import Wizard")
         # Trigger close event when pressing Finish button to redirect variables to backend
         self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.onFinished)
-        self.filepath1 = None
-        self.filepath2 = 'path1'
-        self.filepath3 = 'path2'
+        self.filepath = [None, None]
 
     def onFinished(self):
         print("Finish")
-        # Return variables to use in main
-        all_paths = [self.filepath1, self.filepath2, self.filepath3]
 
+        # Communicate with backend to send information
         Call.connect()
         # Transmit paths to backend
-        Call.send_paths(all_paths)
+        Call.send_paths(self.filepath)
         Call.get_vertex(None, "pos")
 
 
@@ -39,10 +36,13 @@ class Page1(QtWidgets.QWizardPage):
         self.comboBox.addItem("Python", "/path/to/filename1")
         self.comboBox.addItem("PyQt5", "/path/to/filename2")
         self.openFileBtn = QPushButton("Import Edge List")
+
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.comboBox)
         layout.addWidget(self.openFileBtn)
+
         self.setLayout(layout)
+        # Bind actions
         self.openFileBtn.clicked.connect(self.openFileNameDialog)
 
     def openFileNameDialog(self):
@@ -53,7 +53,8 @@ class Page1(QtWidgets.QWizardPage):
             "All Files (*);;Python Files (*.py)", options=options)
         # if user selected a file store its path to a variable
         if fileName:
-            self.wizard().filepath1 = fileName
+            self.wizard().filepath[0] = fileName
+
 
 
 class Page2(QtWidgets.QWizardPage):
@@ -61,10 +62,26 @@ class Page2(QtWidgets.QWizardPage):
         super(Page2, self).__init__(parent)
         self.label1 = QtWidgets.QLabel()
         self.label2 = QtWidgets.QLabel()
+        self.openFileBtn = QPushButton("Import Vertex List")
+
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.label1)
         layout.addWidget(self.label2)
+        layout.addWidget(self.openFileBtn)
+
         self.setLayout(layout)
+        # Bind actions
+        self.openFileBtn.clicked.connect(self.openFileNameDialog)
+
+    def openFileNameDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(
+            self, "QFileDialog.getOpenFileName()", "",
+            "All Files (*);;Python Files (*.py)", options=options)
+        # if user selected a file store its path to a variable
+        if fileName:
+            self.wizard().filepath[1] = fileName
 
     def initializePage(self):
         self.label1.setText("Example text")
