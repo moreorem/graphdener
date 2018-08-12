@@ -1,12 +1,12 @@
 # !/usr/bin/python3.6
 import sys
 import os
-# from subprocess import Popen, PIPE, call as call_ext
-from PyQt5.QtWidgets import (QApplication, QWidget, QFileDialog, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
+from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow, QLayout, QHBoxLayout, QMessageBox)
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
 from lib.graphics.wizard import ImportWizard
+from lib.services.backend import Backend
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -16,7 +16,7 @@ class App(QMainWindow):
         super().__init__()
         self.title = 'PGMP'
         self.mainWidget = QWidget(self)
-        # self.setCentralWidget(self.mainWidget)
+
         self.canvasWidget = CanvasWidget(self.mainWidget)
 
         self.ctrlWidgets = ControlWidgets(self.mainWidget)
@@ -24,9 +24,9 @@ class App(QMainWindow):
         self.mainLayout = QHBoxLayout(self.mainWidget)
         self.mainLayout.sizeConstraint = QLayout.SetDefaultConstraint
         self.mainLayout.addLayout(self.ctrlWidgets.get_layout())
+        self.mainLayout.addLayout(self.canvasWidget.get_layout())
 
         self.canvasLayout = QHBoxLayout()
-        self.mainLayout.addLayout(self.canvasWidget.get_layout())
         self.initUI()
 
     def initUI(self):
@@ -46,13 +46,12 @@ class App(QMainWindow):
             self, 'Message', quit_msg, QMessageBox.Yes, QMessageBox.No)
 
         if reply == QMessageBox.Yes:
-            self.ctrlWidgets.stop_server()
+            Backend.stop()
 
         else:
             event.ignore()
 
     def import_wizard(self):
-        name = 'Import Wizard'
         exPopup = ImportWizard(self)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()

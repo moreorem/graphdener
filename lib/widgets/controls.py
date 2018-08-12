@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QApplication,
 QWidget, QFileDialog, QMainWindow,
 QPushButton, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
-from ..services.backend import Database
+from ..services.backend import Backend
 
 
 class ControlWidgets(QWidget):
@@ -12,12 +12,12 @@ class ControlWidgets(QWidget):
         self.__controls()
         self.__layout()
 
-        self.button1.clicked.connect(Database.start_server)
-        self.button2.clicked.connect(self.stop_server)
+        self.button1.clicked.connect(Backend.start)
+        self.button2.clicked.connect(Backend.stop)
 
-        self.button4.clicked.connect(Database.create_random_dataset)
-        self.button5.clicked.connect(Database.list_all_vertices)
-        self.button6.clicked.connect(Database.list_all_edges)
+        self.button4.clicked.connect(Backend.create_random_dataset)
+        self.button5.clicked.connect(Backend.list_all_vertices)
+        self.button6.clicked.connect(Backend.list_all_edges)
 
     def __controls(self):
         self.button1 = QPushButton("start")
@@ -47,9 +47,7 @@ class ControlWidgets(QWidget):
 
     def connect_client(self):
         try:
-            Database.connect_client()
-        except Database.Error as e:
+            Backend.connect_client()
+        except Backend.Error as e:
             print(e)
 
-    def stop_server(self):
-        Database.stop_server()

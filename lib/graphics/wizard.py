@@ -28,13 +28,7 @@ class ImportWizard(QtWidgets.QWizard):
         Call.connect()
         # Transmit paths to backend
         Call.send_paths(all_paths)
-        # Communicator.get_vertex(["c3643e50-997f-11e8-8002-000000000000", "c3643e5b-997f-11e8-8003-000000000000"])
         Call.get_vertex(None, "pos")
-
-
-        # Communicator.initialize()
-
-
 
 
 class Page1(QtWidgets.QWizardPage):

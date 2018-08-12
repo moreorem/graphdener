@@ -1,8 +1,6 @@
 import msgpackrpc
 
 ''' This class is used to communicate with the rust backend '''
-
-
 class Call():
     client = None
 
