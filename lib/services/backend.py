@@ -1,49 +1,92 @@
-import msgpackrpc
+from indradb import *
+from PyQt5.QtCore import QProcess
+import random
+from . import actions
 
-''' This class is used to communicate with the rust backend '''
+# static class for database communication (indradb)
 
 
-class Communicator():
-    client = None
+class Database(object):
+    proc = None
+    nodesID = '00000000-0000-0000-0000-000000000000'
+    DBPATH = "/home/orestes/Workspace/src/github.com/moreorem/graphdener-backend/target/debug/"
+    parent = None
+    adj = None
+
+    
+    def start_server():
+        print('hoo')
+        Database.proc = QProcess(Database.parent)
+        Database.proc.start(Database.DBPATH + "graphdener-backend")
+        # Wait for server to start and then connect
+        if Database.proc.waitForStarted(msecs=3000):
+            print("Database Connected")
+
+    def stop_server():
+        if Database.proc is not None:
+            try:
+                Database.proc.terminate()
+                Database.proc = None
+                print('Server stopped')
+            except AttributeError as e:
+                print('Unable to stop server ', e)
 
     @staticmethod
-    def connect():
-        if Communicator.client is None:
-            Communicator.client = msgpackrpc.Client(msgpackrpc.Address("127.0.0.1", port=54321))
+    def import_data(self):
+        trans = Transaction()
 
-    @classmethod
-    def send_paths(cls, paths):
-        c = cls.client
-        result = c.call('import', paths)
-        print(result)
 
-    @classmethod
-    def initialize(cls):
-        c = cls.client
-        print("Initializing")
-        result = c.call('init', None)
-        print(result)
+    def create_random_dataset(self):
+        trans = Transaction()
+        for i in range(10):
+            trans.create_vertex_from_type('person')
+        vertices = Database.client.transaction(trans)
 
-    @classmethod
-    def create_vertex(cls, vertexType):
-        c = cls.client
-        print("creating vertex...")
-        result = c.call('c_vert', vertexType)
-        print(result)
+        # Create random edges
+        ed = Database.make_edges(vertices, 10)
+        ed = list(ed)
 
-    @classmethod
-    def create_edge(cls):
-        c = cls.client
-        print("creating vertex...")
-        result = c.call('c_edge', None)
-        print(result)
+        # List of dict that contains edgekeys
+        edgeDict = [{"outbound_id": ed[0], "type": "relation", "inbound_id": ed[1]} for i in ed]
 
-    @classmethod
-    def get_vertex(cls, id, detail_type):
-        c = cls.client
-        print("creating vertex...")
-        if id:
-            result = c.call('get_vert', id, detail_type)
-        else:
-            result = c.call('get_vert', [], detail_type)
-        print(result)
+        trans = Transaction()
+        # print('the key of this edge is: {}'.format(ek.to_dict()))
+        # for i in range(len())
+        for i in range(len(edgeDict)):
+            ek = EdgeKey.from_dict(edgeDict[0])
+            print(ek)
+            trans.create_edge(ek)
+        # dd = Database.client.transaction(trans)
+        # print(dd)
+        return
+
+    def make_edges(lst, max_iter):
+        ed = ([], [])
+
+        for j in range(2):
+            temp_lst = lst[:]
+            i = 1
+            while len(temp_lst) > 0 and i < max_iter:
+                idx = random.randrange(0, len(temp_lst))
+                i += 1
+                if random.getrandbits(1) == 1:
+                    ed[j].append(temp_lst.pop(idx))
+                else:
+                    ed[j].append(temp_lst[idx])
+
+        return zip(ed[0], ed[1])
+
+    @staticmethod
+    def list_all_vertices(self):
+        # trans = Transaction()
+        vertices = actions.Communicator.get_vertex(None)
+        Database.nodesID = tuple(x.id for x in vertices)
+        print(Database.nodesID)
+
+    def list_all_edges():
+        trans = Transaction()
+        # ed = trans.get_edges(get_vertices(VertexQuery.all(None, 1000)).outbound_edges(100))
+        ed = trans.get_edges(EdgeQuery(VertexQuery.all(None, 100)))
+        print(ed)
+        print(Database.client.transaction(trans))
+        # print([x.key for x in Database.client.transaction(trans)])

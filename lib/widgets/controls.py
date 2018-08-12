@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import (QApplication,
 QWidget, QFileDialog, QMainWindow,
 QPushButton, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
-from ..services.actions import Database
+from ..services.backend import Database
 
 
 class ControlWidgets(QWidget):

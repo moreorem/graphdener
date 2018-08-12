@@ -1,4 +1,4 @@
-# !/usr/bin/python3
+# !/usr/bin/python3.6
 import sys
 import os
 # from subprocess import Popen, PIPE, call as call_ext

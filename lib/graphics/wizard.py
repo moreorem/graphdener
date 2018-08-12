@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QMainWindow, QLayout, QPushButton, QHBoxLayout, QMessageBox, QLabel, QFileDialog)
 from PyQt5 import QtWidgets
-from ..services.backend import *
+from ..services.actions import *
 
 
 class QIComboBox(QtWidgets.QComboBox):
@@ -25,11 +25,11 @@ class ImportWizard(QtWidgets.QWizard):
         # Return variables to use in main
         all_paths = [self.filepath1, self.filepath2, self.filepath3]
 
-        Communicator.connect()
+        Call.connect()
         # Transmit paths to backend
-        Communicator.send_paths(all_paths)
+        Call.send_paths(all_paths)
         # Communicator.get_vertex(["c3643e50-997f-11e8-8002-000000000000", "c3643e5b-997f-11e8-8003-000000000000"])
-        Communicator.get_vertex(None, "pos")
+        Call.get_vertex(None, "pos")
 
 
         # Communicator.initialize()
