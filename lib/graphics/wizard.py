@@ -33,11 +33,13 @@ class Page1(QtWidgets.QWizardPage):
     def __init__(self, parent=None):
         super(Page1, self).__init__(parent)
         self.comboBox = QIComboBox(self)
-        self.comboBox.addItem("Python", "/path/to/filename1")
-        self.comboBox.addItem("PyQt5", "/path/to/filename2")
-        self.openFileBtn = QPushButton("Import Edge List")
+        # self.comboBox.addItem("Python", "/path/to/filename1")
+        # self.comboBox.addItem("PyQt5", "/path/to/filename2")
+        self.openFileBtn = QPushButton("Import Node List")
+        self.label1 = QtWidgets.QLabel()
 
         layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.label1)
         layout.addWidget(self.comboBox)
         layout.addWidget(self.openFileBtn)
 
@@ -55,18 +57,20 @@ class Page1(QtWidgets.QWizardPage):
         if fileName:
             self.wizard().filepath[0] = fileName
 
+    def initializePage(self):
+        self.label1.setText("Nodes information")
 
 
 class Page2(QtWidgets.QWizardPage):
     def __init__(self, parent=None):
         super(Page2, self).__init__(parent)
+        self.setWindowTitle("Edge phase")
+
         self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-        self.openFileBtn = QPushButton("Import Vertex List")
+        self.openFileBtn = QPushButton("Import Edge List")
 
         layout = QtWidgets.QVBoxLayout()
         layout.addWidget(self.label1)
-        layout.addWidget(self.label2)
         layout.addWidget(self.openFileBtn)
 
         self.setLayout(layout)
@@ -84,9 +88,8 @@ class Page2(QtWidgets.QWizardPage):
             self.wizard().filepath[1] = fileName
 
     def initializePage(self):
-        self.label1.setText("Example text")
-        self.label2.setText("Example text")
-
+        self.label1.setText("Edges information")
+        # self.label2.setText("Example text")
 
 if __name__ == '__main__':
     import sys
