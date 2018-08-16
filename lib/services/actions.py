@@ -45,3 +45,12 @@ class Call():
         else:
             result = c.call('get_vert', [], detail_type)
         print(result)
+
+    # Gets positions of all of the vertices []
+    @classmethod
+    def get_positions(cls):
+        c = cls.client
+        print("creating vertex...")
+        result = c.call('get_vert', [], 'pos')
+
+        print(result)

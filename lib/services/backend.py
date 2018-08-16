@@ -32,28 +32,6 @@ class Backend(object):
     def import_data(self):
         pass
 
-    def create_random_dataset(self):
-        # for i in range(10):
-        #     trans.create_vertex_from_type('person')
-        # vertices = Backend.client.transaction(trans)
-
-        # # Create random edges
-        # ed = Backend.make_edges(vertices, 10)
-        # ed = list(ed)
-
-        # # List of dict that contains edgekeys
-        # edgeDict = [{"outbound_id": ed[0], "type": "relation", "inbound_id": ed[1]} for i in ed]
-
-        # # print('the key of this edge is: {}'.format(ek.to_dict()))
-        # # for i in range(len())
-        # for i in range(len(edgeDict)):
-        #     ek = EdgeKey.from_dict(edgeDict[0])
-        #     print(ek)
-        #     trans.create_edge(ek)
-        # dd = Backend.client.transaction(trans)
-        # print(dd)
-        pass
-
     def make_edges(lst, max_iter):
         ed = ([], [])
 
@@ -77,3 +55,5 @@ class Backend(object):
         Backend.nodesID = tuple(x.id for x in vertices)
         print(Backend.nodesID)
 
+    def get_positions(self):
+        actions.get_positions()

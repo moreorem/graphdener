@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import (QApplication,
 QWidget, QFileDialog, QMainWindow,
 QPushButton, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
 from ..services.backend import Backend
+from ..services.actions import Call
 
 
 class ControlWidgets(QWidget):
@@ -15,9 +16,9 @@ class ControlWidgets(QWidget):
         self.button1.clicked.connect(Backend.start)
         self.button2.clicked.connect(Backend.stop)
 
-        self.button4.clicked.connect(Backend.create_random_dataset)
+        # self.button4.clicked.connect(Backend.create_random_dataset)
         self.button5.clicked.connect(Backend.list_all_vertices)
-        # self.button6.clicked.connect(Backend.list_all_edges)
+        self.button6.clicked.connect(Call.get_positions)
 
     def __controls(self):
         self.button1 = QPushButton("start")
@@ -26,7 +27,7 @@ class ControlWidgets(QWidget):
 
         self.button4 = QPushButton("Create Node")
         self.button5 = QPushButton("Get Vertices")
-        self.button6 = QPushButton("Get Edges")
+        self.button6 = QPushButton("Get Positions")
 
         self.button7 = QPushButton("Re-Draw")
 
