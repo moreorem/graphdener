@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Canvas of PMGP.
+Canvas of Graphdener.
 """
 
 import numpy as np

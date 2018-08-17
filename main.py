@@ -36,8 +36,10 @@ class App(QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
+        # Re-draw Button action
         self.ctrlWidgets.button7.clicked.connect(
             self.canvasWidget.create_canvas)
+        # Import wizard Button
         self.ctrlWidgets.button3.clicked.connect(self.import_wizard)
 
     def closeEvent(self, event):
