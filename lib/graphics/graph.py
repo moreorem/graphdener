@@ -9,6 +9,13 @@ Dynamic planar graph layout.
 import numpy as np
 from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
+from vispy.app import use_app
+from vispy.visuals import GraphVisual
+from vispy.visuals.graphs import layouts
+from vispy.visuals.transforms import STTransform
+# from vispy.scene import visuals
+from vispy.app import use_app
+from vispy.visuals import GraphVisual
 
 vert = """
 #version 120
@@ -127,20 +134,20 @@ void main(){
 """
 
 
-class Canvas(app.Canvas):
-
-    def __init__(self, **kwargs):
+class GraphCanvas(app.Canvas):
+    def __init__(self, n, ne):
         # Initialize the canvas for real
-        app.Canvas.__init__(self, keys='interactive', size=(1024, 1024),
-                            **kwargs)
+        app.Canvas.__init__(self, keys='interactive', size=(800, 600))
+        # app.Canvas.__init__(self, keys='interactive', size=(1024, 1024),
+        #                     **kwargs)
         ps = self.pixel_scale
         # Window position
         self.position = 50, 50
 
         # TODO: create array from node type to insert as a_bg_color
 
-        n = 10000
-        ne = 1000
+        # n = 10000
+        # ne = 1000
         data = np.zeros(n, dtype=[('a_position', np.float32, 3),
                                   ('a_fg_color', np.float32, 4),
                                   ('a_bg_color', np.float32, 4),
@@ -149,11 +156,11 @@ class Canvas(app.Canvas):
                                   ])
         edges = np.random.randint(size=(ne, 2), low=0,
                                   high=n).astype(np.uint32)
-        print(edges)
 
         # Vertex position
         data['a_position'] = np.hstack((.40 * np.random.randn(n, 2),
                                        np.zeros((n, 1))))
+        print(data['a_position'])
 
         # Overlay, circle color
         data['a_fg_color'] = 0, 0, 0, 1
@@ -161,9 +168,10 @@ class Canvas(app.Canvas):
         color = np.random.uniform(0.5, 1., (n, 3))
         data['a_bg_color'] = np.hstack((color, np.ones((n, 1))))
         # Vertex size
+        # Sets the marker size at a random between 8 and 20 pixels
         data['a_size'] = np.random.randint(size=n, low=8*ps, high=20*ps)
         # Vertex outline width
-        data['a_linewidth'] = 1.*ps
+        data['a_linewidth'] = 1.*ps # sets the marker line thickness
         u_antialias = 1
 
         self.vbo = gloo.VertexBuffer(data)
@@ -192,18 +200,44 @@ class Canvas(app.Canvas):
 
         self.show()
 
+    # def on_resize(self, event):
+    #     set_viewport(0, 0, *event.physical_size)
+
     def on_resize(self, event):
-        set_viewport(0, 0, *event.physical_size)
+        # self.visual.transform.scale = self.visual_size
+        # set_vset_viewport(0, 0, *event.physical_size)iewport(0, 0, *event.physical_size)
+        vp = (0, 0, self.physical_size[0], self.physical_size[1])
+        self.set_viewport(*vp)
+        # self.visual.transforms.configure(canvas=self, viewport=vp)
+
+        self.apply_zoom()
+
+    @property
+    def visual_size(self):
+        return self.physical_size[0] - 40, self.physical_size[1] - 40
 
     def on_draw(self, event):
+        gloo.clear()
+        self.context.clear('white')
+        # self.visual.draw()
+        # if not self.visual.animate_layout():
+            # self.update()
+
         # Paint background
-        clear(color=True, depth=True)
-        # Draw lines with array of indices
-        print(self.index)
+        # clear(color=True, depth=True)
+        # # Draw lines with array of indices
+        # print(self.index)
         self.program_e.draw('lines', self.index)
-        # Draw points
         self.program.draw('points')
 
+        # # Draw points
+        # self.program.draw('points')
+
+
+
+
+
+
 if __name__ == '__main__':
-    c = Canvas(title="Graph")
+    c = GraphCanvas()
     app.run()

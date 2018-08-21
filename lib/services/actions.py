@@ -1,4 +1,5 @@
-import msgpackrpc
+# import msgpackrpc
+from mprpc import RPCClient
 
 ''' This class is used to communicate with the rust backend '''
 class Call():
@@ -7,7 +8,7 @@ class Call():
     @staticmethod
     def connect():
         if Call.client is None:
-            Call.client = msgpackrpc.Client(msgpackrpc.Address("127.0.0.1", port=54321))
+            Call.client = RPCClient("127.0.0.1", port=54321)
 
     @classmethod
     def send_paths(cls, paths):
@@ -50,7 +51,14 @@ class Call():
     @classmethod
     def get_positions(cls):
         c = cls.client
-        print("creating vertex...")
-        result = c.call('get_vert', [], 'pos')
+        print("getting positions...")
+        result = c.call('get_vert', [], 'pos') # TODO: Convert to float
+        return result
+
+    @classmethod
+    def get_types(cls):
+        c = cls.client
+        print("getting types...")
+        result = c.call('get_vert', [], 'type')
 
         print(result)

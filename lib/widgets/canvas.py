@@ -1,6 +1,7 @@
 from ..graphics.canvas import MyCanvas
-from ..graphics.dynamic_graph import *
+from ..graphics.graph import GraphCanvas
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
+from ..services.actions import Call
 
 
 class CanvasWidget(QWidget):
@@ -24,7 +25,12 @@ class CanvasWidget(QWidget):
 
     def create_canvas(self):
         if self.canvas is not None:
+            # self.vbox.removeWidget(self.canvas)
             self.close_canvas()
-        # self.canvas = MyCanvas(100).native
-        self.canvas = GraphCanvas()
+        nodes = Call.get_positions()
+        print(float(list(nodes[0])[0]))
+
+        self.canvas = GraphCanvas(*nodes).native
+        # self.canvas = GraphCanvas().native
         self.vbox.addWidget(self.canvas)
+

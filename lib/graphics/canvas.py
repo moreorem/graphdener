@@ -9,10 +9,9 @@ import numpy as np
 import os
 
 from vispy import gloo
-from vispy import app, geometry
-from vispy.util.transforms import perspective, translate, rotate
+from vispy import app
+from vispy.util.transforms import perspective, translate
 from vispy.visuals.graphs import layouts
-import vispy.scene
 from vispy.visuals.transforms import STTransform
 # from vispy.scene import visuals
 from vispy.app import use_app
@@ -205,13 +204,14 @@ class MyCanvas(app.Canvas):
 
         # Get number of vertices
         n = len(nodes)
-        # added id column to insert ids from indradb
+        # Initialize data types to zeros
         data = np.zeros(n, [('a_position', np.float32, 3),
                             ('a_bg_color', np.float32, 4),
                             ('a_fg_color', np.float32, 4),
                             ('id', np.integer, 1),
                             ('a_size', np.float32, 1)])
 
+        # Insert random values to data
         data['a_position'] = 0.45 * np.random.randn(n, 3)
         data['a_bg_color'] = np.random.uniform(0.85, 1.00, (n, 4))
         data['a_fg_color'] = 0, 0, 0, 1

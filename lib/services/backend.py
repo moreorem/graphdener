@@ -1,9 +1,10 @@
 from PyQt5.QtCore import QProcess
 import random
 from . import actions
+from . import config
 
-# static class for database communication (indradb)
-DBPATH = "/home/orestes/Workspace/src/github.com/moreorem/graphdener-backend/target/debug/"
+BPATH = config.get_directory('backend')
+
 
 
 class Backend(object):
@@ -14,7 +15,7 @@ class Backend(object):
 
     def start():
         Backend.proc = QProcess(Backend.parent)
-        Backend.proc.start(DBPATH + "graphdener-backend")
+        Backend.proc.start(BPATH + "graphdener-backend")
         # Wait for server to start and then connect
         if Backend.proc.waitForStarted(msecs=3000):
             print("Backend Connected")
