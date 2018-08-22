@@ -9,72 +9,72 @@ from vispy.scene.visuals import Line, Markers
 import numpy as np
 from vispy.visuals.collections import SegmentCollection
 
-data = [[1, 2], [5, 4], [1, 4], [2, 6], [3, 4]]
-print(set(data[0]))
-
-# Initialize arrays for position, color, edges, and types for each point in
-# the graph.
-npts = 100
-nedges = 20
-ngroups = 1
-np.random.seed(127396)
-pos = np.empty((npts, 2), dtype='float32')
-colors = np.empty((npts, 3), dtype='float32')
-edges = np.empty((nedges, 2), dtype='uint32')
-types = np.empty(npts, dtype=int)
-
-# Assign random starting positions
-pos[:] = np.random.normal(size=pos.shape, scale=4.)
-
-# Assign each point to a group
-grpsize = npts // ngroups
-ptr = 0
-typ = 0
-while ptr < npts:
-    size = np.random.random() * grpsize + grpsize // 2
-    types[int(ptr):int(ptr+size)] = typ
-    typ += 1
-    ptr = ptr + size
-
-# Randomly select connections, with higher connection probability between
-# points in the same group
-conn = []
-connset = set()
-while len(conn) < nedges:
-    i, j = np.random.randint(npts, size=2)
-    if i == j:
-        continue
-    p = 0.7 if types[i] == types[j] else 0.01
-    if np.random.random() < p:
-        if (i, j) in connset:
-            continue
-        connset.add((i, j))
-        connset.add((j, i))
-        conn.append([i, j])
-# Edges are stored as an edge list
-edges[:] = conn
-
-# Uses edge list as indexes to create pairs of x,y coordinates for the edge lines and connect pair of nodes
-connections = np.array([[pos[i] for i in edges[j]] for j in range(len(edges))])
-
-# Assign colors to each point based on its type
-cmap = color.get_colormap('cubehelix')
-typ_colors = np.array([cmap.map(x)[0, :3] for x in np.linspace(0.2, 0.8, typ)])
-colors[:] = typ_colors[types]
-
-# Add some RGB noise and clip
-colors *= 1.1 ** np.random.normal(size=colors.shape)
-colors = np.clip(colors, 0, 1)
 
 
 class GraphCanvas(app.Canvas):
-    def __init__(self, **kwargs):
+    def __init__(self):
         app.Canvas.__init__(self, keys='interactive', size=(800, 600))
         ps = self.pixel_scale
+        data = [[1, 2], [5, 4], [1, 4], [2, 6], [3, 4]]
+
+        # Initialize arrays for position, color, edges, and types for each point in
+        # the graph.
+        npts = 100
+        nedges = 20
+        ngroups = 1
+        np.random.seed(127396)
+        pos = np.empty((npts, 2), dtype='float32')
+        colors = np.empty((npts, 3), dtype='float32')
+        edges = np.empty((nedges, 2), dtype='uint32')
+        types = np.empty(npts, dtype=int)
+
+        # Assign random starting positions
+        pos[:] = np.random.normal(size=pos.shape, scale=4.)
+
+        # Assign each point to a group
+        grpsize = npts // ngroups
+        ptr = 0
+        typ = 0
+        while ptr < npts:
+            size = np.random.random() * grpsize + grpsize // 2
+            types[int(ptr):int(ptr+size)] = typ
+            typ += 1
+            ptr = ptr + size
+
+        # Randomly select connections, with higher connection probability between
+        # points in the same group
+        conn = []
+        connset = set()
+        while len(conn) < nedges:
+            i, j = np.random.randint(npts, size=2)
+            if i == j:
+                continue
+            p = 0.7 if types[i] == types[j] else 0.01
+            if np.random.random() < p:
+                if (i, j) in connset:
+                    continue
+                connset.add((i, j))
+                connset.add((j, i))
+                conn.append([i, j])
+        # Edges are stored as an edge list
+        edges[:] = conn
+
+        # Uses edge list as indexes to create pairs of x,y coordinates for the edge lines and connect pair of nodes
+        connections = np.array([[pos[i] for i in edges[j]] for j in range(len(edges))])
+
+        # Assign colors to each point based on its type
+        cmap = color.get_colormap('cubehelix')
+        typ_colors = np.array([cmap.map(x)[0, :3] for x in np.linspace(0.2, 0.8, typ)])
+        colors[:] = typ_colors[types]
+
+        # Add some RGB noise and clip
+        colors *= 1.1 ** np.random.normal(size=colors.shape)
+        colors = np.clip(colors, 0, 1)
+
         # TODO: Lines made using agg, that can have variable width
         # lines = scene.Line(pos=pos, width=1., antialias=True, method='agg',
         #                    color=(1, 1, 1, 0.8), parent=view.scene)
-        global connections, pos, edges, lines, markers, view, force, dist, i
+        # global connections, pos, edges, lines, markers, view, force, dist, i
 
         # Draw edge connections between nodes
         self.lines = Line(pos=connections, width=2., connect='segments',

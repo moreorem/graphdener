@@ -29,7 +29,7 @@ class Backend(object):
             except AttributeError as e:
                 print('Unable to stop server ', e)
 
-        def make_edges(lst, max_iter):
+    def make_edges(lst, max_iter):
         ed = ([], [])
 
         for j in range(2):

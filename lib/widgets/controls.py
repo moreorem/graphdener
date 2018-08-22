@@ -17,7 +17,7 @@ class ControlWidgets(QWidget):
         self.button2.clicked.connect(Backend.stop)
 
         # self.button4.clicked.connect(Backend.create_random_dataset)
-        self.button5.clicked.connect(Backend.list_all_vertices)
+        # self.button5.clicked.connect(pass)
         self.button6.clicked.connect(Call.get_positions)
 
     def __controls(self):

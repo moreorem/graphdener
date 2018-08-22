@@ -208,11 +208,10 @@ class MyCanvas(app.Canvas):
         data = np.zeros(n, [('a_position', np.float32, 3),
                             ('a_bg_color', np.float32, 4),
                             ('a_fg_color', np.float32, 4),
-                            ('id', np.integer, 1),
                             ('a_size', np.float32, 1)])
 
         # Insert random values to data
-        data['a_position'] = 0.45 * np.random.randn(n, 3)
+        data['a_position'] = 0.45 * np.hstack((np.random.randn(n, 2), np.zeros((n, 1))))
         data['a_bg_color'] = np.random.uniform(0.85, 1.00, (n, 4))
         data['a_fg_color'] = 0, 0, 0, 1
         data['a_size'] = np.random.uniform(5 * ps, 10 * ps, n)
@@ -241,14 +240,14 @@ class MyCanvas(app.Canvas):
 
         # self.timer = app.Timer('auto', connect=self.on_timer, start=True)
 
-        graph = np.matrix([[0,1,0,0,1,0], [1,0,1,0,1,0], [0,1,0,1,0,0], [0,0,1,0,1,1], [1,1,0,1,0,0], [0,0,0,1,0,0]])
+        # graph = np.matrix([[0,1,0,0,1,0], [1,0,1,0,1,0], [0,1,0,1,0,0], [0,0,1,0,1,1], [1,1,0,1,0,0], [0,0,0,1,0,0]])
 
-        self.visual = GraphVisual(
-            graph, layout=layouts.get_layout('circular', iterations=100), line_color='black', arrow_type="stealth",
-            arrow_size=30, node_symbol="disc", node_size=20,
-            face_color=(1, 0, 1, 0.5), border_width=0.0, animate=True,
-            directed=False)
-        self.visual.transform = STTransform(self.visual_size, (20, 20))
+        # self.visual = GraphVisual(
+        #     graph, layout=layouts.get_layout('circular', iterations=100), line_color='black', arrow_type="stealth",
+        #     arrow_size=30, node_symbol="disc", node_size=20,
+        #     face_color=(1, 0, 1, 0.5), border_width=0.0, animate=True,
+        #     directed=False)
+        # self.visual.transform = STTransform(self.visual_size, (20, 20))
 
     # def on_key_press(self, event):
     #     if event.text == ' ':
@@ -290,9 +289,9 @@ class MyCanvas(app.Canvas):
     def on_draw(self, event):
         gloo.clear()
         self.context.clear('white')
-        self.visual.draw()
-        if not self.visual.animate_layout():
-            self.update()
+        # self.visual.draw()
+        # if not self.visual.animate_layout():
+        #     self.update()
         self.program.draw('points')
 
     def apply_zoom(self):
@@ -306,7 +305,6 @@ class MyCanvas(app.Canvas):
 
     def on_mouse_press(self, event):
         self.print_mouse_event(event, 'Mouse press')
-        GraphVisual
 
     def on_mouse_release(self, event):
         self.print_mouse_event(event, 'Mouse release')
