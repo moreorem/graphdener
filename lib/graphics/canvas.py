@@ -269,13 +269,13 @@ class MyCanvas(app.Canvas):
     def visual_size(self):
         return self.physical_size[0] - 40, self.physical_size[1] - 40
 
-    def on_resize(self, event):
-        self.visual.transform.scale = self.visual_size
-        vp = (0, 0, self.physical_size[0], self.physical_size[1])
-        self.context.set_viewport(*vp)
-        self.visual.transforms.configure(canvas=self, viewport=vp)
+    # def on_resize(self, event):
+    #     self.visual.transform.scale = self.visual_size
+    #     vp = (0, 0, self.physical_size[0], self.physical_size[1])
+    #     self.context.set_viewport(*vp)
+    #     self.visual.transforms.configure(canvas=self, viewport=vp)
 
-        self.apply_zoom()
+        # self.apply_zoom()
 
     def on_mouse_wheel(self, event):
         self.translate -= event.delta[1]

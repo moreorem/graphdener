@@ -24,13 +24,15 @@ class CanvasWidget(QWidget):
         self.canvas.close()
 
     def create_canvas(self):
+        # FIXME: When pressing redraw button the interface corrupts
         if self.canvas is not None:
-            # self.vbox.removeWidget(self.canvas)
+            self.vbox.removeWidget(self.canvas)
             self.close_canvas()
-        nodes = Call.get_positions()
-        print(float(list(nodes[0])[0]))
+            self.canvas = None
 
-        self.canvas = GraphCanvas(*nodes).native
-        # self.canvas = GraphCanvas().native
+        # Get node positions from backend
+        nodes = Call.get_positions()
+
+        self.canvas = GraphCanvas(nodes).native
         self.vbox.addWidget(self.canvas)
 

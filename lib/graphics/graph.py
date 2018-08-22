@@ -16,6 +16,7 @@ from vispy.visuals.transforms import STTransform
 # from vispy.scene import visuals
 from vispy.app import use_app
 from vispy.visuals import GraphVisual
+from vispy.scene.visuals import Line, Markers
 
 vert = """
 #version 120
@@ -135,7 +136,7 @@ void main(){
 
 
 class GraphCanvas(app.Canvas):
-    def __init__(self, n, ne):
+    def __init__(self, nodes):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', size=(800, 600))
         # app.Canvas.__init__(self, keys='interactive', size=(1024, 1024),
@@ -145,9 +146,10 @@ class GraphCanvas(app.Canvas):
         self.position = 50, 50
 
         # TODO: create array from node type to insert as a_bg_color
+        # FIXME: Window size change cuts draw edges
 
-        # n = 10000
-        # ne = 1000
+        n = len(nodes)
+        ne = 1000
         data = np.zeros(n, dtype=[('a_position', np.float32, 3),
                                   ('a_fg_color', np.float32, 4),
                                   ('a_bg_color', np.float32, 4),
@@ -158,9 +160,9 @@ class GraphCanvas(app.Canvas):
                                   high=n).astype(np.uint32)
 
         # Vertex position
-        data['a_position'] = np.hstack((.40 * np.random.randn(n, 2),
+        data['a_position'] = np.hstack((nodes,
                                        np.zeros((n, 1))))
-        print(data['a_position'])
+        self.markers = Markers(pos=data['a_position'], face_color=colors, symbol='o')
 
         # Overlay, circle color
         data['a_fg_color'] = 0, 0, 0, 1
@@ -234,10 +236,9 @@ class GraphCanvas(app.Canvas):
         # self.program.draw('points')
 
 
-
-
-
-
 if __name__ == '__main__':
-    c = GraphCanvas()
+    colors = np.empty((100, 3), dtype='float32')
+    nodes = np.random.randint(size=(100, 2), low=0,
+                                  high=1000).astype(np.uint32)
+    c = GraphCanvas(nodes)
     app.run()

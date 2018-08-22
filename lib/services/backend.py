@@ -29,11 +29,7 @@ class Backend(object):
             except AttributeError as e:
                 print('Unable to stop server ', e)
 
-    @staticmethod
-    def import_data(self):
-        pass
-
-    def make_edges(lst, max_iter):
+        def make_edges(lst, max_iter):
         ed = ([], [])
 
         for j in range(2):
@@ -48,13 +44,3 @@ class Backend(object):
                     ed[j].append(temp_lst[idx])
 
         return zip(ed[0], ed[1])
-
-    @staticmethod
-    def list_all_vertices(self):
-        # trans = Transaction()
-        vertices = actions.Communicator.get_vertex(None)
-        Backend.nodesID = tuple(x.id for x in vertices)
-        print(Backend.nodesID)
-
-    def get_positions(self):
-        actions.get_positions()

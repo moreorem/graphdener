@@ -84,7 +84,6 @@ class GraphCanvas(app.Canvas):
         # Draw node markers
         self.markers = Markers(pos=pos, face_color=colors, symbol='o')
 
-
         dx = np.empty((npts, npts, 2), dtype='float32')
         dx[:] = pos[:, np.newaxis, :]
         dx -= pos[np.newaxis, :, :]
@@ -160,4 +159,3 @@ if __name__ == '__main__':
     # view.camera = 'panzoom'
     # view.camera.aspect = 1
     app.run()
-

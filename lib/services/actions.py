@@ -52,7 +52,8 @@ class Call():
     def get_positions(cls):
         c = cls.client
         print("getting positions...")
-        result = c.call('get_vert', [], 'pos') # TODO: Convert to float
+        # Evaluate result to float list
+        result = [eval(x) for x in c.call('get_vert', [], 'pos')]
         return result
 
     @classmethod
