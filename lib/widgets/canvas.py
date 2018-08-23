@@ -1,8 +1,8 @@
-from ..graphics.canvas import MyCanvas
-from ..graphics.graph import GraphCanvas
+from ..graphics.graphvis import GraphCanvas
+# from ..graphics.graph import GraphCanvas
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
 from ..services.actions import Call
-
+import numpy as np
 
 class CanvasWidget(QWidget):
     def __init__(self, parent):
@@ -32,7 +32,7 @@ class CanvasWidget(QWidget):
 
         # Get node positions from backend
         nodes = Call.get_positions()
-
-        self.canvas = GraphCanvas(nodes).native
+        nd = np.matrix(nodes)
+        self.canvas = GraphCanvas(nd).native
         self.vbox.addWidget(self.canvas)
 
