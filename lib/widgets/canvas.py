@@ -32,7 +32,11 @@ class CanvasWidget(QWidget):
 
         # Get node positions from backend
         nodes = Call.get_positions()
+        colors = np.ones((len(nodes), 4), dtype=np.float32)
+        for i in range(len(nodes)):
+            colors[i] = (i / 500, 1.0 - i / 500, 0, 1)
+
         nd = np.matrix(nodes)
-        self.canvas = GraphCanvas(nd).native
+        self.canvas = GraphCanvas(nd, colors).native
         self.vbox.addWidget(self.canvas)
 

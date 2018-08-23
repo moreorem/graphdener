@@ -5,9 +5,11 @@ from PyQt5.QtWidgets import (QApplication, QWidget, QMainWindow, QLayout, QHBoxL
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
+from lib.graphics.graphvis import GraphCanvas
 from lib.graphics.wizard import ImportWizard
 from lib.services.backend import Backend
-
+from lib.services.actions import Call
+import numpy as np
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -17,15 +19,18 @@ class App(QMainWindow):
         self.title = 'PGMP'
         self.mainWidget = QWidget(self)
 
-        self.canvasWidget = CanvasWidget(self.mainWidget)
+        # self.canvasWidget = CanvasWidget(self.mainWidget)
+        # self.canvasWidget = GraphCanvas(self.mainWidget)
+        self.canvasWidget = QWidget(self) # test
+
 
         self.ctrlWidgets = ControlWidgets(self.mainWidget)
 
         self.mainLayout = QHBoxLayout(self.mainWidget)
         self.mainLayout.sizeConstraint = QLayout.SetDefaultConstraint
         self.mainLayout.addLayout(self.ctrlWidgets.get_layout())
-        self.mainLayout.addLayout(self.canvasWidget.get_layout())
-
+        # self.mainLayout.addLayout(self.canvasWidget.get_layout())
+        self.canvas = None
         self.canvasLayout = QHBoxLayout()
         self.initUI()
 
@@ -38,7 +43,7 @@ class App(QMainWindow):
 
         # Re-draw Button action
         self.ctrlWidgets.button7.clicked.connect(
-            self.canvasWidget.create_canvas)
+            self.create_canvas)
         # Import wizard Button
         self.ctrlWidgets.button3.clicked.connect(self.import_wizard)
 
@@ -57,6 +62,22 @@ class App(QMainWindow):
         exPopup = ImportWizard(self)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
+
+    def create_canvas(self):
+        # FIXME: When pressing redraw button the interface corrupts
+        if self.canvas is not None:
+            pass
+            # self.close_canvas()
+
+        # Get node positions from backend
+        nodes = Call.get_positions()
+        colors = np.ones((len(nodes), 4), dtype=np.float32)
+        for i in range(len(nodes)):
+            colors[i] = (i / 500, 1.0 - i / 500, 0, 1)
+
+        nd = np.matrix(nodes)
+        self.canvas = GraphCanvas(nd, colors).native
+        self.canvasLayout.addWidget(self.canvas)
 
 
 if __name__ == '__main__':

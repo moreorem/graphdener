@@ -11,12 +11,10 @@ import numpy as np
 
 from vispy import app, visuals
 from vispy.visuals.transforms import STTransform
-from vispy.util.quaternion import Quaternion
-
 
 n = 500
 pos = np.zeros((n, 2))
-colors = np.ones((n, 4), dtype=np.float32)
+# colors = np.ones((n, 4), dtype=np.float32)
 radius, theta, dtheta = 1.0, 0.0, 5.5 / 180.0 * np.pi
 for i in range(500):
     theta += dtheta
@@ -25,7 +23,7 @@ for i in range(500):
     r = 10.1 - i * 0.02
     radius -= 0.45
     pos[i] = x, y
-    colors[i] = (i / 500, 1.0 - i / 500, 0, 1)
+    # colors[i] = (i / 500, 1.0 - i / 500, 0, 1)
 
 nodes = pos
 
@@ -36,8 +34,8 @@ epos[:, 1] = np.random.normal(size=N, scale=20, loc=0)
 
 
 class GraphCanvas(app.Canvas):
-    def __init__(self, nodes):
-        app.Canvas.__init__(self, keys='interactive', size=(512, 512),
+    def __init__(self, nodes, colors):
+        app.Canvas.__init__(self, keys='interactive', size=(640, 480),
                             title="Marker demo [press space to change marker]")
         self.index = 0
         self.markers = visuals.MarkersVisual()
