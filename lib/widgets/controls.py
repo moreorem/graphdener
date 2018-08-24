@@ -1,14 +1,16 @@
-from PyQt5.QtWidgets import (QApplication,
-QWidget, QFileDialog, QMainWindow, QFrame,
-QPushButton, QVBoxLayout, QHBoxLayout, QLayout, QGridLayout)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout,
+                             QGridLayout)
 from ..services.backend import Backend
 from ..services.actions import Call
+
 
 class ControlWidgets(QWidget):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
     # TODO: Use signals to notify the main window instead of connecting in it
-    # serverStart = pyqtSignal(int)
+    # canvasChanged = pyqtSignal(int)
+    # self.canvasChanged.emit(self.canvas) //in method
+    # self.controls.canvasChanged.connect() // in main
 
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
@@ -42,4 +44,3 @@ class ControlWidgets(QWidget):
 
     def get_layout(self):
         return self.vbox
-

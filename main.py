@@ -41,10 +41,12 @@ class MainWindow(QMainWindow):
         self.mainFrameLayout.addWidget(self.canvasArea)
 
         # Re-draw Button action
-        self.controls.button7.clicked.connect(
-            self.canvasArea.create_canvas)
+        self.controls.button7.clicked.connect(self.canvasArea.create_canvas)
         # Import wizard Button
         self.controls.button3.clicked.connect(self.import_wizard)
+
+        # Start backend
+        # Backend.start()
 
     # Ask before quit
     def closeEvent(self, event):

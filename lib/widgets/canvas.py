@@ -53,7 +53,5 @@ class CanvasWidget(QWidget):
                 self.gridslot[1] += 1
             if self.gridslot[1] == 1:
                 self.gridslot[0] += 1
-        #     self.gridslot[0] += 1
-        # if self.gridslot[0] == 0:
-        #     self.gridslot[1] += 1
+
 

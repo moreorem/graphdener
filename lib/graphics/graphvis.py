@@ -12,20 +12,20 @@ import numpy as np
 from vispy import app, visuals
 from vispy.visuals.transforms import STTransform
 
-n = 500
-pos = np.zeros((n, 2))
-# colors = np.ones((n, 4), dtype=np.float32)
-radius, theta, dtheta = 1.0, 0.0, 5.5 / 180.0 * np.pi
-for i in range(500):
-    theta += dtheta
-    x = 256 + radius * np.cos(theta)
-    y = 256 + radius * np.sin(theta)
-    r = 10.1 - i * 0.02
-    radius -= 0.45
-    pos[i] = x, y
-    # colors[i] = (i / 500, 1.0 - i / 500, 0, 1)
+# n = 500
+# pos = np.zeros((n, 2))
+# # colors = np.ones((n, 4), dtype=np.float32)
+# radius, theta, dtheta = 1.0, 0.0, 5.5 / 180.0 * np.pi
+# for i in range(500):
+#     theta += dtheta
+#     x = 256 + radius * np.cos(theta)
+#     y = 256 + radius * np.sin(theta)
+#     r = 10.1 - i * 0.02
+#     radius -= 0.45
+#     pos[i] = x, y
+#     # colors[i] = (i / 500, 1.0 - i / 500, 0, 1)
 
-nodes = pos
+# nodes = pos
 
 N = 200
 epos = np.zeros((N, 2), dtype=np.float32)
@@ -35,7 +35,6 @@ epos[:, 1] = np.random.normal(size=N, scale=20, loc=0)
 
 class GraphCanvas(app.Canvas):
     def __init__(self, nodes, colors, parent=None):
-        # super(GraphCanvas, self).__init__(parent)
         app.Canvas.__init__(self, keys='interactive', size=(640, 480),
                             title="Marker demo [press space to change marker]")
         self.index = 0
