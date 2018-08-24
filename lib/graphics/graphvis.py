@@ -34,7 +34,8 @@ epos[:, 1] = np.random.normal(size=N, scale=20, loc=0)
 
 
 class GraphCanvas(app.Canvas):
-    def __init__(self, nodes, colors):
+    def __init__(self, nodes, colors, parent=None):
+        # super(GraphCanvas, self).__init__(parent)
         app.Canvas.__init__(self, keys='interactive', size=(640, 480),
                             title="Marker demo [press space to change marker]")
         self.index = 0
