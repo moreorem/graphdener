@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QMainWindow, QLayout, QPushButton, QHBoxLayout, QMessageBox, QLabel, QFileDialog)
+from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog)
 from PyQt5 import QtWidgets
 from ..services.actions import *
 
@@ -26,7 +26,7 @@ class ImportWizard(QtWidgets.QWizard):
         # Transmit paths to backend
         Call.send_paths(self.filepath)
         Call.get_vertex(None, "pos")
-
+        Call.get_edge("type")
 
 class Page1(QtWidgets.QWizardPage):
 
@@ -90,6 +90,7 @@ class Page2(QtWidgets.QWizardPage):
     def initializePage(self):
         self.label1.setText("Edges information")
         # self.label2.setText("Example text")
+
 
 if __name__ == '__main__':
     import sys

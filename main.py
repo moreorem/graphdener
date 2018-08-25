@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
-from lib.graphics.wizard import ImportWizard
+from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         self.controls.button3.clicked.connect(self.import_wizard)
 
         # Start backend
-        # Backend.start()
+        Backend.start()
 
     # Ask before quit
     def closeEvent(self, event):

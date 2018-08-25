@@ -17,13 +17,6 @@ class Call():
         print(result)
 
     @classmethod
-    def initialize(cls):
-        c = cls.client
-        print("Initializing")
-        result = c.call('init', None)
-        print(result)
-
-    @classmethod
     def create_vertex(cls, vertexType):
         c = cls.client
         print("creating vertex...")
@@ -42,9 +35,16 @@ class Call():
         c = cls.client
         print("creating vertex...")
         if id:
-            result = c.call('get_vert', id, detail_type)
+            result = c.call('get', 'vert', id, detail_type)
         else:
-            result = c.call('get_vert', [], detail_type)
+            result = c.call('get', 'vert', detail_type)
+        print(result)
+
+    @classmethod
+    def get_edge(cls, detail_type):
+        c = cls.client
+        print("getting edges...")
+        result = c.call('get', 'edge', detail_type)
         print(result)
 
     # Gets positions of all of the vertices []
