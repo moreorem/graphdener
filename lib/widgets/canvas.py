@@ -1,5 +1,4 @@
 from ..graphics.graphvis import GraphCanvas
-# from ..graphics.graph import GraphCanvas
 from PyQt5.QtWidgets import (QWidget, QGridLayout)
 # from ..services.actions import Call
 import numpy as np

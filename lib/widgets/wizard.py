@@ -25,8 +25,6 @@ class ImportWizard(QtWidgets.QWizard):
         Call.connect()
         # Transmit paths to backend
         Call.send_paths(self.filepath)
-        Call.get_vertex(None, "pos")
-        Call.get_edge("type")
 
 class Page1(QtWidgets.QWizardPage):
 

@@ -9,6 +9,7 @@ from lib.widgets.canvas import CanvasWidget
 from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
 
+from lib.services.actions import Call
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -41,12 +42,13 @@ class MainWindow(QMainWindow):
         self.mainFrameLayout.addWidget(self.canvasArea)
 
         # Re-draw Button action
-        self.controls.button7.clicked.connect(self.canvasArea.create_canvas)
+        self.controls.button6.clicked.connect(self.canvasArea.create_canvas)
         # Import wizard Button
         self.controls.button3.clicked.connect(self.import_wizard)
 
         # Start backend
-        Backend.start()
+        Call.connect()
+        # Backend.start() uncomment when not debugging
 
     # Ask before quit
     def closeEvent(self, event):

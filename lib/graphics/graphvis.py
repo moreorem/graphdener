@@ -34,19 +34,23 @@ class GraphCanvas(app.Canvas):
     def __init__(self, parent=None):
         app.Canvas.__init__(self, keys='interactive', app='PyQt5',
                             size=(640, 480), title="Graph Visualization")
-
+        self.lines = []
         self.index = 0
         self.markers = visuals.MarkersVisual()
         # FIXME: Correct colors array shape
         self.markers.set_data(nodes, face_color=colors)
         self.markers.symbol = 'o'
         self.markers.transform = STTransform()
-        self.lines = [
-            # visuals.LineVisual(pos=epos, color=(0, 0.5, 0.3, 1),
-            #                    connect='segments', method='gl')
-            visuals.LineVisual(pos=pos, color=(0, 0.5, 0.3, 1), width=5,
-                               method='agg'),
-        ]
+        edge_pos = self.set_edge_pos()
+        for e_xy in edge_pos:
+        # self.lines.append(
+        #         visuals.LineVisual(pos=np.array(e_xy), color=(0, 0.5, 0.3, 1), width=2,
+        #                        method='agg')
+        #         )
+            self.lines.append(
+            visuals.LineVisual(pos=np.array(e_xy), color=(0, 0.5, 0.3, 1),
+                               connect='strip', method='gl')
+        )
 
         counts = [0, 0]
 
@@ -63,10 +67,10 @@ class GraphCanvas(app.Canvas):
         self.visuals = self.lines + [self.markers]
         self.theta = 0
         self.phi = 0
-        self._timer = app.Timer('auto', connect=self.on_timer, start=True)
+        # self._timer = app.Timer('auto', connect=self.on_timer, start=True)
 
         # Gather positions from backend
-        self.set_node_pos()
+        self.markers.set_data(self.set_node_pos(), face_color=colors)
 
         self.show()
 
@@ -127,10 +131,13 @@ class GraphCanvas(app.Canvas):
     # the corresponding label
     def set_node_pos(self):
         pos = np.matrix(Call.get_positions())
-        self.markers.set_data(pos, face_color=colors)
+        return pos
 
-
-
+    def set_edge_pos(self):
+        ve = Call.get_positions()
+        ed = Call.get_edge('pos')
+        result = [[[ve[i][0], ve[i][1]] for i in j] for j in ed]
+        return result
 
 if __name__ == '__main__':
     canvas = GraphCanvas(nodes)

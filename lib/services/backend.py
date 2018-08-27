@@ -1,6 +1,5 @@
 from PyQt5.QtCore import QProcess
 from . import config
-
 BPATH = config.get_directory('backend')
 
 
