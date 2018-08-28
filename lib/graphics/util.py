@@ -7,7 +7,7 @@ Graph utilities
 
 A module containing several graph utility functions.
 """
-
+# TODO: Translate these to Rust methods and call them from the frontend
 import numpy as np
 
 try:

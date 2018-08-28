@@ -16,6 +16,6 @@ def iterate_grid(d):
 
 
 if __name__ == '__main__':
-    a = iterate_grid(4)
+    a = iterate_grid(2)
     print([i for i in a])
 

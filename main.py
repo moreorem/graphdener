@@ -8,7 +8,6 @@ from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
 from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
-
 from lib.services.actions import Call
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -19,7 +18,7 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        self.resize(800, 600)
+        self.resize(1400, 1000)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
@@ -47,8 +46,9 @@ class MainWindow(QMainWindow):
         self.controls.button3.clicked.connect(self.import_wizard)
 
         # Start backend
+        #Backend.start() #uncomment when not debugging
         Call.connect()
-        # Backend.start() uncomment when not debugging
+
 
     # Ask before quit
     def closeEvent(self, event):
@@ -67,6 +67,8 @@ class MainWindow(QMainWindow):
         exPopup = ImportWizard(self)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
+
+
 
 
 if __name__ == '__main__':

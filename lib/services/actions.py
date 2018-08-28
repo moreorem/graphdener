@@ -18,17 +18,12 @@ class Call():
 
     @classmethod
     def get_vert(cls, detail_type):
-
         c = cls.client
-        id = None
         print("getting vertex...")
-        if id:
+        try:
             result = c.call('get', 'vert', detail_type)
-        else:
-            try:
-                result = c.call('get', 'vert', detail_type)
-            except e:
-                result = EnvironmentError
+        except e:
+            result = EnvironmentError
         return result
 
     @classmethod
@@ -41,12 +36,13 @@ class Call():
     # Gets positions of all of the vertices []
     @classmethod
     def get_positions(cls):
+        if c is None:
+            Call.connect()
         c = cls.client
 
         print("getting positions...")
         # Evaluate result to float list
         a = c.call('get', 'vert', 'pos')
-        result = [eval(x) for x in a]
         return result
 
     @classmethod
