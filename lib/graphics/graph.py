@@ -5,12 +5,13 @@
 """
 Dynamic planar graph layout.
 """
-
+import math
+from os import path as op
 import numpy as np
 from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
 from vispy.util.transforms import perspective, translate, rotate
-
+from vispy import geometry
 
 vert = """
 #version 120
@@ -22,6 +23,8 @@ uniform mat4 u_view;
 uniform mat4 u_projection;
 uniform float u_antialias;
 uniform float u_size;
+// 2D scaling factor (zooming).
+uniform vec3 u_scale;
 
 // Attributes
 // ------------------------------------
@@ -46,8 +49,8 @@ void main (void) {
     v_fg_color  = a_fg_color;
     v_bg_color  = a_bg_color;
     gl_Position = u_projection * u_view * u_model *
-        vec4(a_position*u_size,1.0);
-    gl_PointSize = v_size + 2*(v_linewidth + 1.5*v_antialias);
+        vec4(a_position*u_size*u_scale,1.0);
+    gl_PointSize = v_size*sqrt(u_scale.x) + 2*(v_linewidth + 1.5*v_antialias);
 
 
 }
@@ -116,6 +119,8 @@ vs = """
 uniform mat4 u_model;
 uniform mat4 u_view;
 uniform mat4 u_projection;
+uniform vec3 u_scale;
+
 attribute vec3 a_position;
 attribute vec4 a_fg_color;
 attribute vec4 a_bg_color;
@@ -123,7 +128,7 @@ attribute float a_size;
 attribute float a_linewidth;
 
 void main(){
-    gl_Position = u_view * u_model * u_projection * vec4(a_position, 1.);
+    gl_Position = u_view * u_model * u_projection * vec4(a_position*u_scale, 1.);
 }
 """
 # Fragment shader for edges
@@ -133,19 +138,35 @@ void main(){
 }
 """
 
+this_dir = op.abspath(op.dirname(__file__)) + '/glsl/'
+
 
 class Canvas(app.Canvas):
     def __init__(self, edges, node_pos, **kwargs):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', size=(1024, 1024),
                             **kwargs)
+        # TODO: Refactoring by separating glsl in files and using list for programs
+        with open(op.join(this_dir, 'n_vert.glsl'), 'rb') as fid:
+            n_vert = fid.read().decode('ASCII')
+        with open(op.join(this_dir, 'n_frag.glsl'), 'rb') as f:
+            n_frag = f.read().decode('ASCII')
+        with open(op.join(this_dir, 'e_vert.glsl'), 'rb') as f:
+            e_vert = f.read().decode('ASCII')
+        with open(op.join(this_dir, 'e_frag.glsl'), 'rb') as f:
+            e_frag = f.read().decode('ASCII')
+        self.programs = [gloo.Program(n_vert, n_frag),
+                         gloo.Program(e_vert, e_frag)]
+
         self.edges = np.array(edges).astype(np.uint32)
         self.node_pos = node_pos
         ps = self.pixel_scale
+        self.scale = (1., 1., 1.)  # np.eye(3).astype(np.float32)
+        self.translate = 6.5
         n = len(node_pos)
         # Window position
         self.position = 50, 50
-        data = np.zeros(n, dtype=[('a_position', np.float32, 4),
+        data = np.zeros(n, dtype=[('a_position', np.float32, 3),
                                   ('a_fg_color', np.float32, 4),
                                   ('a_bg_color', np.float32, 4),
                                   ('a_size', np.float32, 1),
@@ -157,8 +178,9 @@ class Canvas(app.Canvas):
         color = np.random.uniform(0.5, 1., (n, 3))
         data['a_bg_color'] = np.hstack((color, np.ones((n, 1))))
         # Size of the markers
-        data['a_size'] = np.random.randint(size=n, low=8*ps, high=20*ps)
-        data['a_linewidth'] = 1.*ps
+        data['a_size'] = np.random.randint(size=n, low=8 * ps, high=20 * ps)
+        data['a_linewidth'] = 1. * ps
+        self.f = np.eye(4)
 
         u_antialias = 1
 
@@ -175,19 +197,17 @@ class Canvas(app.Canvas):
         self.program['u_antialias'] = u_antialias
         self.program['u_model'] = self.model
         self.program['u_view'] = self.view
-
+        self.program['u_scale'] = self.scale
         self.program['u_projection'] = self.projection
 
-
-
-        set_viewport(0, 0, *self.physical_size)
+        # set_viewport(0, 0, *self.physical_size)
 
         self.program_e = gloo.Program(vs, fs)
         self.program_e.bind(self.vbo)
 
         self.program_e['u_model'] = self.model
         self.program_e['u_view'] = self.view
-
+        self.program_e['u_scale'] = self.scale
         self.program_e['u_projection'] = self.projection
 
         set_state(clear_color='white', depth_test=False, blend=True,
@@ -207,19 +227,17 @@ class Canvas(app.Canvas):
             dxy = event.pos - event.last_event.pos
             button = event.press_event.button
             if button == 1:
-
-                self.model = self.model.dot(translate((dxy[0]*0.001,dxy[1]*(-0.001),0)))
+                self.model = self.model.dot(translate((dxy[0] * 0.001, dxy[1] * (-0.001), 0)))
                 self.program['u_model'] = self.model
                 self.program_e['u_model'] = self.model
-                # self.program.bind(gloo.VertexBuffer(data))
             self.update()
-
 
     # PENDING: Replace with correct values as well as in the shaders
     def on_mouse_wheel(self, event):
         """Use the mouse wheel to zoom."""
         print(event.modifiers)
         delta = event.delta[1]
+        print(delta)
         if delta > 0:  # Zoom in
             factor = 0.9
         elif delta < 0:  # Zoom out
@@ -230,8 +248,20 @@ class Canvas(app.Canvas):
             else:
                 self.zoom(factor, event.pos)
 
+        dx = np.sign(event.delta[1]) * .05
+        # print(event.pos)
+        scale_x, scale_y, scale_z = self.program['u_scale']
+        scale_x_new, scale_y_new, scale_z_new = (scale_x * math.exp(2.5 * dx ),
+                                                 scale_y * math.exp(2.5 * dx), 1.)
+        self.program['u_scale'] /= factor
+        # (max(1, scale_x_new), max(1, scale_y_new), 1.)
+        self.program_e['u_scale'] /= factor
+        # (max(1, scale_x_new), max(1, scale_y_new), 1.)
+        print(self.program['u_scale'])
+        print(self.projection)
+        self.update()
 
-    # PENDING: Replace with correct values as well as in the shaders
+    # FIXME: Read pointer position to zoom in place
     def zoom(self, factor, mouse_coords=None):
         """Factors less than zero zoom in, and greater than zero zoom out.
         If mouse_coords is given, the point under the mouse stays stationary
@@ -241,22 +271,18 @@ class Canvas(app.Canvas):
             x, y = float(mouse_coords[0]), float(mouse_coords[1])
             x0, y0 = self.pixel_to_coords(x, y)
 
-        self.scale *= factor
-        self.scale = max(min(self.scale, self.max_scale), self.min_scale)
-        self.program["scale"] = self.scale
-
         # Translate so the mouse point is stationary
-        if mouse_coords is not None:
-            x1, y1 = self.pixel_to_coords(x, y)
-            self.translate_center(x1 - x0, y1 - y0)
+        # if mouse_coords is not None:
+        #     x1, y1 = self.pixel_to_coords(x, y)
+        #     self.translate_center(x1 - x0, y1 - y0)
 
 
 if __name__ == '__main__':
     n = 100
     ne = 50
     ed = np.random.randint(size=(ne, 2), low=0,
-                                  high=n).astype(np.uint32)
-    n_p = np.hstack((.25 * np.random.randn(n, 2),
-                                    np.zeros((n, 2))))
-    c = Canvas(title="Graph", edges=ed, node_pos = n_p)
+                           high=n).astype(np.uint32)
+    n_p = np.hstack((0.25 * np.random.randn(n, 2),
+                     np.zeros((n, 1))))
+    c = Canvas(title="Graph", edges=ed, node_pos=n_p)
     app.run()
