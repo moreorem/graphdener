@@ -49,7 +49,6 @@ class MainWindow(QMainWindow):
         #Backend.start() #uncomment when not debugging
         Call.connect()
 
-
     # Ask before quit
     def closeEvent(self, event):
         quit_msg = "Are you sure you want to exit the program?"
@@ -58,7 +57,6 @@ class MainWindow(QMainWindow):
 
         if reply == QMessageBox.Yes:
             Backend.stop()
-
         else:
             event.ignore()
 
@@ -67,8 +65,6 @@ class MainWindow(QMainWindow):
         exPopup = ImportWizard(self)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
-
-
 
 
 if __name__ == '__main__':

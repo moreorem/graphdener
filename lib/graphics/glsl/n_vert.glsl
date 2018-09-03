@@ -9,7 +9,7 @@ uniform float u_antialias;
 uniform float u_size;
 // 2D scaling factor (zooming).
 uniform vec3 u_scale;
-uniform vec2 center;
+uniform vec3 u_pan;
 
 uniform vec2 panzoom_scale;
 uniform vec2 panzoom_translate;
@@ -38,8 +38,8 @@ void main (void) {
     v_antialias = u_antialias;
     v_fg_color  = a_fg_color;
     v_bg_color  = a_bg_color;
-    gl_Position = u_projection * u_view * u_model *
-        vec4(a_position * u_size * u_scale,1.0);
+    vec3 position_tr = u_scale * (a_position + u_pan);
+    gl_Position = vec4(position_tr, 1.0);
     gl_PointSize = v_size*u_scale.x/2 + 2*(v_linewidth + 1.5*v_antialias);
 
 

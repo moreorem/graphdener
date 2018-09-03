@@ -2,6 +2,8 @@
 from mprpc import RPCClient
 
 ''' This class is used to communicate with the rust backend '''
+
+
 class Call():
     client = None
 
@@ -22,15 +24,18 @@ class Call():
         print("getting vertex...")
         try:
             result = c.call('get', 'vert', detail_type)
-        except e:
-            result = EnvironmentError
+        except EnvironmentError as e:
+            result = e
         return result
 
     @classmethod
     def get_edge(cls, detail_type):
         c = cls.client
         print("getting edges...")
-        result = c.call('get', 'edge', detail_type)
+        try:
+            result = c.call('get', 'edge', detail_type)
+        except EnvironmentError as e:
+            result = e
         return result
 
     # Gets positions of all of the vertices []
@@ -44,10 +49,3 @@ class Call():
         # Evaluate result to float list
         a = c.call('get', 'vert', 'pos')
         return result
-
-    @classmethod
-    def get_types(cls):
-        c = cls.client
-        print("getting types...")
-        result = c.call('get_vert', [], 'type')
-
