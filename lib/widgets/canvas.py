@@ -37,10 +37,13 @@ class CanvasWidget(QWidget):
         # canvas = GraphCanvas().native
 
         result = Call.get_vert('pos')
-        v = [eval(x) for x in result]
-        ve = np.hstack((np.array(v), np.zeros((len(v), 1))))
-        ed = Call.get_edge('pos')
 
+        v = [eval(x) for x in result]
+        va = np.array(v)
+        ve = np.hstack((va, np.zeros((len(v), 1))))
+        print(ve)
+        ed = [] #Call.get_edge('pos')
+        print(ed)
         canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve).native
 
         self.grid.addWidget(canvas, gridslot[0], gridslot[1])

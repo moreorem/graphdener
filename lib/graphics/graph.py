@@ -13,131 +13,6 @@ from vispy.gloo import set_viewport, set_state, clear
 from vispy.util.transforms import perspective, translate, rotate
 from vispy import geometry
 
-vert = """
-#version 120
-
-// Uniforms
-// ------------------------------------
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
-uniform float u_antialias;
-uniform float u_size;
-// 2D scaling factor (zooming).
-uniform vec3 u_scale;
-
-// Attributes
-// ------------------------------------
-attribute vec3  a_position;
-attribute vec4  a_fg_color;
-attribute vec4  a_bg_color;
-attribute float a_linewidth;
-attribute float a_size;
-
-// Varyings
-// ------------------------------------
-varying vec4 v_fg_color;
-varying vec4 v_bg_color;
-varying float v_size;
-varying float v_linewidth;
-varying float v_antialias;
-
-void main (void) {
-    v_size = a_size * u_size;
-    v_linewidth = a_linewidth;
-    v_antialias = u_antialias;
-    v_fg_color  = a_fg_color;
-    v_bg_color  = a_bg_color;
-    gl_Position = u_projection * u_view * u_model *
-        vec4(a_position*u_size*u_scale,1.0);
-    gl_PointSize = v_size*sqrt(u_scale.x) + 2*(v_linewidth + 1.5*v_antialias);
-
-
-}
-"""
-
-frag = """
-#version 120
-
-// Constants
-// ------------------------------------
-
-// Varyings
-// ------------------------------------
-varying vec4 v_fg_color;
-varying vec4 v_bg_color;
-varying float v_size;
-varying float v_linewidth;
-varying float v_antialias;
-
-// Functions
-// ------------------------------------
-float marker(vec2 P, float size);
-
-
-// Main
-// ------------------------------------
-void main()
-{
-    float size = v_size +2*(v_linewidth + 1.5*v_antialias);
-    // Line width of the markers
-    float t = v_linewidth/2.0-v_antialias;
-
-    // The marker function needs to be linked with this shader
-    float r = marker(gl_PointCoord, size);
-
-    float d = abs(r) - t;
-    if( r > (v_linewidth/2.0+v_antialias))
-    {
-        discard;
-    }
-    else if( d < 0.0 )
-    {
-       gl_FragColor = v_fg_color;
-    }
-    else
-    {
-        float alpha = d/v_antialias;
-        alpha = exp(-alpha*alpha);
-        if (r > 0)
-            gl_FragColor = vec4(v_fg_color.rgb, alpha*v_fg_color.a);
-        else
-            gl_FragColor = mix(v_bg_color, v_fg_color, alpha);
-    }
-}
-
-float marker(vec2 P, float size)
-{
-    float r = length((P.xy - vec2(0.5,0.5))*size);
-    r -= v_size/2;
-    return r;
-}
-"""
-
-# Vertex shader for edges
-vs = """
-uniform mat4 u_model;
-uniform mat4 u_view;
-uniform mat4 u_projection;
-uniform vec3 u_scale;
-
-attribute vec3 a_position;
-attribute vec4 a_fg_color;
-attribute vec4 a_bg_color;
-attribute float a_size;
-attribute float a_linewidth;
-
-void main(){
-    gl_Position = u_view * u_model * u_projection * vec4(a_position*u_scale, 1.);
-}
-"""
-# Fragment shader for edges
-fs = """
-void main(){
-    gl_FragColor = vec4(0., 0., 0., 1.);
-}
-"""
-
 this_dir = op.abspath(op.dirname(__file__)) + '/glsl/'
 
 
@@ -147,25 +22,32 @@ class Canvas(app.Canvas):
         app.Canvas.__init__(self, keys='interactive', size=(1024, 1024),
                             **kwargs)
         # TODO: Refactoring by separating glsl in files and using list for programs
-        with open(op.join(this_dir, 'n_vert.glsl'), 'rb') as fid:
-            n_vert = fid.read().decode('ASCII')
-        with open(op.join(this_dir, 'n_frag.glsl'), 'rb') as f:
-            n_frag = f.read().decode('ASCII')
-        with open(op.join(this_dir, 'e_vert.glsl'), 'rb') as f:
-            e_vert = f.read().decode('ASCII')
-        with open(op.join(this_dir, 'e_frag.glsl'), 'rb') as f:
-            e_frag = f.read().decode('ASCII')
+        with open(op.join(this_dir, 'n_vert.glsl'), 'rb') as f1:
+            n_vert = f1.read().decode('ASCII')
+        with open(op.join(this_dir, 'n_frag.glsl'), 'rb') as f2:
+            n_frag = f2.read().decode('ASCII')
+        with open(op.join(this_dir, 'e_vert.glsl'), 'rb') as f3:
+            e_vert = f3.read().decode('ASCII')
+        with open(op.join(this_dir, 'e_frag.glsl'), 'rb') as f4:
+            e_frag = f4.read().decode('ASCII')
+        with open(op.join(this_dir, 'a_vert.glsl'), 'rb') as f5:
+            a_vert = f5.read().decode('ASCII')
+        with open(op.join(this_dir, 'a_frag.glsl'), 'rb') as f6:
+            a_frag = f6.read().decode('ASCII')
+
         self.programs = [gloo.Program(n_vert, n_frag),
-                         gloo.Program(e_vert, e_frag)]
+                         gloo.Program(e_vert, e_frag),
+                         gloo.Program(a_vert, a_frag)]
 
         self.edges = np.array(edges).astype(np.uint32)
         self.node_pos = node_pos
         ps = self.pixel_scale
-        self.scale = (1., 1., 1.)  # np.eye(3).astype(np.float32)
+        self.scale = (1., 1., 1.)
         self.translate = 6.5
         n = len(node_pos)
         # Window position
         self.position = 50, 50
+        # Initialize node data
         data = np.zeros(n, dtype=[('a_position', np.float32, 3),
                                   ('a_fg_color', np.float32, 4),
                                   ('a_bg_color', np.float32, 4),
@@ -180,38 +62,23 @@ class Canvas(app.Canvas):
         # Size of the markers
         data['a_size'] = np.random.randint(size=n, low=8 * ps, high=20 * ps)
         data['a_linewidth'] = 1. * ps
-        self.f = np.eye(4)
-
-        u_antialias = 1
 
         self.vbo = gloo.VertexBuffer(data)
         self.index = gloo.IndexBuffer(self.edges)
-        # self.view = np.eye(4, dtype=np.float32)
         self.view = translate((0, 0, 0))
         self.model = np.eye(4, dtype=np.float32)
         self.projection = np.eye(4, dtype=np.float32)
 
-        self.program = gloo.Program(vert, frag)
-        self.program.bind(self.vbo)
-        self.program['u_size'] = 1
-        self.program['u_antialias'] = u_antialias
-        self.program['u_model'] = self.model
-        self.program['u_view'] = self.view
-        self.program['u_scale'] = self.scale
-        self.program['u_projection'] = self.projection
+        # Declare the node and edge programs
+        self.program = self._init_node_program(0)
+        self.center = self.program["center"] = [-0.5, 0]
 
-        # set_viewport(0, 0, *self.physical_size)
-
-        self.program_e = gloo.Program(vs, fs)
-        self.program_e.bind(self.vbo)
-
-        self.program_e['u_model'] = self.model
-        self.program_e['u_view'] = self.view
-        self.program_e['u_scale'] = self.scale
-        self.program_e['u_projection'] = self.projection
+        self.program_e = self._init_edge_program(1)
+        self.program_a = self._init_arrow_program(2)
 
         set_state(clear_color='white', depth_test=False, blend=True,
                   blend_func=('src_alpha', 'one_minus_src_alpha'))
+        set_viewport(0, 0, *self.physical_size)
         self.show()
 
     def on_resize(self, event):
@@ -219,6 +86,7 @@ class Canvas(app.Canvas):
 
     def on_draw(self, event):
         clear(color=True, depth=True)
+        # self.program_a.draw('triangles', self.index)
         self.program_e.draw('lines', self.index)
         self.program.draw('points')
 
@@ -230,6 +98,7 @@ class Canvas(app.Canvas):
                 self.model = self.model.dot(translate((dxy[0] * 0.001, dxy[1] * (-0.001), 0)))
                 self.program['u_model'] = self.model
                 self.program_e['u_model'] = self.model
+
             self.update()
 
     # PENDING: Replace with correct values as well as in the shaders
@@ -238,6 +107,7 @@ class Canvas(app.Canvas):
         print(event.modifiers)
         delta = event.delta[1]
         print(delta)
+
         if delta > 0:  # Zoom in
             factor = 0.9
         elif delta < 0:  # Zoom out
@@ -251,14 +121,14 @@ class Canvas(app.Canvas):
         dx = np.sign(event.delta[1]) * .05
         # print(event.pos)
         scale_x, scale_y, scale_z = self.program['u_scale']
-        scale_x_new, scale_y_new, scale_z_new = (scale_x * math.exp(2.5 * dx ),
+        scale_x_new, scale_y_new, scale_z_new = (scale_x * math.exp(2.5 * dx),
                                                  scale_y * math.exp(2.5 * dx), 1.)
         self.program['u_scale'] /= factor
         # (max(1, scale_x_new), max(1, scale_y_new), 1.)
         self.program_e['u_scale'] /= factor
         # (max(1, scale_x_new), max(1, scale_y_new), 1.)
         print(self.program['u_scale'])
-        print(self.projection)
+
         self.update()
 
     # FIXME: Read pointer position to zoom in place
@@ -275,6 +145,59 @@ class Canvas(app.Canvas):
         # if mouse_coords is not None:
         #     x1, y1 = self.pixel_to_coords(x, y)
         #     self.translate_center(x1 - x0, y1 - y0)
+
+
+    def translate_center(self, dx, dy):
+        """Translates the center point, and keeps it in bounds."""
+        center = self.center
+        center[0] -= dx
+        center[1] -= dy
+        center[0] = min(max(center[0], self.bounds[0]), self.bounds[1])
+        center[1] = min(max(center[1], self.bounds[0]), self.bounds[1])
+        self.program["center"] = self.center = center
+
+    def pixel_to_coords(self, x, y):
+        """Convert pixel coordinates to Mandelbrot set coordinates."""
+        rx, ry = self.size
+        nx = (x / rx - 0.5) + self.center[0]
+        ny = ((ry - y) / ry - 0.5) + self.center[1]
+        print(self.center)
+        return [nx, ny]
+
+
+    def _init_node_program(self, idx):
+        program = self.programs[idx]
+        program.bind(self.vbo)
+        program['u_size'] = 1
+        program['u_antialias'] = 1
+        program['u_model'] = self.model
+        program['u_view'] = self.view
+        program['u_scale'] = self.scale
+        program['u_projection'] = self.projection
+
+        return program
+
+    def _init_edge_program(self, idx):
+        program = self.programs[idx]
+        program.bind(self.vbo)
+        program['u_model'] = self.model
+        program['u_view'] = self.view
+        program['u_scale'] = self.scale
+        program['u_projection'] = self.projection
+
+        return program
+
+    def _init_arrow_program(self, idx):
+        program = self.programs[idx]
+        program.bind(self.vbo)
+        program['size'] = 1.
+        program['linewidth'] = 1.
+        program['v1'] = self.model
+        program['v2'] = np.array(self.node_pos).astype(np.float32)
+        program['u_scale'] = self.scale
+        program['u_projection'] = self.projection
+
+        return program
 
 
 if __name__ == '__main__':
