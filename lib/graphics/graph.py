@@ -18,10 +18,11 @@ FULLPATH = this_dir + GLFOLDER
 
 
 class Canvas(app.Canvas):
-    def __init__(self, edges, node_pos, color, **kwargs):
+    def __init__(self, edges, node_pos, color=None, **kwargs):
         # Initialize the canvas for real
-        app.Canvas.__init__(self, keys='interactive', size=(1024, 1024),
+        app.Canvas.__init__(self, keys='interactive', size=(800, 800),
                             **kwargs)
+
         # TODO: Refactoring by separating glsl in files and using list for programs
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
             n_vert = f1.read().decode('ASCII')
@@ -62,9 +63,10 @@ class Canvas(app.Canvas):
         if color is None:
             self.color = np.random.uniform(0.5, 1., (n, 3))
         else:
-            self.color = np.array(color).astype(np.float32)
-            print(self.color)
+            self.color = np.array(list(color))
+            print(np.shape(self.color))
         data['a_bg_color'] = np.hstack((self.color, np.ones((n, 1))))
+
         # Size of the markers
         data['a_size'] = np.random.randint(size=n, low=8 * ps, high=20 * ps)
         data['a_linewidth'] = 1. * ps
@@ -78,11 +80,13 @@ class Canvas(app.Canvas):
         # Declare the node and edge programs
         # Initialize Node Program
         self.program = self._init_node_program(0)
-        self.program['u_scale'] = (1., 1., 1.) # Initialize scale metrics
+        # Initialize scale metrics
+        self.program['u_scale'] = (1., 1., 1.)
         self.program['u_pan'] = (0., 0., 0.)
         # Initialize Edge Program
         self.program_e = self._init_edge_program(1)
-        self.program_e['u_scale'] = (1., 1., 1.) # Initialize scale metrics
+        # Initialize scale metrics
+        self.program_e['u_scale'] = (1., 1., 1.)
         self.program_e['u_pan'] = (0., 0., 0.)
 
         self.program_a = self._init_arrow_program(2)
@@ -108,7 +112,6 @@ class Canvas(app.Canvas):
             x, y = self._normalize(event.pos)
             dx, dy = x - x1, -(y - y1)
             button = event.press_event.button
-
             pan_x, pan_y, pan_z = self.program['u_pan']
             scale_x, scale_y, scale_z = self.program['u_scale']
 
