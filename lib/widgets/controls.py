@@ -17,7 +17,6 @@ class ControlWidgets(QWidget):
         super(ControlWidgets, self).__init__(parent)
         self.__controls()
         self.__layout()
-
         self.button1.clicked.connect(Backend.start)
         self.button2.clicked.connect(Backend.stop)
         self.button4.clicked.connect(self.get_e_info)

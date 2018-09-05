@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         self.controls.button3.clicked.connect(self.import_wizard)
 
         # Start backend
-        #Backend.start() #uncomment when not debugging
+        Backend.start() #uncomment when not debugging
         Call.connect()
 
     # Ask before quit

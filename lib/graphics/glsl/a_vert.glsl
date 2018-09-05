@@ -1,84 +1,33 @@
-/**
- * Copyright (c) Vispy Development Team
- * Distributed under the (new) BSD License. See LICENSE.txt for more info.
- *
- * This file contains the vertex shader template for arrow heads.
- *
- * Variables
- * ---------
- * $transform
- *     Projection matrix of vertex to the screen
- *
- * Attributes
- * ----------
- * v1
- *     The first vertex of the arrow body
- * v2
- *     The second vertex of the arrow body. This will also be the center
- *     location of the arrow head. Using v1, we determine a direction vector
- *     to automatically determine the orientation.
- * size
- *     Size of the arrow head in pixels
- * color
- *     The color of the arrow head
- * v_linewidth
- *     The width for the stroke or outline of the shape.
- *
- * Varyings
- * --------
- * v_size
- *     The arrow head size in pixels
- * v_point_size
- *     The actual size of the point used for drawing. This is larger than the
- *     given arrow head size to make sure rotating goes well, and allows some
- *     space for anti-aliasing.
- * v_color
- *     The color for the arrow head
- * v_orientation
- *     A direction vector for the orientation of the arrow head
- * v_antialias
- *     Anti-alias width
- * v_linewidth
- *     Width for the stroke or outline of the shape.
- */
+uniform mat4 u_model;
+uniform mat4 u_view;
+uniform mat4 u_projection;
+uniform vec3 u_scale;
+uniform vec3 u_pan;
 
-#include "math/constants.glsl"
+attribute vec2 from_xy;
+attribute vec3 a_position;
+attribute vec4 a_fg_color;
+attribute vec4 a_bg_color;
+attribute float a_size;
+attribute float a_linewidth;
 
-// Uniforms
-// ------------------------------------
-uniform float antialias;
+varying vec3 dxy;
 
-// Attributes
-// ------------------------------------
-attribute vec4  v1;
-attribute vec3  v2;
-attribute float size;
-attribute float linewidth;
+void main(){
+	
+	dxy = vec3(0.01, 0.01, 0.);
+	float denominator = from_xy[0] - a_position.x;
+	float numerator = from_xy[1] - a_position.y;
 
-// Varyings
-// ------------------------------------
-varying float v_size;
-varying float v_point_size;
-varying vec4  v_color;
-varying vec3  v_orientation;
-varying float v_antialias;
-varying float v_linewidth;
+	float angle = numerator / denominator;
 
-// Main (hooked)
-// ------------------------------------
-void main (void)
-{
-    v_size        = size;
-    v_point_size  = M_SQRT2 * size + 2.0 * (linewidth + 2.0*antialias);
-    v_antialias   = antialias;
-    v_color       = vec4(0., 0., 0., 1.);
-    v_linewidth   = linewidth;
+	if (a_position.x - from_xy[0] > 0.)
+		dxy[0] = -0.01;
+	if (a_position.y - from_xy[1] > 0.)
+		dxy[1] = -0.01;
 
-    vec3 body = $transform(v2).xyz - $transform(v1).xyz;
-    v_orientation = (body / length(body));
-
-    gl_Position = vec4(v2*u_scale, 1.);
-    gl_PointSize = v_point_size;
-
-
+	vec3 position_tr = u_scale * (a_position + u_pan + dxy);
+	
+    gl_Position = vec4(position_tr, 1.);
+    gl_PointSize = u_scale.x * 2. + 2.;
 }
