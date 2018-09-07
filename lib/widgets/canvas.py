@@ -34,15 +34,17 @@ class CanvasWidget(QWidget):
         # if self.canvas is not None:
         #     self.close_canvas()
         # PENDING: When a new canvas is being added, shrinken previous and add a new one on the side
+        # PENDING: Get canvas id from current canvas
+        canvas_id = 1
 
-        result = Call.get_vert('pos')
+        result = Call.get_vert('pos', canvas_id)
 
         v = [eval(x) for x in result]
         va = np.array(v)
         ve = np.hstack((va, np.zeros((len(v), 1))))
-        ed = Call.get_edge('pos')
+        ed = Call.get_edge('pos', canvas_id)
 
-        types = Call.get_vert('type')
+        types = Call.get_vert('type', canvas_id)
         c_types = self._create_colors(types)
         col = [c_types[t] for t in types]
         c_types = tuple(c_types.values())
@@ -50,7 +52,7 @@ class CanvasWidget(QWidget):
         canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col).native
 
         gridslot = self.gridslot[self.n]
-        print(gridslot)
+
         self.grid.addWidget(canvas, gridslot[0], gridslot[1])
         self.n += 1
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation

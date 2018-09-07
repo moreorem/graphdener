@@ -19,33 +19,22 @@ class Call():
         print(result)
 
     @classmethod
-    def get_vert(cls, detail_type):
+    def get_vert(cls, detail_type, canvas_id):
         c = cls.client
         print("getting vertex...")
         try:
-            result = c.call('get', 'vert', detail_type)
+            result = c.call('get', 'vert', detail_type, canvas_id)
         except EnvironmentError as e:
             result = e
         return result
 
     @classmethod
-    def get_edge(cls, detail_type):
+    def get_edge(cls, detail_type, canvas_id):
         c = cls.client
         print("getting edges...")
         try:
-            result = c.call('get', 'edge', detail_type)
+            result = c.call('get', 'edge', detail_type, canvas_id)
         except EnvironmentError as e:
             result = e
         return result
 
-    # Gets positions of all of the vertices []
-    @classmethod
-    def get_positions(cls):
-        if c is None:
-            Call.connect()
-        c = cls.client
-
-        print("getting positions...")
-        # Evaluate result to float list
-        a = c.call('get', 'vert', 'pos')
-        return result

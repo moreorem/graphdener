@@ -13,6 +13,9 @@ attribute float a_linewidth;
 
 varying vec3 dxy;
 
+const float M_SQRT3_2 = 0.86602540378;
+// void arrowhead(vec A, vec B, vec& v1, vec& v2);
+
 void main(){
 	
 	dxy = vec3(0.01, 0.01, 0.);
@@ -26,8 +29,18 @@ void main(){
 	if (a_position.y - from_xy[1] > 0.)
 		dxy[1] = -0.01;
 
-	vec3 position_tr = u_scale * (a_position + u_pan + dxy);
-	
+	vec3 position_tr = u_scale * (a_position + u_pan);
+
     gl_Position = vec4(position_tr, 1.);
     gl_PointSize = u_scale.x * 2. + 2.;
 }
+
+
+// void arrowhead(vec3 A, vec3 B, vec3& v1, vec3& v2) 
+// {
+//     float h = 10*sqrtf(3), w = 10;
+//     vec3 U = (B - A)/(B - A).length();
+//     vec3 V = vec(-U.y, U.x);
+//     v1 = B - h*U + w*V;
+//     v2 = B - h*U - w*V;
+// }

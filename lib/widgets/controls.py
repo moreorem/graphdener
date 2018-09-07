@@ -70,7 +70,7 @@ class ControlWidgets(QWidget):
         self.vertAttribute = text
 
     def get_e_info(self):
-        Call.get_edge(self.edgeAttribute)
+        Call.get_edge(self.edgeAttribute, 1)
 
     def get_v_info(self):
-        Call.get_vert(self.vertAttribute)
+        Call.get_vert(self.vertAttribute, 1)

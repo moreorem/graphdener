@@ -46,8 +46,8 @@ class Canvas(app.Canvas):
         self.node_pos = node_pos
 
         # Create Index info for the arrowhead buffer
-        arIndex = list(zip(*self.edges))
-        arIndex = list(arIndex[1])
+        # arIndex = list(zip(*self.edges))
+        # arIndex = list(arIndex[1])
 
         ps = self.pixel_scale
         self.scale = (1., 1., 1.)
@@ -64,6 +64,22 @@ class Canvas(app.Canvas):
                                   ('a_linewidth', np.float32, 1),
                                   ])
 
+############# TESTING CODE!!! ###############################
+        # arrow index length must be a multiple of 3
+        arIndex = [0, 1, 2, 2, 4]
+        array_vert = node_pos[0:6]
+        print(array_vert)
+        arrow_data = np.zeros(len(array_vert), dtype=[('a_position', np.float32, 3),
+                                  ('a_fg_color', np.float32, 4),
+                                  ('a_bg_color', np.float32, 4),
+                                  ('a_size', np.float32, 1),
+                                  ('a_linewidth', np.float32, 1),
+                                  ])
+        arrow_data['a_position'] = array_vert
+
+        self.vboar = gloo.VertexBuffer(arrow_data)
+#############################################################
+
         data['a_position'] = self.node_pos
         data['a_fg_color'] = 0, 0, 0, 1
 
@@ -71,7 +87,6 @@ class Canvas(app.Canvas):
             self.color = np.random.uniform(0.5, 1., (n, 3))
         else:
             self.color = np.array(list(color))
-            print(np.shape(self.color))
         data['a_bg_color'] = np.hstack((self.color, np.ones((n, 1))))
 
         # Size of the markers
@@ -80,7 +95,6 @@ class Canvas(app.Canvas):
         # Initialize Buffers
         self.vbo = gloo.VertexBuffer(data)
         self.index = gloo.IndexBuffer(self.edges)
-
         self.arIndex = gloo.IndexBuffer(arIndex)
 
         # Declare the node and edge programs
@@ -109,7 +123,7 @@ class Canvas(app.Canvas):
         clear(color=True, depth=True)
         self.program_e.draw('lines', self.index)
         self.program_n.draw('points')
-        self.program_a.draw('points', self.arIndex)
+        self.program_a.draw('triangles', self.arIndex)
 
     def on_mouse_move(self, event):
         if event.is_dragging:
@@ -120,7 +134,7 @@ class Canvas(app.Canvas):
             button = event.press_event.button
             pan_x, pan_y, pan_z = self.program_n['u_pan']
             scale_x, scale_y, scale_z = self.program_n['u_scale']
-            (scale_x_new,scale_y_new,scale_z_new) = self.calc_scale(dx)
+            (scale_x_new, scale_y_new, scale_z_new) = self.calc_scale(dx)
 
             if button == 1:
                 pan = (pan_x + dx / scale_x, pan_y + dy / scale_y, 1.)
@@ -133,11 +147,10 @@ class Canvas(app.Canvas):
 
             self.update()
 
-    # PENDING: Replace with correct values as well as in the shaders
     def on_mouse_wheel(self, event):
         """Use the mouse wheel to zoom."""
         dx = np.sign(event.delta[1]) * .05
-        (scale_x_new,scale_y_new,scale_z_new) = self.calc_scale(dx)
+        (scale_x_new, scale_y_new, scale_z_new) = self.calc_scale(dx)
 
         for program in self.programs:
             program['u_scale'] = (scale_x_new, scale_y_new, scale_z_new)
@@ -174,7 +187,7 @@ class Canvas(app.Canvas):
 
     def _init_arrow_program(self, idx):
         program = self.programs[idx]
-        program.bind(self.vbo)
+        program.bind(self.vboar)
         program['size'] = 1.
         program['u_scale'] = self.scale
         return program
@@ -189,8 +202,6 @@ if __name__ == '__main__':
                      np.zeros((n, 1))))
     # TESTME: For calculations to find line angle
     a = list(zip(*ed))[0]
-    angle = [[n_p[i][0], n_p[i][1]] for i in a]
-
+    # angle = [[n_p[i][0], n_p[i][1]] for i in a]
     c = Canvas(title="Graph", edges=ed, node_pos=n_p)
     app.run()
-
