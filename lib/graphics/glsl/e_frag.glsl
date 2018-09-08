@@ -8,5 +8,4 @@ void main(){
     // covered by the visual's geometry. A more accurate measurement would
     // produce better antialiasing, but the effect would be subtle.
     gl_FragColor = vec4(0., 0., 0., 1.);
-    gl_FragCoord = vec4(v_position, 1.);
 }

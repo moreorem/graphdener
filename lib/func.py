@@ -1,5 +1,7 @@
-
+from math import sqrt
 # PENDING: Add custom binary length in order to cover bigger dimensions
+
+
 def iterate_grid(d):
     """
     Returns a generator over a square grid of d dimensions
@@ -15,7 +17,10 @@ def iterate_grid(d):
         yield y
 
 
+
+
+
 if __name__ == '__main__':
     a = iterate_grid(2)
     print([i for i in a])
-
+    print(create_arrowhead([1, 1], [-1, -2]))

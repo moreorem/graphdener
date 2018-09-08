@@ -9,6 +9,7 @@ A module containing several graph utility functions.
 """
 # TODO: Translate these to Rust methods and call them from the frontend
 import numpy as np
+import math
 
 try:
     from scipy.sparse import issparse
@@ -120,3 +121,21 @@ def _rescale_layout(pos, scale=1):
     pos *= scale / pos.max()
 
     return pos
+
+
+def create_arrowhead(A, B):
+    w = 0.005
+    h = w * (0.8660254037844386467637)  # sqrt(3)/2
+    mag = math.sqrt((B[0] - A[0])**2.0 + (B[1] - A[1])**2.0)
+
+    u0 = (B[0] - A[0]) / (mag)
+    u1 = (B[1] - A[1]) / (mag)
+    U = [u0, u1]
+    V = [-U[1], U[0]]
+    v1 = [B[0] - h * U[0] + w * V[0], B[1] - h * U[1] + w * V[1]]
+    v2 = [B[0] - h * U[0] - w * V[0], B[1] - h * U[1] - w * V[1]]
+    return (v1, v2)
+
+
+def get_segments_pos(vPos, edgeList):
+    return [[vPos[i[0]], vPos[i[1]]] for i in edgeList]

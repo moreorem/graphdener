@@ -5,13 +5,14 @@
 """
 Dynamic planar graph layout.
 """
-import math
 from os import path as op
 import numpy as np
+import math
 from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
 from vispy.util.transforms import translate
 from vispy.gloo import gl
+from util import create_arrowhead, get_segments_pos
 
 this_dir = op.abspath(op.dirname(__file__))
 GLFOLDER = '/glsl/'
@@ -66,16 +67,24 @@ class Canvas(app.Canvas):
 
 ############# TESTING CODE!!! ###############################
         # arrow index length must be a multiple of 3
-        arIndex = [0, 1, 2, 2, 4]
-        array_vert = node_pos[0:6]
-        print(array_vert)
-        arrow_data = np.zeros(len(array_vert), dtype=[('a_position', np.float32, 3),
-                                  ('a_fg_color', np.float32, 4),
-                                  ('a_bg_color', np.float32, 4),
-                                  ('a_size', np.float32, 1),
-                                  ('a_linewidth', np.float32, 1),
-                                  ])
-        arrow_data['a_position'] = array_vert
+        linesAB = get_segments_pos(vPos, self.edges)
+
+        BCD = []
+        for line in linesAB:
+            C, D = create_arrowhead(line[0], line[1])
+            BCD.append(line[1])
+            BCD.append(C)
+            BCD.append(D)
+
+        arrow_data = np.zeros(len(BCD), dtype=[
+                                ('a_position', np.float32, 2),
+                                ('a_fg_color', np.float32, 4),
+                                ('a_bg_color', np.float32, 4),
+                                ('a_size', np.float32, 1),
+                                ('a_linewidth', np.float32, 1),
+                                ])
+
+        arrow_data['a_position'] = np.array(BCD)
 
         self.vboar = gloo.VertexBuffer(arrow_data)
 #############################################################
@@ -95,7 +104,7 @@ class Canvas(app.Canvas):
         # Initialize Buffers
         self.vbo = gloo.VertexBuffer(data)
         self.index = gloo.IndexBuffer(self.edges)
-        self.arIndex = gloo.IndexBuffer(arIndex)
+        # self.arIndex = gloo.IndexBuffer(arIndex)
 
         # Declare the node and edge programs
         # Initialize Node Program
@@ -123,7 +132,7 @@ class Canvas(app.Canvas):
         clear(color=True, depth=True)
         self.program_e.draw('lines', self.index)
         self.program_n.draw('points')
-        self.program_a.draw('triangles', self.arIndex)
+        self.program_a.draw('triangles')
 
     def on_mouse_move(self, event):
         if event.is_dragging:
@@ -194,14 +203,18 @@ class Canvas(app.Canvas):
 
 
 if __name__ == '__main__':
-    n = 100
-    ne = 50
+    n = 1000000
+    ne = 50000
     ed = np.random.randint(size=(ne, 2), low=0,
                            high=n).astype(np.uint32)
-    n_p = np.hstack((0.25 * np.random.randn(n, 2),
+    n_p = np.hstack((20.25 * np.random.randn(n, 2),
                      np.zeros((n, 1))))
     # TESTME: For calculations to find line angle
-    a = list(zip(*ed))[0]
+    # a = list(zip(*ed))[0]
+    vPos = n_p[:,0:2].tolist()
     # angle = [[n_p[i][0], n_p[i][1]] for i in a]
     c = Canvas(title="Graph", edges=ed, node_pos=n_p)
     app.run()
+
+
+
