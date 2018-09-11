@@ -34,20 +34,21 @@ class Page1(QWizardPage):
         super(Page1, self).__init__(parent)
         self.comboBox = QIComboBox(self)
         self.openFileBtn = QPushButton("Import Node List")
-        self.label1 = QLabel()
+        self.stepLabel = QLabel()
+        self.formatLabel = QLabel()
         self.text1 = QLineEdit()
         self.text2 = QLineEdit()
 
         layout = QVBoxLayout()
-        layout.addWidget(self.label1)
+        layout.addWidget(self.stepLabel)
         layout.addWidget(self.openFileBtn)
+        layout.addWidget(self.formatLabel)
 
         patternLayout = QHBoxLayout()
         patternLayout.addWidget(self.text1)
         patternLayout.addWidget(self.comboBox)
         patternLayout.addWidget(self.text2)
         layout.addLayout(patternLayout)
-
 
         self.setLayout(layout)
         # Bind actions
@@ -64,7 +65,8 @@ class Page1(QWizardPage):
             self.wizard().filepath[0] = fileName
 
     def initializePage(self):
-        self.label1.setText("Nodes information")
+        self.stepLabel.setText("Nodes information")
+        self.formatLabel.setText("Nodes file format")
 
 
 class Page2(QWizardPage):
