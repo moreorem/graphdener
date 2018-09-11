@@ -37,6 +37,10 @@ class CanvasWidget(QWidget):
         # PENDING: Get canvas id from current canvas
         canvas_id = 1
 
+        # TODO: Add this method to create_colors and store the correspondence to a dictionary['type'] = color
+        v_color = np.random.uniform(0, 1, (n_types, 3)).astype(np.float32)
+        # TODO: Define node size according to the number of edges connected to it
+
         result = Call.get_vert('pos', canvas_id)
 
         v = [eval(x) for x in result]

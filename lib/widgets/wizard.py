@@ -1,21 +1,22 @@
-from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog)
-from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog,
+                             QComboBox, QWizard, QWizardPage, QLineEdit,
+                             QVBoxLayout, QApplication, QHBoxLayout)
 from ..services.actions import *
 
 
-class QIComboBox(QtWidgets.QComboBox):
+class QIComboBox(QComboBox):
     def __init__(self, parent=None):
         super(QIComboBox, self).__init__(parent)
 
 
-class ImportWizard(QtWidgets.QWizard):
+class ImportWizard(QWizard):
     def __init__(self, parent=None):
         super(ImportWizard, self).__init__(parent)
         self.addPage(Page1(self))
         self.addPage(Page2(self))
         self.setWindowTitle("Import Wizard")
         # Trigger close event when pressing Finish button to redirect variables to backend
-        self.button(QtWidgets.QWizard.FinishButton).clicked.connect(self.onFinished)
+        self.button(QWizard.FinishButton).clicked.connect(self.onFinished)
         self.filepath = [None, None]
 
     def onFinished(self):
@@ -26,20 +27,27 @@ class ImportWizard(QtWidgets.QWizard):
         # Transmit paths to backend
         Call.send_paths(self.filepath)
 
-class Page1(QtWidgets.QWizardPage):
+
+class Page1(QWizardPage):
 
     def __init__(self, parent=None):
         super(Page1, self).__init__(parent)
         self.comboBox = QIComboBox(self)
-        # self.comboBox.addItem("Python", "/path/to/filename1")
-        # self.comboBox.addItem("PyQt5", "/path/to/filename2")
         self.openFileBtn = QPushButton("Import Node List")
-        self.label1 = QtWidgets.QLabel()
+        self.label1 = QLabel()
+        self.text1 = QLineEdit()
+        self.text2 = QLineEdit()
 
-        layout = QtWidgets.QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(self.label1)
-        layout.addWidget(self.comboBox)
         layout.addWidget(self.openFileBtn)
+
+        patternLayout = QHBoxLayout()
+        patternLayout.addWidget(self.text1)
+        patternLayout.addWidget(self.comboBox)
+        patternLayout.addWidget(self.text2)
+        layout.addLayout(patternLayout)
+
 
         self.setLayout(layout)
         # Bind actions
@@ -59,15 +67,15 @@ class Page1(QtWidgets.QWizardPage):
         self.label1.setText("Nodes information")
 
 
-class Page2(QtWidgets.QWizardPage):
+class Page2(QWizardPage):
     def __init__(self, parent=None):
         super(Page2, self).__init__(parent)
         self.setWindowTitle("Edge phase")
 
-        self.label1 = QtWidgets.QLabel()
+        self.label1 = QLabel()
         self.openFileBtn = QPushButton("Import Edge List")
 
-        layout = QtWidgets.QVBoxLayout()
+        layout = QVBoxLayout()
         layout.addWidget(self.label1)
         layout.addWidget(self.openFileBtn)
 
@@ -92,7 +100,7 @@ class Page2(QtWidgets.QWizardPage):
 
 if __name__ == '__main__':
     import sys
-    app = QtWidgets.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     wizard = ImportWizard()
     wizard.show()
     sys.exit(app.exec_())

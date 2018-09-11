@@ -12,7 +12,7 @@ from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
 from vispy.util.transforms import translate
 from vispy.gloo import gl
-from util import create_arrowhead, get_segments_pos
+from .util import create_arrowhead, get_segments_pos
 
 this_dir = op.abspath(op.dirname(__file__))
 GLFOLDER = '/glsl/'
@@ -67,6 +67,7 @@ class Canvas(app.Canvas):
 
 ############# TESTING CODE!!! ###############################
         # arrow index length must be a multiple of 3
+        vPos = self.node_pos[:,0:2].tolist()
         linesAB = get_segments_pos(vPos, self.edges)
 
         BCD = []
@@ -76,15 +77,15 @@ class Canvas(app.Canvas):
             BCD.append(C)
             BCD.append(D)
 
-        arrow_data = np.zeros(len(BCD), dtype=[
+        na = len(BCD)
+        arrow_data = np.zeros(na, dtype=[
                                 ('a_position', np.float32, 2),
                                 ('a_fg_color', np.float32, 4),
-                                ('a_bg_color', np.float32, 4),
-                                ('a_size', np.float32, 1),
-                                ('a_linewidth', np.float32, 1),
+                                ('a_bg_color', np.float32, 3),
                                 ])
 
         arrow_data['a_position'] = np.array(BCD)
+        arrow_data['a_bg_color'] = np.random.uniform(0.5, 1., (na, 3))
 
         self.vboar = gloo.VertexBuffer(arrow_data)
 #############################################################
@@ -153,7 +154,6 @@ class Canvas(app.Canvas):
             elif button == 2:
                 for program in self.programs:
                     program['u_scale'] = (scale_x_new, scale_y_new, scale_z_new)
-
             self.update()
 
     def on_mouse_wheel(self, event):
@@ -209,10 +209,7 @@ if __name__ == '__main__':
                            high=n).astype(np.uint32)
     n_p = np.hstack((20.25 * np.random.randn(n, 2),
                      np.zeros((n, 1))))
-    # TESTME: For calculations to find line angle
-    # a = list(zip(*ed))[0]
     vPos = n_p[:,0:2].tolist()
-    # angle = [[n_p[i][0], n_p[i][1]] for i in a]
     c = Canvas(title="Graph", edges=ed, node_pos=n_p)
     app.run()
 

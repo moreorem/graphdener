@@ -7,17 +7,18 @@ uniform vec3 u_pan;
 attribute vec2 from_xy;
 attribute vec3 a_position;
 attribute vec4 a_fg_color;
-attribute vec4 a_bg_color;
+attribute vec3 a_bg_color;
 attribute float a_size;
 attribute float a_linewidth;
 
 varying vec3 dxy;
+varying vec3 bg_color;
 
 const float M_SQRT3_2 = 0.86602540378;
 // void arrowhead(vec A, vec B, vec& v1, vec& v2);
 
 void main(){
-	
+	bg_color = a_bg_color;
 	dxy = vec3(0.01, 0.01, 0.);
 	float denominator = from_xy[0] - a_position.x;
 	float numerator = from_xy[1] - a_position.y;
