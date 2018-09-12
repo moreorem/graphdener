@@ -9,6 +9,7 @@ from lib.widgets.canvas import CanvasWidget
 from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
 from lib.services.actions import Call
+
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 

@@ -1,7 +1,10 @@
 from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog,
                              QComboBox, QWizard, QWizardPage, QLineEdit,
                              QVBoxLayout, QApplication, QHBoxLayout)
-from ..services.actions import *
+from ..services.actions import Call
+
+NODES_COLUMN_NAMES = ['id', 'label', 'type']
+EDGES_COLUMN_NAMES = ['id', 'from', 'to', 'label', 'type', 'weight']
 
 
 class QIComboBox(QComboBox):
@@ -32,25 +35,34 @@ class Page1(QWizardPage):
 
     def __init__(self, parent=None):
         super(Page1, self).__init__(parent)
-        self.comboBox = QIComboBox(self)
+        self.columnSelectors = []
+        self.delimiterFields = []
+        nCols = len(NODES_COLUMN_NAMES)
+
+        # Initialize comboboxes and text fields
+        for i in range(nCols):
+            self.columnSelectors.append(QComboBox())
+        for i in range(nCols + 1):
+            self.delimiterFields.append(QLineEdit())
+
         self.openFileBtn = QPushButton("Import Node List")
         self.stepLabel = QLabel()
         self.formatLabel = QLabel()
-        self.text1 = QLineEdit()
-        self.text2 = QLineEdit()
 
         layout = QVBoxLayout()
         layout.addWidget(self.stepLabel)
         layout.addWidget(self.openFileBtn)
         layout.addWidget(self.formatLabel)
-
         patternLayout = QHBoxLayout()
-        patternLayout.addWidget(self.text1)
-        patternLayout.addWidget(self.comboBox)
-        patternLayout.addWidget(self.text2)
-        layout.addLayout(patternLayout)
+
+        for i in range(nCols + 1):
+            patternLayout.addWidget(self.delimiterFields[i])
+            if i < nCols:
+                patternLayout.addWidget(self.columnSelectors[i])
 
         self.setLayout(layout)
+        # Insert the layout of the regexp elements
+        layout.addLayout(patternLayout)
         # Bind actions
         self.openFileBtn.clicked.connect(self.openFileNameDialog)
 
@@ -68,20 +80,41 @@ class Page1(QWizardPage):
         self.stepLabel.setText("Nodes information")
         self.formatLabel.setText("Nodes file format")
 
+        for comboBox in self.columnSelectors:
+            comboBox.addItems(NODES_COLUMN_NAMES)
+
 
 class Page2(QWizardPage):
     def __init__(self, parent=None):
         super(Page2, self).__init__(parent)
+        nCols = len(EDGES_COLUMN_NAMES)
         self.setWindowTitle("Edge phase")
 
-        self.label1 = QLabel()
+        self.stepLabel = QLabel()
         self.openFileBtn = QPushButton("Import Edge List")
 
+        self.columnSelectors = []
+        self.delimiterFields = []
+
+        # Initialize comboboxes and text fields
+        for i in range(nCols):
+            self.columnSelectors.append(QComboBox())
+        for i in range(nCols + 1):
+            self.delimiterFields.append(QLineEdit())
+
         layout = QVBoxLayout()
-        layout.addWidget(self.label1)
+        layout.addWidget(self.stepLabel)
         layout.addWidget(self.openFileBtn)
+        patternLayout = QHBoxLayout()
+
+        for i in range(nCols + 1):
+            patternLayout.addWidget(self.delimiterFields[i])
+            if i < nCols:
+                patternLayout.addWidget(self.columnSelectors[i])
 
         self.setLayout(layout)
+        # Insert the layout of the regexp elements
+        layout.addLayout(patternLayout)
         # Bind actions
         self.openFileBtn.clicked.connect(self.openFileNameDialog)
 
@@ -96,8 +129,9 @@ class Page2(QWizardPage):
             self.wizard().filepath[1] = fileName
 
     def initializePage(self):
-        self.label1.setText("Edges information")
-        # self.label2.setText("Example text")
+        self.stepLabel.setText("Edges information")
+        for comboBox in self.columnSelectors:
+            comboBox.addItems(EDGES_COLUMN_NAMES)
 
 
 if __name__ == '__main__':

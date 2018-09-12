@@ -124,6 +124,21 @@ def _rescale_layout(pos, scale=1):
 
 
 def create_arrowhead(A, B):
+    """
+    Use trigonometry to calculate the arrowheads vertex positions according to the edge direction.
+
+    Parameters
+    ----------
+    A : array
+        x,y Starting point of edge
+    B : array
+        x,y Ending point of edge
+
+    Returns
+    -------
+    v1, v2 : tuple
+        The v1 xy and v2 xy points of the two base vertices of the arrowhead.
+    """
     w = 0.005
     h = w * (0.8660254037844386467637)  # sqrt(3)/2
     mag = math.sqrt((B[0] - A[0])**2.0 + (B[1] - A[1])**2.0)

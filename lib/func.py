@@ -17,7 +17,8 @@ def iterate_grid(d):
         yield y
 
 
-
+def regex_builder():
+    pass
 
 
 if __name__ == '__main__':

@@ -17,6 +17,7 @@ from .util import create_arrowhead, get_segments_pos
 this_dir = op.abspath(op.dirname(__file__))
 GLFOLDER = '/glsl/'
 FULLPATH = this_dir + GLFOLDER
+SIZE = 20
 
 
 class Canvas(app.Canvas):
@@ -65,7 +66,10 @@ class Canvas(app.Canvas):
                                   ('a_linewidth', np.float32, 1),
                                   ])
 
-############# TESTING CODE!!! ###############################
+        # FIXME: Move arrowheads outside of the nodes
+        """
+        ARROWHEAD PART ---------------- START
+        """
         # arrow index length must be a multiple of 3
         vPos = self.node_pos[:,0:2].tolist()
         linesAB = get_segments_pos(vPos, self.edges)
@@ -88,7 +92,10 @@ class Canvas(app.Canvas):
         arrow_data['a_bg_color'] = np.random.uniform(0.5, 1., (na, 3))
 
         self.vboar = gloo.VertexBuffer(arrow_data)
-#############################################################
+        """
+        ARROWHEAD PART END
+        """
+
 
         data['a_position'] = self.node_pos
         data['a_fg_color'] = 0, 0, 0, 1
@@ -100,21 +107,14 @@ class Canvas(app.Canvas):
         data['a_bg_color'] = np.hstack((self.color, np.ones((n, 1))))
 
         # Size of the markers
-        data['a_size'] = np.random.randint(size=n, low=8 * ps, high=20 * ps)
+        data['a_size'] = np.array(np.ones(n) * (SIZE * ps))
         data['a_linewidth'] = 1. * ps
         # Initialize Buffers
         self.vbo = gloo.VertexBuffer(data)
         self.index = gloo.IndexBuffer(self.edges)
-        # self.arIndex = gloo.IndexBuffer(arIndex)
 
-        # Declare the node and edge programs
-        # Initialize Node Program
-        self.program_n = self._init_node_program(0)
-        # Initialize Edge Program
-        self.program_e = self._init_edge_program(1)
-        # Initialize Arrowhead Program
-        self.program_a = self._init_arrow_program(2)
-        # self.program_a['from_xy'] = angle
+        # Initialize programs
+        self._init_programs()
 
         # Initialize scale and pan metrics
         for program in self.programs:
@@ -179,6 +179,15 @@ class Canvas(app.Canvas):
         x, y = x_y
         w, h = float(self.size[0]), float(self.size[1])
         return x / (w / 2.) - 1., y / (h / 2.) - 1.
+
+    def _init_programs(self):
+        # Initialize Node Program
+        self.program_n = self._init_node_program(0)
+        # Initialize Edge Program
+        self.program_e = self._init_edge_program(1)
+        # Initialize Arrowhead Program
+        self.program_a = self._init_arrow_program(2)
+
 
     def _init_node_program(self, idx):
         program = self.programs[idx]
