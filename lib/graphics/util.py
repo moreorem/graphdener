@@ -136,20 +136,29 @@ def create_arrowhead(A, B):
 
     Returns
     -------
-    v1, v2 : tuple
-        The v1 xy and v2 xy points of the two base vertices of the arrowhead.
+    B, v1, v2 : tuple
+        The point of head, the v1 xy and v2 xy points of the two base vertices of the arrowhead.
     """
-    w = 0.005
-    h = w * (0.8660254037844386467637)  # sqrt(3)/2
-    mag = math.sqrt((B[0] - A[0])**2.0 + (B[1] - A[1])**2.0)
+    w = 0.003
+    h = w * 10.0 #0.8660254037844386467637  # sqrt(3)/2
 
-    u0 = (B[0] - A[0]) / (mag)
-    u1 = (B[1] - A[1]) / (mag)
-    U = [u0, u1]
-    V = [-U[1], U[0]]
-    v1 = [B[0] - h * U[0] + w * V[0], B[1] - h * U[1] + w * V[1]]
-    v2 = [B[0] - h * U[0] - w * V[0], B[1] - h * U[1] - w * V[1]]
-    return (v1, v2)
+    AB = [B[0] - A[0], B[1] - A[1]]
+    mag = math.sqrt(AB[0]**2.0 + AB[1]**2.0)
+
+    d = 0.012 # Distance from node
+
+    u0 = AB[0] / mag
+    u1 = AB[1] / mag
+    U = [u0, u1] # Unit vector of AB
+
+    V = [-U[1], U[0]] # Unit vector perpendicular to AB
+
+    C = [ B[0] - d * u0, B[1] - d * u1 ]
+
+    v1 = [C[0] - h * U[0] + w * V[0], C[1] - h * U[1] + w * V[1]]
+    v2 = [C[0] - h * U[0] - w * V[0], C[1] - h * U[1] - w * V[1]]
+
+    return (C, v1, v2)
 
 
 def get_segments_pos(vPos, edgeList):

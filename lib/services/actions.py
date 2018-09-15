@@ -3,7 +3,7 @@ from mprpc import RPCClient
 
 ''' This class is used to communicate with the rust backend '''
 
-
+# TODO: Add regexp send to actions for edge import and node import
 class Call():
     client = None
 

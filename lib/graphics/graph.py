@@ -27,6 +27,7 @@ class Canvas(app.Canvas):
                             **kwargs)
 
         # TODO: Refactoring by separating glsl in files and using list for programs
+        # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
             n_vert = f1.read().decode('ASCII')
         with open(op.join(FULLPATH, 'n_frag.glsl'), 'rb') as f2:
@@ -76,11 +77,12 @@ class Canvas(app.Canvas):
 
         BCD = []
         for line in linesAB:
-            C, D = create_arrowhead(line[0], line[1])
-            BCD.append(line[1])
+            B, C, D = create_arrowhead(line[0], line[1])
+            BCD.append(B)
             BCD.append(C)
             BCD.append(D)
 
+        # Set vertex number for total of arrowheads
         na = len(BCD)
         arrow_data = np.zeros(na, dtype=[
                                 ('a_position', np.float32, 2),
@@ -89,7 +91,11 @@ class Canvas(app.Canvas):
                                 ])
 
         arrow_data['a_position'] = np.array(BCD)
-        arrow_data['a_bg_color'] = np.random.uniform(0.5, 1., (na, 3))
+
+        # Divide arrowhead vertex number by 3 to create color for every three vertices
+        col_n = na//3
+        c = np.random.uniform(0.5, 1., (col_n, 3))
+        arrow_data['a_bg_color'] = np.repeat(c,[3], axis=0)
 
         self.vboar = gloo.VertexBuffer(arrow_data)
         """

@@ -11,24 +11,14 @@ attribute vec3 a_bg_color;
 attribute float a_size;
 attribute float a_linewidth;
 
-varying vec3 dxy;
 varying vec3 bg_color;
 
 const float M_SQRT3_2 = 0.86602540378;
 // void arrowhead(vec A, vec B, vec& v1, vec& v2);
 
+
 void main(){
 	bg_color = a_bg_color;
-	dxy = vec3(0.01, 0.01, 0.);
-	float denominator = from_xy[0] - a_position.x;
-	float numerator = from_xy[1] - a_position.y;
-
-	float angle = numerator / denominator;
-
-	if (a_position.x - from_xy[0] > 0.)
-		dxy[0] = -0.01;
-	if (a_position.y - from_xy[1] > 0.)
-		dxy[1] = -0.01;
 
 	vec3 position_tr = u_scale * (a_position + u_pan);
 
