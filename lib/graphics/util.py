@@ -139,8 +139,8 @@ def create_arrowhead(A, B):
     B, v1, v2 : tuple
         The point of head, the v1 xy and v2 xy points of the two base vertices of the arrowhead.
     """
-    w = 0.003
-    h = w * 10.0 #0.8660254037844386467637  # sqrt(3)/2
+    w = 0.003 # Half of the triangle base width
+    h = w / 0.26794919243 # tan(15)
 
     AB = [B[0] - A[0], B[1] - A[1]]
     mag = math.sqrt(AB[0]**2.0 + AB[1]**2.0)

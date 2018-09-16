@@ -13,9 +13,24 @@ class Call():
             Call.client = RPCClient("127.0.0.1", port=6000, timeout=3000)
 
     @classmethod
-    def send_paths(cls, paths):
+    def send_paths(cls, paths, regexN, regexE):
+        """
+        Send paths of node and edge file to be imported by the backend.
+
+        Parameters
+        ----------
+        paths : array
+            [Nodes path, Edge path]
+        regexN : array
+            regular expression of node file
+        regexE : array
+            regular expression of edge file
+
+        Returns
+        -------
+        """
         c = cls.client
-        result = c.call('import', paths)
+        result = c.call('import', paths, regexN, regexE)
         print(result)
 
     @classmethod
