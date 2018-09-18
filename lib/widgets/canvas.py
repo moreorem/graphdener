@@ -35,6 +35,9 @@ class CanvasWidget(QWidget):
         #     self.close_canvas()
         # PENDING: When a new canvas is being added, shrinken previous and add a new one on the side
         # PENDING: Get canvas id from current canvas
+
+        if self.n > 0:
+             self.close_canvas()
         canvas_id = 1
 
         # TODO: Add this method to create_colors and store the correspondence to a dictionary['type'] = color
@@ -53,11 +56,11 @@ class CanvasWidget(QWidget):
         # Create the color for each node
         col = [c_types[t] for t in types]
 
-        canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col).native
+        self.canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col).native
 
         gridslot = self.gridslot[self.n]
 
-        self.grid.addWidget(canvas, gridslot[0], gridslot[1])
+        self.grid.addWidget(self.canvas, gridslot[0], gridslot[1])
         self.n += 1
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 
