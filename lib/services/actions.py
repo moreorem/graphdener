@@ -33,6 +33,17 @@ class Call():
         result = c.call('import', paths, regexN, regexE)
         print(result)
 
+
+    @classmethod
+    def create_graph(cls, id):
+        c = cls.client
+        print("Creating graph {}".format(id))
+        try:
+            result = c.call('graph', id)
+        except Error as e:
+            print(e)
+        return result
+
     @classmethod
     def get_vert(cls, detail_type, canvas_id):
         c = cls.client

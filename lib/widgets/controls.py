@@ -19,6 +19,7 @@ class ControlWidgets(QWidget):
         super(ControlWidgets, self).__init__(parent)
         self.forceConstants = []
         self.forceLabels = []
+        self.graph = 1
 
         self.__controls()
         self.__layout()
@@ -94,5 +95,6 @@ class ControlWidgets(QWidget):
         Call.get_vert(self.vertAttribute, 1)
 
     def refresh(self):
-        Call.get_pos(self.edgeAttribute, 1)
+        Call.create_graph(self.graph)
+        self.graph += 1
 
