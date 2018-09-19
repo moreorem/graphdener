@@ -13,7 +13,7 @@ class Call():
             Call.client = RPCClient("127.0.0.1", port=6000, timeout=3000)
 
     @classmethod
-    def send_paths(cls, paths, regexN, regexE):
+    def send_paths(cls, paths, regexN, regexE, colN, colE):
         """
         Send paths of node and edge file to be imported by the backend.
 
@@ -30,17 +30,51 @@ class Call():
         -------
         """
         c = cls.client
-        result = c.call('import', paths, regexN, regexE)
+        result = c.call('import', paths, regexN, regexE, colN, colE)
         print(result)
 
+    @classmethod
+    def refresh_force_directed(cls, graphId, L, K_r, K_s, Delta_t):
+        """
+            Refresh the force directed model
+
+            Parameters
+            ----------
+            graphId : integer
+                the id of graph to update
+            L : float
+                spring rest length
+            K_r : float
+                repulsive force constant
+            K_s : float
+                spring constant
+            delta_t : float
+                time step
+
+            Returns
+            -------
+        """
+        c = cls.client
+        result = c.call('direct', graphId, L, K_r, K_s, Delta_t)
+        print(result)
 
     @classmethod
     def create_graph(cls, id):
         c = cls.client
         print("Creating graph {}".format(id))
         try:
-            result = c.call('graph', id)
-        except Error as e:
+            result = c.call('newgraph', id)
+        except EnvironmentError as e:
+            print(e)
+        return result
+
+    @classmethod
+    def populate_graph(cls, id):
+        c = cls.client
+        print("Populating graph {}".format(id))
+        try:
+            result = c.call('populate', id)
+        except EnvironmentError as e:
             print(e)
         return result
 

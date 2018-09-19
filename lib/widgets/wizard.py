@@ -33,7 +33,7 @@ class ImportWizard(QWizard):
         regexE = get_pattern(self.edgeColumns, self.edgeDelimiters)
         # Communicate and transmit to backend
         Call.connect()
-        Call.send_paths(self.filepath, regexN, regexE)
+        Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns)
 
 
 class Page1(QWizardPage):

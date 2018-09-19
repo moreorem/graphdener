@@ -6,6 +6,8 @@ from ..services.actions import Call
 LABELS = ['L', 'K_r', 'K_s', 'Delta_t']
 
 
+# TODO: Convert Redraw button into create new graph
+
 class ControlWidgets(QWidget):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
@@ -92,9 +94,11 @@ class ControlWidgets(QWidget):
         self.edgeAttribute = text
 
     def get_v_info(self):
-        Call.get_vert(self.vertAttribute, 1)
+        # Call.get_vert(self.vertAttribute, 1)
+        Call.create_graph(1)
+        Call.populate_graph(1)
 
     def refresh(self):
-        Call.create_graph(self.graph)
+        Call.refresh_force_directed(self.graph, *self.forceConstants)
         self.graph += 1
 

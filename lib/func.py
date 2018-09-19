@@ -62,6 +62,9 @@ def has_quotes(t):
 
 
 def get_pattern(columns, delims):
+    """
+    Create regular expression pattern according to user input
+    """
     cols = ['{}(?P<{}>{}){}'.format(has_quotes(COLUMN_TYPES[name]),
                                     name,
                                     type_to_regex(COLUMN_TYPES[name]),
