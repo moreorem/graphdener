@@ -24,7 +24,7 @@ class Canvas(app.Canvas):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', size=(800, 800),
                             **kwargs)
-
+        self.graphId = 1
         # TODO: Refactoring by separating glsl in files and using list for programs
         # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
@@ -170,11 +170,13 @@ class Canvas(app.Canvas):
         self.update()
 
     def on_timer(self, event):
-        result = Call.get_vert('pos', 0)
-        v = [eval(x) for x in result]
-        va = np.array(v)
-        ve = np.hstack((va, np.zeros((len(v), 1))))
-        self.program_n['a_position'] = ve
+        result = Call.update_pos(self.graphId)
+        # result = Call.get_vert('pos', 0)
+        # v = [eval(x) for x in result]
+        # va = np.array(v)
+        # ve = np.hstack((va, np.zeros((len(v), 1))))
+        # self.program_n['a_position'] = ve
+        print(result)
         self.update()
 
     def on_key_press(self, event):

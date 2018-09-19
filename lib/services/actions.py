@@ -33,8 +33,9 @@ class Call():
         result = c.call('import', paths, regexN, regexE, colN, colE)
         print(result)
 
+    # PENDING: Replace constants with kwargs to be compatible with every algorithm
     @classmethod
-    def refresh_force_directed(cls, graphId, L, K_r, K_s, Delta_t):
+    def refresh(cls, graphId, L=None, K_r=None, K_s=None, Delta_t=None):
         """
             Refresh the force directed model
 
@@ -55,7 +56,10 @@ class Call():
             -------
         """
         c = cls.client
-        result = c.call('direct', graphId, L, K_r, K_s, Delta_t)
+        if algorithm is "forcedir":
+            result = c.call('diralg', graphId, L, K_r, K_s, Delta_t)
+        elif algorithm is "circular":
+            result = c.call('ciralg', graphId)
         print(result)
 
     @classmethod
@@ -94,6 +98,16 @@ class Call():
         print("getting edges...")
         try:
             result = c.call('get', 'edge', detail_type, canvas_id)
+        except EnvironmentError as e:
+            result = e
+        return result
+
+    @classmethod
+    def update_pos(cls, canvas_id):
+        c = cls.client
+        print("update step...")
+        try:
+            result = c.call('getpos', canvas_id)
         except EnvironmentError as e:
             result = e
         return result

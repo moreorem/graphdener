@@ -26,23 +26,23 @@ class ControlWidgets(QWidget):
         self.__controls()
         self.__layout()
 
-        self.button1.clicked.connect(Backend.start)
-        self.button2.clicked.connect(Backend.stop)
+        # self.button1.clicked.connect(Backend.start)
+        # self.button2.clicked.connect(Backend.stop)
         self.button4.clicked.connect(self.refresh)
-        self.button5.clicked.connect(self.get_v_info)
+        self.button5.clicked.connect(self.newGraph)
 
-        self.edgeComboBox.activated[str].connect(self.ea_selected)
+        self.algComboBox.activated[str].connect(self.algSelect)
         self.vertComboBox.activated[str].connect(self.va_selected)
 
         for i in range(len(LABELS) - 1):
             self.forceLabels[i].setText(LABELS[i])
 
     def __controls(self):
-        self.button1 = QPushButton("start")
-        self.button2 = QPushButton("stop")
+        # self.button1 = QPushButton("start")
+        # self.button2 = QPushButton("stop")
         self.button3 = QPushButton("Import Wizard")
         self.button4 = QPushButton("Refresh")
-        self.button5 = QPushButton("Get vertex attr.")
+        self.button5 = QPushButton("New Graph")
         self.button6 = QPushButton("Re-Draw")
 
         # Add vertex info selector
@@ -52,9 +52,9 @@ class ControlWidgets(QWidget):
         self.vertComboBox.addItem("label", "labels")
 
         # Add distribution algorithm selector
-        self.edgeComboBox = QComboBox(self)
-        self.edgeComboBox.addItem("circular")
-        self.edgeComboBox.addItem("force directed")
+        self.algComboBox = QComboBox(self)
+        self.algComboBox.addItem("circular")
+        self.algComboBox.addItem("force directed")
 
         # Initialize force directed control labels and textboxes
         for i in range(len(LABELS) - 1):
@@ -68,11 +68,11 @@ class ControlWidgets(QWidget):
             self.forceLayouts.append(QHBoxLayout())
 
         # add buttons and control widgets in the container box
-        self.vbox.addWidget(self.button1)
-        self.vbox.addWidget(self.button2)
+        # self.vbox.addWidget(self.button1)
+        # self.vbox.addWidget(self.button2)
         self.vbox.addWidget(self.button3)
         self.vbox.addWidget(self.button4)
-        self.vbox.addWidget(self.edgeComboBox)
+        self.vbox.addWidget(self.algComboBox)
         self.vbox.addWidget(self.button5)
         self.vbox.addWidget(self.vertComboBox)
         self.vbox.addWidget(self.button6)
@@ -90,15 +90,17 @@ class ControlWidgets(QWidget):
     def va_selected(self, text):
         self.vertAttribute = text
 
-    def ea_selected(self, text):
-        self.edgeAttribute = text
+    def algSelect(self, text):
+        self.algorithm = text
 
-    def get_v_info(self):
-        # Call.get_vert(self.vertAttribute, 1)
+    def newGraph(self):
+        # Creates new graph on new canvas and populates it
         Call.create_graph(1)
         Call.populate_graph(1)
-
-    def refresh(self):
-        Call.refresh_force_directed(self.graph, *self.forceConstants)
         self.graph += 1
 
+    def refresh(self):
+        # Refreshes current graph in case we want to change distribution
+        # Call.refresh(self.graph, *self.forceConstants)
+        result = Call.update_pos(1)
+        print(result)
