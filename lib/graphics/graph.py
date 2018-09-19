@@ -24,7 +24,7 @@ class Canvas(app.Canvas):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', size=(800, 800),
                             **kwargs)
-        self.graphId = 1
+        self.graphId = graphId
         # TODO: Refactoring by separating glsl in files and using list for programs
         # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:

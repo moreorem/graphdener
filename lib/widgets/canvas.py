@@ -14,6 +14,7 @@ class CanvasWidget(QWidget):
         self.canvas = None
         self.n = 0
         self.gridslot = [i for i in func.iterate_grid(2)]
+        self.setMinimumSize(800, 600)
 
     def __controls(self):
         self.canvasWidget = QWidget()
@@ -56,11 +57,13 @@ class CanvasWidget(QWidget):
         # Create the color for each node
         col = [c_types[t] for t in types]
 
-        self.canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col).native
+        self.canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col, graphId=self.n).native
 
         gridslot = self.gridslot[self.n]
 
         self.grid.addWidget(self.canvas, gridslot[0], gridslot[1])
+        # TODO: Append canvasId to a combobox selector in UI
+
         self.n += 1
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 

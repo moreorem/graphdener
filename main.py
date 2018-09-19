@@ -40,11 +40,8 @@ class MainWindow(QMainWindow):
         # Add canvas to main frame
         self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
-
         # Re-draw Button action
-        self.controls.button6.clicked.connect(self.canvasArea.create_canvas)
-        # Import wizard Button
-        self.controls.button3.clicked.connect(self.import_wizard)
+        self.controls.newBtn.clicked.connect(self.canvasArea.create_canvas)
 
         # Start backend
         Backend.start() #uncomment when not debugging
@@ -60,12 +57,6 @@ class MainWindow(QMainWindow):
             Backend.stop()
         else:
             event.ignore()
-
-    # Activates the import wizard
-    def import_wizard(self):
-        exPopup = ImportWizard(self)
-        exPopup.setGeometry(100, 200, 800, 600)
-        exPopup.show()
 
 
 if __name__ == '__main__':
