@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow,
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
-from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
 from lib.services.actions import Call
 
@@ -40,8 +39,8 @@ class MainWindow(QMainWindow):
         # Add canvas to main frame
         self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
-        # Re-draw Button action
-        self.controls.newBtn.clicked.connect(self.canvasArea.create_canvas)
+        # Draw Button action
+        self.controls.drawBtn.clicked.connect(self.canvasArea.create_canvas)
 
         # Start backend
         Backend.start() #uncomment when not debugging

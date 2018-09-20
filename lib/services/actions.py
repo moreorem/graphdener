@@ -3,7 +3,6 @@ from mprpc import RPCClient
 
 ''' This class is used to communicate with the rust backend '''
 
-# TODO: Add regexp send to actions for edge import and node import
 class Call():
     client = None
 
@@ -35,9 +34,9 @@ class Call():
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
     @classmethod
-    def refresh(cls, graphId, L=None, K_r=None, K_s=None, Delta_t=None):
+    def apply_alg(cls, graphId, algorithm, *args):
         """
-            Refresh the force directed model
+            Apply distribution algorithm
 
             Parameters
             ----------
@@ -55,10 +54,11 @@ class Call():
             Returns
             -------
         """
+        print(args)
         c = cls.client
-        if algorithm is "forcedir":
+        if algorithm == "force directed":
             result = c.call('diralg', graphId, L, K_r, K_s, Delta_t)
-        elif algorithm is "circular":
+        elif algorithm == "circular":
             result = c.call('ciralg', graphId)
         print(result)
 
@@ -102,6 +102,39 @@ class Call():
             result = e
         return result
 
+    # NEW ORIGIN
+    @classmethod
+    def get_adj(cls, canvas_id):
+        c = cls.client
+        print("getting edges...")
+        try:
+            result = c.call('getadj', canvas_id)
+        except EnvironmentError as e:
+            result = e
+        return result
+
+    @classmethod
+    def get_n_type(cls, canvas_id):
+        c = cls.client
+        print("getting node types...")
+        try:
+            result = c.call('getntype', canvas_id)
+        except EnvironmentError as e:
+            result = e
+        return result
+
+    # NEW ORIGIN
+    @classmethod
+    def get_n_pos(cls, canvas_id):
+        c = cls.client
+        print("getting vertex positions...")
+        try:
+            result = c.call('getnpos', canvas_id)
+        except EnvironmentError as e:
+            result = e
+        return result
+
+    # NEW ORIGIN
     @classmethod
     def update_pos(cls, canvas_id):
         c = cls.client

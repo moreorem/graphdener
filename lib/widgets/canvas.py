@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (QWidget, QGridLayout)
 from ..services.actions import Call
 import numpy as np
 from .. import func
-from lib import statics
 
 
 class CanvasWidget(QWidget):
@@ -36,7 +35,6 @@ class CanvasWidget(QWidget):
         #     self.close_canvas()
         # PENDING: When a new canvas is being added, shrinken previous and add a new one on the side
         # PENDING: Get canvas id from current canvas
-
         if self.n > 0:
              self.close_canvas()
         canvas_id = 1
@@ -44,24 +42,27 @@ class CanvasWidget(QWidget):
         # TODO: Add this method to create_colors and store the correspondence to a dictionary['type'] = color
         # v_color = np.random.uniform(0, 1, (n_types, 3)).astype(np.float32)
         # TODO: Define node size according to the number of edges connected to it
+        # result = Call.get_vert('pos', canvas_id)
+        positions = Call.get_n_pos(canvas_id)
+        # v = [eval(x) for x in positions]
+        va = np.array(positions)
+        ve = np.hstack((va, np.zeros((len(positions), 1))))
+        # Get adjacency list
+        ed = Call.get_adj(canvas_id)
+        # Get node types
+        types = Call.get_n_type(canvas_id)
 
-        result = Call.get_vert('pos', canvas_id)
-
-        v = [eval(x) for x in result]
-        va = np.array(v)
-        ve = np.hstack((va, np.zeros((len(v), 1))))
-        ed = Call.get_edge('pos', canvas_id)
-
-        types = Call.get_vert('type', canvas_id)
         c_types = self._create_colors(types)
         # Create the color for each node
         col = [c_types[t] for t in types]
 
+        # TODO: Set fixed canvas size for each canvas
         self.canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col, graphId=self.n).native
 
+        # TODO: Set fixed grid slot size for each grid slot
         gridslot = self.gridslot[self.n]
 
-        self.grid.addWidget(self.canvas, gridslot[0], gridslot[1])
+        self.grid.addWidget(self.canvas, gridslot[0], gridslot[0])
         # TODO: Append canvasId to a combobox selector in UI
 
         self.n += 1

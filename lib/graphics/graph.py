@@ -20,12 +20,11 @@ SIZE = 20
 
 
 class Canvas(app.Canvas):
-    def __init__(self, edges, node_pos, color=None, **kwargs):
+    def __init__(self, edges, node_pos, color=None, graphId=1, **kwargs):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', size=(800, 800),
                             **kwargs)
         self.graphId = graphId
-        # TODO: Refactoring by separating glsl in files and using list for programs
         # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
             n_vert = f1.read().decode('ASCII')
@@ -61,9 +60,8 @@ class Canvas(app.Canvas):
                                   ('a_size', np.float32, 1),
                                   ('a_linewidth', np.float32, 1),
                                   ])
-
         """
-        ARROWHEAD PART ---------------- START
+        VVV--------------- ARROWHEAD PART ----------------VVV
         """
         # arrow index length must be a multiple of 3
         vPos = self.node_pos[:, 0:2].tolist()
@@ -93,7 +91,7 @@ class Canvas(app.Canvas):
 
         self.vboar = gloo.VertexBuffer(arrow_data)
         """
-        ARROWHEAD PART END
+        ^^^--------------- ARROWHEAD PART END ----------------^^^
         """
 
         data['a_position'] = self.node_pos

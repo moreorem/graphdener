@@ -7,7 +7,7 @@ from ..func import get_pattern
 NODES_COLUMN_NAMES = ['id', 'label', 'type']
 EDGES_COLUMN_NAMES = ['id', 'from', 'to', 'label', 'type', 'weight']
 
-
+# TODO: Call new graph after import wizard
 class ImportWizard(QWizard):
     def __init__(self, parent=None, isSingleFile=False):
         super(ImportWizard, self).__init__(parent)
