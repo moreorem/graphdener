@@ -20,7 +20,7 @@ SIZE = 20
 
 
 class Canvas(app.Canvas):
-    def __init__(self, edges, node_pos, color=None, graphId=1, **kwargs):
+    def __init__(self, edges, node_pos, graphId, color=None, **kwargs):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', **kwargs)
         self.graphId = graphId
@@ -121,6 +121,7 @@ class Canvas(app.Canvas):
                   blend_func=('src_alpha', 'one_minus_src_alpha'))
         set_viewport(0, 0, *self.physical_size)
         self.timer = app.Timer(1/30, connect=self.on_timer)
+        self.timer.start()
         self.show()
 
     def on_resize(self, event):
@@ -163,10 +164,22 @@ class Canvas(app.Canvas):
         self.update()
 
     def on_timer(self, event):
-        result = Call.get_n_pos(self.graphId)
-        ve = np.hstack((va, np.zeros((len(positions), 1))))
-        self.program_n['a_position'] = ve
-        print(result)
+        positions = Call.get_n_pos(self.graphId)
+        n = len(positions)
+        pos = np.hstack((positions, np.zeros((n, 1))))
+        data = np.zeros(n, dtype=[('a_position', np.float32, 3),
+                                  ('a_fg_color', np.float32, 4),
+                                  ('a_bg_color', np.float32, 4),
+                                  ('a_size', np.float32, 1),
+                                  ('a_linewidth', np.float32, 1),
+                                  ])
+        data['a_position'] = pos
+        data['a_fg_color'] = 0, 0, 0, 1
+        data['a_bg_color'] = np.hstack((self.color, np.ones((n, 1))))
+        data['a_size'] = np.array(np.ones(n) * (SIZE * self.pixel_scale))
+        data['a_linewidth'] = 1. * self.pixel_scale
+
+        self.vbo.set_data(data)
         self.update()
 
     def on_key_press(self, event):

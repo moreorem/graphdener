@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout,
 from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
 
-LABELS = ['L', 'K_r', 'K_s', 'Delta_t']
+LABELS = ['Spring rest length', 'Repulsive force constant', 'Spring constant', 'Time step']
 ALGS = ['random', 'circular', 'force directed']
 
 class ControlWidgets(QWidget):
@@ -123,9 +123,10 @@ class ControlWidgets(QWidget):
 
     def applyAlg(self):
         self.forceText = [txtBox.text() for txtBox in self.forceConstants]
-        Call.get_n_pos(self.selectedCanvasId)
-        # Refreshes current graph in case we want to change distribution
+        # Applies distribution algorithm on selected graph
         Call.apply_alg(self.selectedCanvasId, self.algorithm, *self.forceText)
+        # Call.get_n_pos(self.selectedCanvasId)
+
 
     # Activates the import wizard
     def import_wizard(self):
