@@ -39,6 +39,8 @@ class ImportWizard(QWizard):
         Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns)
 
 
+
+
 class Page1(QWizardPage):
 
     def __init__(self, parent=None):

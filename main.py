@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        self.resize(1400, 1000)
+        # self.resize(1400, 1000)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
@@ -39,12 +39,32 @@ class MainWindow(QMainWindow):
         # Add canvas to main frame
         self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
-        # Draw Button action
-        self.controls.drawBtn.clicked.connect(self.canvasArea.create_canvas)
+
+        # Draw / Close Button action
+        self.controls.drawBtn.clicked.connect(self.drawGraph)
+        self.controls.closeBtn.clicked.connect(self.killGraph)
 
         # Start backend
         Backend.start() #uncomment when not debugging
         Call.connect()
+
+    # FIXME: Deprecated
+    def getCanvasId(self):
+        self.canvasArea.canvasId = self.controls.canvasId
+
+    def drawGraph(self):
+        canvasId = self.controls.maxCanvasId
+        self.controls.changeCanvasId('add')
+        # Inform backend to create and initialize the graph
+        Call.create_graph(canvasId)
+        Call.populate_graph(canvasId)
+        # Draw the graph on a new canvas with that ID
+        self.canvasArea.createCanvas(canvasId)
+
+    def killGraph(self):
+        self.controls.changeCanvasId('remove')
+        canvasId = self.controls.selectedCanvasId
+        self.canvasArea.closeCanvas(canvasId)
 
     # Ask before quit
     def closeEvent(self, event):

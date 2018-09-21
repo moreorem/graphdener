@@ -57,10 +57,12 @@ class Call():
         print(args)
         c = cls.client
         if algorithm == "force directed":
-            result = c.call('diralg', graphId, L, K_r, K_s, Delta_t)
+            parameters = [float(eval(x)) for x in args]
+            result = c.call('diralg', graphId, parameters)
         elif algorithm == "circular":
             result = c.call('ciralg', graphId)
-        print(result)
+        elif algorithm == "random":
+            result = c.call('random', graphId)
 
     @classmethod
     def create_graph(cls, id):
@@ -134,14 +136,15 @@ class Call():
             result = e
         return result
 
-    # NEW ORIGIN
-    @classmethod
-    def update_pos(cls, canvas_id):
-        c = cls.client
-        print("update step...")
-        try:
-            result = c.call('getpos', canvas_id)
-        except EnvironmentError as e:
-            result = e
-        return result
+    # FIXME: Deprecated
+    # # NEW ORIGIN
+    # @classmethod
+    # def update_pos(cls, canvas_id):
+    #     c = cls.client
+    #     print("update step...")
+    #     try:
+    #         result = c.call('getpos', canvas_id)
+    #     except EnvironmentError as e:
+    #         result = e
+    #     return result
 

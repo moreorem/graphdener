@@ -22,8 +22,7 @@ SIZE = 20
 class Canvas(app.Canvas):
     def __init__(self, edges, node_pos, color=None, graphId=1, **kwargs):
         # Initialize the canvas for real
-        app.Canvas.__init__(self, keys='interactive', size=(800, 800),
-                            **kwargs)
+        app.Canvas.__init__(self, keys='interactive', **kwargs)
         self.graphId = graphId
         # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
@@ -161,19 +160,12 @@ class Canvas(app.Canvas):
 
         for program in self.programs:
             program['u_scale'] = (scale_x_new, scale_y_new, scale_z_new)
-        # PENDING: Read pointer position to zoom in place
-        # if mouse_coords is not None:  # Record the position of the mouse
-        #     x, y = float(mouse_coords[0]), float(mouse_coords[1])
-        #     x0, y0 = self.pixel_to_coords(x, y)
         self.update()
 
     def on_timer(self, event):
-        result = Call.update_pos(self.graphId)
-        # result = Call.get_vert('pos', 0)
-        # v = [eval(x) for x in result]
-        # va = np.array(v)
-        # ve = np.hstack((va, np.zeros((len(v), 1))))
-        # self.program_n['a_position'] = ve
+        result = Call.get_n_pos(self.graphId)
+        ve = np.hstack((va, np.zeros((len(positions), 1))))
+        self.program_n['a_position'] = ve
         print(result)
         self.update()
 

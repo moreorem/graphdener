@@ -144,7 +144,8 @@ def create_arrowhead(A, B):
 
     AB = [B[0] - A[0], B[1] - A[1]]
     mag = math.sqrt(AB[0]**2.0 + AB[1]**2.0)
-
+    if mag == 0:
+        mag = 1.0
     d = 0.012 # Distance from node
 
     u0 = AB[0] / mag
