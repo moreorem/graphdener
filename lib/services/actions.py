@@ -54,15 +54,15 @@ class Call():
             Returns
             -------
         """
-        print(args)
         c = cls.client
         if algorithm == "force directed":
+            print(args)
             parameters = [float(eval(x)) for x in args]
-            result = c.call('diralg', graphId, parameters)
+            c.call('diralg', graphId, parameters)
         elif algorithm == "circular":
-            result = c.call('ciralg', graphId)
+            c.call('ciralg', graphId)
         elif algorithm == "random":
-            result = c.call('random', graphId)
+            c.call('random', graphId)
 
     @classmethod
     def create_graph(cls, id):

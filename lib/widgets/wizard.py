@@ -39,8 +39,6 @@ class ImportWizard(QWizard):
         Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns)
 
 
-
-
 class Page1(QWizardPage):
 
     def __init__(self, parent=None):
@@ -242,9 +240,6 @@ class Page2b(QWizardPage):
         ''' activates on next button and sends the input to wizard '''
         self.wizard().edgeDelimiters = [delim.text() for delim in self.delimiterFields]
         self.wizard().edgeColumns = [comboBox.selection for comboBox in self.columnSelectors]
-
-
-
 
 
 if __name__ == '__main__':

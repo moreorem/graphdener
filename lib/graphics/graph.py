@@ -10,7 +10,7 @@ import numpy as np
 import math
 from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
-from .util import create_arrowhead, get_segments_pos
+from .util import create_arrowhead, get_segments_pos, set_marker_data
 from ..services.actions import Call
 
 this_dir = op.abspath(op.dirname(__file__))
@@ -24,6 +24,7 @@ class Canvas(app.Canvas):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', **kwargs)
         self.graphId = graphId
+        self.constants = []
         # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
             n_vert = f1.read().decode('ASCII')
@@ -44,21 +45,14 @@ class Canvas(app.Canvas):
 
         self.edges = np.array(edges).astype(np.uint32)
         self.node_pos = node_pos
-
-        ps = self.pixel_scale
         self.scale = (1., 1., 1.)
         self.translate = 6.5
-        n = len(node_pos)
+        ps = self.pixel_scale
 
         # Window position
         self.position = 50, 50
         # Initialize node data
-        data = np.zeros(n, dtype=[('a_position', np.float32, 3),
-                                  ('a_fg_color', np.float32, 4),
-                                  ('a_bg_color', np.float32, 4),
-                                  ('a_size', np.float32, 1),
-                                  ('a_linewidth', np.float32, 1),
-                                  ])
+        nodeData = set_marker_data(node_pos, SIZE, color, ps)
         """
         VVV--------------- ARROWHEAD PART ----------------VVV
         """
@@ -92,21 +86,8 @@ class Canvas(app.Canvas):
         """
         ^^^--------------- ARROWHEAD PART END ----------------^^^
         """
-
-        data['a_position'] = self.node_pos
-        data['a_fg_color'] = 0, 0, 0, 1
-
-        if color is None:
-            self.color = np.random.uniform(0.5, 1., (n, 3))
-        else:
-            self.color = np.array(list(color))
-        data['a_bg_color'] = np.hstack((self.color, np.ones((n, 1))))
-
-        # Size of the markers
-        data['a_size'] = np.array(np.ones(n) * (SIZE * ps))
-        data['a_linewidth'] = 1. * ps
         # Initialize Buffers
-        self.vbo = gloo.VertexBuffer(data)
+        self.vbo = gloo.VertexBuffer(nodeData)
         self.index = gloo.IndexBuffer(self.edges)
 
         # Initialize programs
@@ -164,22 +145,13 @@ class Canvas(app.Canvas):
         self.update()
 
     def on_timer(self, event):
+        Call.apply_alg(self.graphId, 'force directed', *self.constants)
+
         positions = Call.get_n_pos(self.graphId)
         n = len(positions)
         pos = np.hstack((positions, np.zeros((n, 1))))
-        data = np.zeros(n, dtype=[('a_position', np.float32, 3),
-                                  ('a_fg_color', np.float32, 4),
-                                  ('a_bg_color', np.float32, 4),
-                                  ('a_size', np.float32, 1),
-                                  ('a_linewidth', np.float32, 1),
-                                  ])
-        data['a_position'] = pos
-        data['a_fg_color'] = 0, 0, 0, 1
-        data['a_bg_color'] = np.hstack((self.color, np.ones((n, 1))))
-        data['a_size'] = np.array(np.ones(n) * (SIZE * self.pixel_scale))
-        data['a_linewidth'] = 1. * self.pixel_scale
 
-        self.vbo.set_data(data)
+        self.vbo.set_data(set_marker_data(pos, SIZE, self.color, self.pixel_scale))
         self.update()
 
     def on_key_press(self, event):

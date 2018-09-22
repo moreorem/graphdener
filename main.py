@@ -43,6 +43,7 @@ class MainWindow(QMainWindow):
         # Draw / Close Button action
         self.controls.drawBtn.clicked.connect(self.drawGraph)
         self.controls.closeBtn.clicked.connect(self.killGraph)
+        self.controls.algBtn.clicked.connect(self.animate) # FIXME: Add an animate button instead
 
         # Start backend
         Backend.start() #uncomment when not debugging
@@ -65,6 +66,12 @@ class MainWindow(QMainWindow):
         self.controls.changeCanvasId('remove')
         canvasId = self.controls.selectedCanvasId
         self.canvasArea.closeCanvas(canvasId)
+
+    def animate(self):
+        if self.controls.algorithm == 'force directed':
+            forceText = [txtBox.text() for txtBox in self.controls.forceConstants]
+            self.canvasArea.canvasContainer[self.controls.selectedCanvasId].constants = self.controls.forceText
+            self.canvasArea.canvasContainer[self.controls.selectedCanvasId].timer.start()
 
     # Ask before quit
     def closeEvent(self, event):

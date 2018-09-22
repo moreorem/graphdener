@@ -164,3 +164,27 @@ def create_arrowhead(A, B):
 
 def get_segments_pos(vPos, edgeList):
     return [[vPos[i[0]], vPos[i[1]]] for i in edgeList]
+
+def set_marker_data(pos, size, color, pixelScale):
+    n = len(pos)
+    # Initialize node data
+    data = np.zeros(n, dtype=[('a_position', np.float32, 3),
+                              ('a_fg_color', np.float32, 4),
+                              ('a_bg_color', np.float32, 4),
+                              ('a_size', np.float32, 1),
+                              ('a_linewidth', np.float32, 1),
+                              ])
+
+    data['a_position'] = pos
+    data['a_fg_color'] = 0, 0, 0, 1
+
+    if color is None:
+            color = np.random.uniform(0.5, 1., (n, 3))
+    else:
+        color = np.array(list(color))
+        data['a_bg_color'] = np.hstack((color, np.ones((n, 1))))
+        # Size of the markers
+        data['a_size'] = np.array(np.ones(n) * (size * pixelScale))
+        data['a_linewidth'] = 1. * pixelScale
+
+    return data

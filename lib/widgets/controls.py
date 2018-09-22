@@ -66,7 +66,6 @@ class ControlWidgets(QWidget):
 
     def __layout(self):
         self.vbox = QVBoxLayout()
-        self.vbox.setSizeConstraint(150)
         self.algLayout = QHBoxLayout()
         self.csLayout = QHBoxLayout()
 
@@ -100,7 +99,6 @@ class ControlWidgets(QWidget):
         return self.vbox
 
     def selectCanvas(self, data):
-        print(data)
         self.selectedCanvasId = data
 
     def algSelect(self, text):
@@ -114,7 +112,6 @@ class ControlWidgets(QWidget):
             self.maxCanvasId -= 1
             self.canvasSelector.removeItem(self.selectedCanvasId)
 
-
     def newGraph(self):
         # Creates new graph on new canvas and populates it
         Call.create_graph(self.selectedCanvasId)
@@ -124,9 +121,8 @@ class ControlWidgets(QWidget):
     def applyAlg(self):
         self.forceText = [txtBox.text() for txtBox in self.forceConstants]
         # Applies distribution algorithm on selected graph
-        Call.apply_alg(self.selectedCanvasId, self.algorithm, *self.forceText)
-        # Call.get_n_pos(self.selectedCanvasId)
 
+        Call.apply_alg(self.selectedCanvasId, self.algorithm, *self.forceText)
 
     # Activates the import wizard
     def import_wizard(self):
