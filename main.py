@@ -41,8 +41,8 @@ class MainWindow(QMainWindow):
         self.mainFrameLayout.addWidget(self.canvasArea)
 
         # Draw / Close Button action
-        self.controls.drawBtn.clicked.connect(self.drawGraph)
-        self.controls.closeBtn.clicked.connect(self.killGraph)
+        self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
+        self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
         self.controls.algBtn.clicked.connect(self.animate) # FIXME: Add an animate button instead
 
         # Start backend

@@ -87,18 +87,21 @@ class Page1(QWizardPage):
     def initializePage(self):
         self.stepLabel.setText("Nodes information")
         self.formatLabel.setText("Nodes file format")
-
+        i = 0
         for comboBox in self.columnSelectors:
             comboBox.addItems(NODES_COLUMN_NAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
-            comboBox.selection = NODES_COLUMN_NAMES[0]
+            comboBox.setCurrentIndex(i)
             comboBox.activated.connect(self.handleActivated)
+            comboBox.selection = comboBox.currentText()
+            i += 1
 
         # Initialize textboxes with multi-space expression
         for delimiterField in self.delimiterFields:
             delimiterField.setText('\\s+')
         self.delimiterFields[0].setText('^')
+        self.delimiterFields[-1].setText('')
 
     def handleActivated(self, index):
         self.sender().selection = self.sender().itemText(index)
@@ -154,17 +157,21 @@ class Page2(QWizardPage):
 
     def initializePage(self):
         self.stepLabel.setText("Edges information")
+        i = 0
         for comboBox in self.columnSelectors:
             comboBox.addItems(EDGES_COLUMN_NAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
-            comboBox.selection = NODES_COLUMN_NAMES[0]
+            comboBox.setCurrentIndex(i)
             comboBox.activated.connect(self.handleActivated)
+            comboBox.selection = comboBox.currentText()
+            i += 1
 
         # Initialize textboxes with multi-space expression
         for delimiterField in self.delimiterFields:
             delimiterField.setText('\\s+')
         self.delimiterFields[0].setText('^')
+        self.delimiterFields[-1].setText('')
 
     def handleActivated(self, index):
         self.sender().selection = self.sender().itemText(index)

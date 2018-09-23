@@ -1,9 +1,9 @@
 # import msgpackrpc
 from mprpc import RPCClient
 
-''' This class is used to communicate with the rust backend '''
 
 class Call():
+    ''' This class is used to communicate with the rust backend '''
     client = None
 
     @staticmethod
@@ -35,28 +35,8 @@ class Call():
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
     @classmethod
     def apply_alg(cls, graphId, algorithm, *args):
-        """
-            Apply distribution algorithm
-
-            Parameters
-            ----------
-            graphId : integer
-                the id of graph to update
-            L : float
-                spring rest length
-            K_r : float
-                repulsive force constant
-            K_s : float
-                spring constant
-            delta_t : float
-                time step
-
-            Returns
-            -------
-        """
         c = cls.client
         if algorithm == "force directed":
-            print(args)
             parameters = [float(eval(x)) for x in args]
             c.call('diralg', graphId, parameters)
         elif algorithm == "circular":
@@ -136,15 +116,4 @@ class Call():
             result = e
         return result
 
-    # FIXME: Deprecated
-    # # NEW ORIGIN
-    # @classmethod
-    # def update_pos(cls, canvas_id):
-    #     c = cls.client
-    #     print("update step...")
-    #     try:
-    #         result = c.call('getpos', canvas_id)
-    #     except EnvironmentError as e:
-    #         result = e
-    #     return result
 

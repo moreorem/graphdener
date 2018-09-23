@@ -102,7 +102,6 @@ class Canvas(app.Canvas):
                   blend_func=('src_alpha', 'one_minus_src_alpha'))
         set_viewport(0, 0, *self.physical_size)
         self.timer = app.Timer(1/30, connect=self.on_timer)
-        self.timer.start()
         self.show()
 
     def on_resize(self, event):
