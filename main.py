@@ -1,14 +1,14 @@
 # !/usr/bin/python3.6
 import sys
 import os
-from PyQt5.QtWidgets import (QApplication, QMainWindow,
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QHBoxLayout, QMessageBox, QFrame)
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
-from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
 from lib.services.actions import Call
+
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -18,11 +18,10 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        self.resize(1400, 1000)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
-        self.mainFrame = QFrame(self)
+        self.mainFrame = QWidget()
         self.setCentralWidget(self.mainFrame)
         # Set main container's layout
         self.mainFrameLayout = QHBoxLayout()
@@ -33,6 +32,7 @@ class MainWindow(QMainWindow):
         # Add control group to main frame
         self.mainFrameLayout.addLayout(self.controls.get_layout())
         self.mainFrameLayout.addWidget(self.controls)
+        self.mainFrameLayout.addStretch(1)
 
         # Initialize canvas area
         self.canvasArea = CanvasWidget()
@@ -40,14 +40,27 @@ class MainWindow(QMainWindow):
         self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
 
-        # Re-draw Button action
-        self.controls.button6.clicked.connect(self.canvasArea.create_canvas)
-        # Import wizard Button
-        self.controls.button3.clicked.connect(self.import_wizard)
+        # Draw / Close Button action
+        self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
+        self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
+        # FIXME: Add an animate button instead
 
         # Start backend
-        Backend.start() #uncomment when not debugging
+        result = Backend.start()
         Call.connect()
+
+    def drawGraph(self):
+        # Inform backend to create and initialize the graph
+        graphId = Call.create_graph()
+        print("THE NEW GRAPH IS {}".format(graphId))
+        Call.populate_graph(graphId)
+        self.controls.newGraph(graphId)
+        # Draw the graph on a new canvas with that ID
+        self.canvasArea.createCanvas(graphId)
+
+    def killGraph(self):
+        graphId = self.controls.killGraph()
+        self.canvasArea.closeCanvas(graphId)
 
     # Ask before quit
     def closeEvent(self, event):
@@ -59,12 +72,6 @@ class MainWindow(QMainWindow):
             Backend.stop()
         else:
             event.ignore()
-
-    # Activates the import wizard
-    def import_wizard(self):
-        exPopup = ImportWizard(self)
-        exPopup.setGeometry(100, 200, 800, 600)
-        exPopup.show()
 
 
 if __name__ == '__main__':

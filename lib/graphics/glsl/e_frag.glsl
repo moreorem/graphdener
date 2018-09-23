@@ -1,6 +1,6 @@
 varying float v_antialias;
-varying float line_pos;
-
+// attribute vec3 line_pos;
+varying vec3 v_color;
 
 void main(){
     // Decrease the alpha linearly as we come within 1 pixel of the edge.

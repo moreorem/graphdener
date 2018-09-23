@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (QWidget, QGridLayout)
 from ..services.actions import Call
 import numpy as np
 from .. import func
-from lib import statics
 
 
 class CanvasWidget(QWidget):
@@ -11,55 +10,59 @@ class CanvasWidget(QWidget):
         super(CanvasWidget, self).__init__(parent)
         self.__controls()
         self.__layout()
-        self.canvas = None
-        self.n = 0
+        self.canvasContainer = {}
         self.gridslot = [i for i in func.iterate_grid(2)]
+        self.setMinimumSize(200, 200)
 
     def __controls(self):
         self.canvasWidget = QWidget()
 
     def __layout(self):
         self.grid = QGridLayout()
+        self.setLayout(self.grid)
+        self.grid.setSpacing(10)
 
     def get_layout(self):
         return self.grid
 
-    def close_canvas(self):
-        self.canvas.close()
-        self.grid.removeWidget(self.canvas)
-        self.canvas = None
+    def closeCanvas(self, canvasId):
+        try:
+            canvas = self.canvasContainer.pop(canvasId)
+            self.grid.removeWidget(canvas)
+            canvas.close()
+        except KeyError as e:
+            print("Cannot find canvas Id", e)
 
-    def create_canvas(self):
-        # FIXME: When pressing redraw button the interface corrupts
-        # if self.canvas is not None:
-        #     self.close_canvas()
-        # PENDING: When a new canvas is being added, shrinken previous and add a new one on the side
-
-        result = Call.get_vert('pos')
-
-        v = [eval(x) for x in result]
-        va = np.array(v)
-        ve = np.hstack((va, np.zeros((len(v), 1))))
-        ed = Call.get_edge('pos')
-
-        types = Call.get_vert('type')
-        c_types = self._create_colors(types)
+    def createCanvas(self, canvasId):
+        if canvasId in self.canvasContainer.keys():
+            print("Canvas with that id already exists!")
+            return canvasId
+        print("Drawing canvas with id: {}...".format(canvasId))
+        positions = Call.get_n_pos(canvasId)
+        va = np.array(positions)
+        ve = np.hstack((va, np.zeros((len(positions), 1))))
+        # Get adjacency list
+        ed = Call.get_adj(canvasId)
+        # Get node types
+        types = Call.get_n_type(canvasId)
+        c_types = self.__createColors(types)
+        # Create the color for each node
         col = [c_types[t] for t in types]
-        c_types = tuple(c_types.values())
 
-        canvas = Canvas(title='Graphdener Visualizer', edges=ed, node_pos=ve, color=col).native
+        # TODO: Set fixed canvas size for each canvas
+        self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed,
+                                                node_pos=ve, color=col,
+                                                graphId=canvasId).native
+        self.grid.addWidget(self.canvasContainer[canvasId],*self.gridslot[canvasId])
 
-        gridslot = self.gridslot[self.n]
-        print(gridslot)
-        self.grid.addWidget(canvas, gridslot[0], gridslot[1])
-        self.n += 1
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 
-    def _create_colors(self, types):
-        variety = list(set(types))
-        color_types = {}
-        i = 0
-        for t in variety:
-            color_types[t] = statics.COLOR_LIST[i]
-            i += 1
+    def __createColors(self, types):
+        t = list(set(types))
+        rgb_palette = np.random.uniform(0, 1, (len(t), 3)).astype(np.float32)
+        color_types = dict(zip(t, rgb_palette))
         return color_types
+
+    def setCanvasId(self, canvasId):
+        self.canvasId = canvasId
+

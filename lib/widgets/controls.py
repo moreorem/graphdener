@@ -1,10 +1,12 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout,
-                             QComboBox)
-from ..services.backend import Backend
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QCheckBox, QFrame)
 from ..services.actions import Call
+from lib.widgets.wizard import ImportWizard
+# from .elements.algoptions import AlgorithmControl
+# from .elements.graphctrl import GraphControl
+from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl)
 
 
-class ControlWidgets(QWidget):
+class ControlWidgets(QFrame):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
     # TODO: Use signals to notify the main window instead of connecting in it
@@ -13,64 +15,80 @@ class ControlWidgets(QWidget):
     # self.controls.canvasChanged.connect() // in main
     # vComboChanged = pyqtSignal(str)
 
+    # PENDING: Fix maximum controls width
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
+        self.maxCanvasId = 0
+        self.selectedCanvasId = 0
+        self.algorithm = 'random'
+        self.isSingleFile = False
         self.__controls()
         self.__layout()
-        self.button1.clicked.connect(Backend.start)
-        self.button2.clicked.connect(Backend.stop)
-        self.button4.clicked.connect(self.get_e_info)
-        self.button5.clicked.connect(self.get_v_info)
+        self.__actions()
+        self.vbox.addStretch(1)
+        self.setFrameShape(QFrame.VLine)
 
-        self.edgeComboBox.activated[str].connect(self.ea_selected)
-        self.vertComboBox.activated[str].connect(self.va_selected)
+        self.setFrameShadow(QFrame.Sunken)
 
     def __controls(self):
-        self.button1 = QPushButton("start")
-        self.button2 = QPushButton("stop")
-        self.button3 = QPushButton("Import Wizard")
-        self.button4 = QPushButton("Get edge attr.")
-        self.button5 = QPushButton("Get vertex attr.")
-        self.button6 = QPushButton("Re-Draw")
-
-        # Add vertex info selector
-        self.vertComboBox = QComboBox(self)
-        self.vertComboBox.addItem("type", "types")
-        self.vertComboBox.addItem("pos", "positions")
-        self.vertComboBox.addItem("label", "labels")
-
-        # Add edge info selector
-        self.edgeComboBox = QComboBox(self)
-        self.edgeComboBox.addItem("type", "types")
-        self.edgeComboBox.addItem("label", "labels")
-        self.edgeComboBox.addItem("weight", "weights")
-        self.edgeComboBox.addItem("pos", "list")
-
+        self.graphCtrl = GraphControl()
+        self.algCtrl = AlgorithmControl()
+        self.algOpt = AlgorithmOptions()
+        self.importCtrl = ImportControl()
 
     def __layout(self):
         self.vbox = QVBoxLayout()
+        # Add subcomponents
+        self.vbox.addLayout(self.importCtrl)
+        self.vbox.addLayout(self.graphCtrl)
+        self.vbox.addLayout(self.algCtrl)
+        self.vbox.addLayout(self.algOpt)
 
-        # add buttons and control widgets in the container box
-        self.vbox.addWidget(self.button1)
-        self.vbox.addWidget(self.button2)
-        self.vbox.addWidget(self.button3)
-        self.vbox.addWidget(self.button4)
-        self.vbox.addWidget(self.edgeComboBox)
-        self.vbox.addWidget(self.button5)
-        self.vbox.addWidget(self.vertComboBox)
-        self.vbox.addWidget(self.button6)
+    def __actions(self):
+        # Buttons
+        self.algCtrl.algBtn.clicked.connect(self.applyAlg)
+        self.importCtrl.importBtn.clicked.connect(self.import_wizard)
+        # Checkboxes
+        self.importCtrl.singleChk.stateChanged.connect(self.checkImport)
+        # Dropdowns
+        self.algCtrl.algSelector.activated[str].connect(self.algSelect)
+        self.graphCtrl.canvasSelector.activated[int].connect(self.graphCtrl.selectCanvas)
 
     def get_layout(self):
         return self.vbox
 
-    def ea_selected(self, text):
-        self.edgeAttribute = text
+    def algSelect(self, text):
+        self.algorithm = text
+        print(self.algorithm)
 
-    def va_selected(self, text):
-        self.vertAttribute = text
+        if text == 'force directed':
+            self.algOpt.enabled(True)
+        else:
+            self.algOpt.enabled(False)
 
-    def get_e_info(self):
-        Call.get_edge(self.edgeAttribute)
+    def newGraph(self, graphId):
+        # Informs the graph control group to update graph id
+        self.graphCtrl.addGraphId(graphId)
 
-    def get_v_info(self):
-        Call.get_vert(self.vertAttribute)
+    def killGraph(self):
+        return self.graphCtrl.delGraphId()
+
+    def applyAlg(self):
+        forceText = self.algOpt.get_text()
+        # Applies distribution algorithm on selected graph
+        print("apply {}".format(self.algorithm))
+        Call.apply_alg(int(self.selectedCanvasId), self.algorithm, *forceText)
+
+    # Activates the import wizard
+    def import_wizard(self):
+        exPopup = ImportWizard(self, self.isSingleFile)
+        exPopup.setGeometry(100, 200, 800, 600)
+        exPopup.show()
+        self.graphCtrl.enable(True)
+
+    def checkImport(self, state):
+        self.isSingleFile = state
+        print(self.isSingleFile)
+
+    def modifyIdList(self):
+        pass

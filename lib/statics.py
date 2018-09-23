@@ -1,3 +1,5 @@
+from lib.services.config import get_const
+
 # Color list for node types
 COLOR_LIST = [(1.0, 0.8941176, 0.7686275),
                 (0.545098, 0.5372549, 0.5372549),
@@ -24,3 +26,15 @@ COLOR_LIST = [(1.0, 0.8941176, 0.7686275),
                 (0.7294118, 0.3333333, 0.827451),
                 (0.5411765, 0.1686275, 0.8862745),
                 (0.5764706, 0.4392157, 0.8588235)]
+
+COLUMN_TYPES = {'id': 'int', 'label': 'qstr', 'type': 'qstr', 'weight': 'int', 'from': 'int', 'to': 'int'}
+
+ALGS = get_const('alg')
+
+FLABELS = get_const('forcelabels')
+
+NODECNAMES = get_const('nodecnames')
+
+EDGECNAMES = get_const('edgecnames')
+
+# MARKERSIZE = get_const('size')
