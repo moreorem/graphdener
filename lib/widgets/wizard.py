@@ -35,7 +35,10 @@ class ImportWizard(QWizard):
         regexE = get_pattern(self.edgeColumns, self.edgeDelimiters)
         # Communicate and transmit to backend
         Call.connect()
-        Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns)
+        result = Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns)
+        # TODO: Make use of return state to enable graph controls
+        if result == 'paths imported':
+            return True
 
 
 class Page1(QWizardPage):

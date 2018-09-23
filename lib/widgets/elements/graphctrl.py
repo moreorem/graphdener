@@ -4,12 +4,12 @@ from PyQt5.QtWidgets import (QLabel, QPushButton, QComboBox, QGridLayout)
 class GraphControl(QGridLayout):
     def __init__(self, parent=None):
         super(GraphControl, self).__init__()
-        self.maxCanvasId = 0
+        self.canvasList = [0]
         self.selectedCanvasId = 0
         self.__controls()
         self.__layout()
         self.setVerticalSpacing(2)
-        self.enabled(True)
+        self.enable(False)
 
     def __controls(self):
         self.drawBtn = QPushButton("Draw Graph")
@@ -24,15 +24,24 @@ class GraphControl(QGridLayout):
         self.addWidget(self.drawBtn, 2, 0)
         self.addWidget(self.closeBtn, 2, 1)
 
-    def changeCanvasId(self, method):
-        if method == 'add':
-            self.canvasSelector.addItem(str(self.maxCanvasId))
-            self.maxCanvasId += 1
-        elif method == 'remove':
-            self.maxCanvasId -= 1
-            self.canvasSelector.removeItem(self.selectedCanvasId)
+    def selectCanvas(self, data):
+        self.selectedCanvasId = data
 
-    def enabled(self, value):
-        if not value:
-            pass
-    
+    def addGraphId(self, graphId):
+        self.canvasSelector.addItem(str(graphId))
+        self.canvasList.append(graphId)
+        return graphId
+
+    def delGraphId(self):
+        graphId = self.selectedCanvasId
+        self.canvasSelector.removeItem(graphId)
+        self.canvaslist.pop(graphId)
+        return graphId
+
+    def enable(self, value):
+        self.drawBtn.setEnabled(value)
+        self.closeBtn.setEnabled(value)
+        self.canvasSelector.setEnabled(value)
+
+
+

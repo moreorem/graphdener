@@ -18,7 +18,6 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        # self.resize(1400, 1000)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
@@ -44,36 +43,33 @@ class MainWindow(QMainWindow):
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
         self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
-        self.controls.algBtn.clicked.connect(self.animate) # FIXME: Add an animate button instead
+        # self.controls.algBtn.clicked.connect(self.animate) # FIXME: Add an animate button instead
 
         # Start backend
-        result = Backend.start() #uncomment when not debugging
+        result = Backend.start()
         print(result)
         Call.connect()
 
-    # FIXME: Deprecated
-    def getCanvasId(self):
-        self.canvasArea.canvasId = self.controls.canvasId
-
     def drawGraph(self):
-        canvasId = self.controls.maxCanvasId
-        self.controls.changeCanvasId('add')
         # Inform backend to create and initialize the graph
-        Call.create_graph(canvasId)
-        Call.populate_graph(canvasId)
+        graphId = Call.create_graph()
+        print("THE NEW GRAPH IS {}".format(graphId))
+        Call.populate_graph(graphId)
+        self.controls.newGraph()
+
         # Draw the graph on a new canvas with that ID
-        self.canvasArea.createCanvas(canvasId)
+        self.canvasArea.createCanvas(graphId)
 
     def killGraph(self):
         self.controls.changeCanvasId('remove')
         canvasId = self.controls.selectedCanvasId
         self.canvasArea.closeCanvas(canvasId)
 
-    def animate(self):
-        if self.controls.algorithm == 'force directed':
-            forceText = [txtBox.text() for txtBox in self.controls.forceConstants]
-            self.canvasArea.canvasContainer[self.controls.selectedCanvasId].constants = self.controls.forceText
-            self.canvasArea.canvasContainer[self.controls.selectedCanvasId].timer.start()
+    # def animate(self):
+    #     if self.controls.algorithm == 'force directed':
+    #         forceText = [txtBox.text() for txtBox in self.controls.forceConstants]
+    #         self.canvasArea.canvasContainer[self.controls.selectedCanvasId].constants = self.controls.forceText
+    #         self.canvasArea.canvasContainer[self.controls.selectedCanvasId].timer.start()
 
     # Ask before quit
     def closeEvent(self, event):

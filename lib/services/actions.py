@@ -30,7 +30,7 @@ class Call():
         """
         c = cls.client
         result = c.call('import', paths, regexN, regexE, colN, colE)
-        print(result)
+        return result
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
     @classmethod
@@ -45,11 +45,11 @@ class Call():
             c.call('random', graphId)
 
     @classmethod
-    def create_graph(cls, id):
+    def create_graph(cls):
         c = cls.client
-        print("Creating graph {}".format(id))
+        print("Creating graph...")
         try:
-            result = c.call('newgraph', id)
+            result = c.call('newgraph')
         except EnvironmentError as e:
             print(e)
         return result

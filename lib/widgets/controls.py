@@ -1,12 +1,12 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QCheckBox)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QCheckBox, QFrame)
 from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
 # from .elements.algoptions import AlgorithmControl
 # from .elements.graphctrl import GraphControl
-from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions)
+from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl)
 
 
-class ControlWidgets(QWidget):
+class ControlWidgets(QFrame):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
     # TODO: Use signals to notify the main window instead of connecting in it
@@ -18,45 +18,44 @@ class ControlWidgets(QWidget):
     # PENDING: Fix maximum controls width
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
+        self.maxCanvasId = 0
+        self.selectedCanvasId = 0
         self.algorithm = 'random'
         self.isSingleFile = False
         self.__controls()
         self.__layout()
-        # Buttons
-        self.algBtn.clicked.connect(self.applyAlg)
-        self.importBtn.clicked.connect(self.import_wizard)
-        # Checkboxes
-        self.singleChk.stateChanged.connect(self.checkImport)
-        # Dropdowns
-        self.algCtrl.algSelector.activated[str].connect(self.algSelect)
-        self.graphCtrl.canvasSelector.activated[int].connect(self.selectCanvas)
+        self.__actions()
+        self.vbox.addStretch(1)
+        self.setFrameShape(QFrame.VLine)
+
+        self.setFrameShadow(QFrame.Sunken)
 
     def __controls(self):
         self.graphCtrl = GraphControl()
         self.algCtrl = AlgorithmControl()
         self.algOpt = AlgorithmOptions()
-        self.importBtn = QPushButton("Import Wizard")
-        self.singleChk = QCheckBox("Single page import")
-        self.algBtn = QPushButton("Apply Algorithm")
+        self.importCtrl = ImportControl()
 
     def __layout(self):
         self.vbox = QVBoxLayout()
-
-        # add buttons and control widgets in the container box
-        self.vbox.addWidget(self.importBtn)
-        self.vbox.addWidget(self.singleChk)
-        # self.vbox.addLayout(self.algLayout)
-        self.vbox.addWidget(self.algBtn)
-        # Add the algorithm control unit
+        # Add subcomponents
+        self.vbox.addLayout(self.importCtrl)
         self.vbox.addLayout(self.graphCtrl)
         self.vbox.addLayout(self.algCtrl)
         self.vbox.addLayout(self.algOpt)
 
+    def __actions(self):
+        # Buttons
+        self.algCtrl.algBtn.clicked.connect(self.applyAlg)
+        self.importCtrl.importBtn.clicked.connect(self.import_wizard)
+        # Checkboxes
+        self.importCtrl.singleChk.stateChanged.connect(self.checkImport)
+        # Dropdowns
+        self.algCtrl.algSelector.activated[str].connect(self.algSelect)
+        self.graphCtrl.canvasSelector.activated[int].connect(self.graphCtrl.selectCanvas)
+
     def get_layout(self):
         return self.vbox
-
-    def selectCanvas(self, data):
-        self.selectedCanvasId = data
 
     def algSelect(self, text):
         self.algorithm = text
@@ -65,11 +64,11 @@ class ControlWidgets(QWidget):
         else:
             self.algOpt.enabled(True)
 
-    def newGraph(self):
+    def newGraph(self, graphId):
         # Creates new graph on new canvas and populates it
-        Call.create_graph(self.selectedCanvasId)
-        Call.populate_graph(self.selectedCanvasId)
-        self.changeCanvasId('add')
+        self.graphCtrl.addGraphId(graphId)
+        # TODO: Get new id directly from backend create_graph return
+        return newId
 
     def applyAlg(self):
         forceText = self.algOpt.get_text()
@@ -82,9 +81,11 @@ class ControlWidgets(QWidget):
         exPopup = ImportWizard(self, self.isSingleFile)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
+        self.graphCtrl.enable(True)
 
     def checkImport(self, state):
-        if state:
-            self.isSingleFile = True
-        else:
-            self.isSingleFile = False
+        self.isSingleFile = state
+        print(self.isSingleFile)
+
+    def modifyIdList(self):
+        pass
