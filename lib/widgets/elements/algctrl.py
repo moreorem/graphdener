@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (QLabel, QPushButton, QComboBox, QGridLayout)
-
-ALGS = ['random', 'circular', 'force directed']
+from ...statics import ALGS
 
 
 class AlgorithmControl(QGridLayout):
@@ -10,7 +9,7 @@ class AlgorithmControl(QGridLayout):
         self.__controls()
         self.__layout()
         self.__populate()
-        self.setVerticalSpacing(2)
+        self.setVerticalSpacing(0)
         self.enabled(True)
 
     def __controls(self):

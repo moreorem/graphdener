@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (QLabel, QLineEdit, QGridLayout)
-
-LABELS = ['Spring rest length', 'Repulsive force constant', 'Spring constant', 'Time step']
+from ...statics import FLABELS as LABELS
 
 
 class AlgorithmOptions(QGridLayout):

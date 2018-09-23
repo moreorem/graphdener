@@ -50,7 +50,9 @@ class CanvasWidget(QWidget):
         col = [c_types[t] for t in types]
 
         # TODO: Set fixed canvas size for each canvas
-        self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed, node_pos=ve, color=col, graphId=canvasId).native
+        self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed,
+                                                node_pos=ve, color=col,
+                                                graphId=canvasId).native
         self.grid.addWidget(self.canvasContainer[canvasId])
 
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation

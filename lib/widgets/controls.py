@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout,
-                             QComboBox, QLabel, QLineEdit, QHBoxLayout, QCheckBox)
+from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QCheckBox)
 from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
 # from .elements.algoptions import AlgorithmControl
@@ -17,7 +16,6 @@ class ControlWidgets(QWidget):
     # vComboChanged = pyqtSignal(str)
 
     # PENDING: Fix maximum controls width
-
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
         self.algorithm = 'random'
@@ -90,4 +88,3 @@ class ControlWidgets(QWidget):
             self.isSingleFile = True
         else:
             self.isSingleFile = False
-

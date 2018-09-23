@@ -33,6 +33,7 @@ class MainWindow(QMainWindow):
         # Add control group to main frame
         self.mainFrameLayout.addLayout(self.controls.get_layout())
         self.mainFrameLayout.addWidget(self.controls)
+        self.mainFrameLayout.addStretch(1)
 
         # Initialize canvas area
         self.canvasArea = CanvasWidget()
@@ -46,7 +47,8 @@ class MainWindow(QMainWindow):
         self.controls.algBtn.clicked.connect(self.animate) # FIXME: Add an animate button instead
 
         # Start backend
-        Backend.start() #uncomment when not debugging
+        result = Backend.start() #uncomment when not debugging
+        print(result)
         Call.connect()
 
     # FIXME: Deprecated

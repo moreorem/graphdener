@@ -14,3 +14,9 @@ def get_directory(section):
         cfg = yaml.load(ymlfile)
     path = ''.join(cfg['directories'][section])
     return path
+
+def get_const(section):
+    with open(MAIN_DIRECTORY + CONFIG_NAME) as ymlfile:
+        cfg = yaml.load(ymlfile)
+    const = cfg['constants'][section]
+    return const

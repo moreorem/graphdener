@@ -13,7 +13,7 @@ class Backend(object):
         # Wait for server to start and then connect
         if Backend.proc.waitForStarted(msecs=3000):
             print("Backend Connected")
-            print('{}'.format(Backend.proc.pid()))
+            return Backend.proc.pid()
 
     def stop():
         if Backend.proc is not None:

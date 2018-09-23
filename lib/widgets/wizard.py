@@ -3,9 +3,8 @@ from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog,
                              QVBoxLayout, QApplication, QHBoxLayout)
 from ..services.actions import Call
 from ..func import get_pattern
+from ..statics import NODECNAMES, EDGECNAMES
 
-NODES_COLUMN_NAMES = ['id', 'label', 'type']
-EDGES_COLUMN_NAMES = ['id', 'from', 'to', 'label', 'type', 'weight']
 
 # TODO: Call new graph after import wizard
 class ImportWizard(QWizard):
@@ -45,7 +44,7 @@ class Page1(QWizardPage):
         super(Page1, self).__init__(parent)
         self.columnSelectors = []
         self.delimiterFields = []
-        nCols = len(NODES_COLUMN_NAMES)
+        nCols = len(NODECNAMES)
 
         # Initialize comboboxes and text fields
         for i in range(nCols):
@@ -89,7 +88,7 @@ class Page1(QWizardPage):
         self.formatLabel.setText("Nodes file format")
         i = 0
         for comboBox in self.columnSelectors:
-            comboBox.addItems(NODES_COLUMN_NAMES)
+            comboBox.addItems(NODECNAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
             comboBox.setCurrentIndex(i)
@@ -115,7 +114,7 @@ class Page1(QWizardPage):
 class Page2(QWizardPage):
     def __init__(self, parent=None):
         super(Page2, self).__init__(parent)
-        nCols = len(EDGES_COLUMN_NAMES)
+        nCols = len(EDGECNAMES)
         self.setWindowTitle("Edge phase")
 
         self.stepLabel = QLabel()
@@ -159,7 +158,7 @@ class Page2(QWizardPage):
         self.stepLabel.setText("Edges information")
         i = 0
         for comboBox in self.columnSelectors:
-            comboBox.addItems(EDGES_COLUMN_NAMES)
+            comboBox.addItems(EDGECNAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
             comboBox.setCurrentIndex(i)
@@ -186,7 +185,7 @@ class Page2(QWizardPage):
 class Page2b(QWizardPage):
     def __init__(self, parent=None):
         super(Page2b, self).__init__(parent)
-        nCols = len(EDGES_COLUMN_NAMES)
+        nCols = len(EDGECNAMES)
         self.setWindowTitle("Edge phase")
 
         self.stepLabel = QLabel()
@@ -229,10 +228,10 @@ class Page2b(QWizardPage):
     def initializePage(self):
         self.stepLabel.setText("Edges information")
         for comboBox in self.columnSelectors:
-            comboBox.addItems(EDGES_COLUMN_NAMES)
+            comboBox.addItems(EDGECNAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
-            comboBox.selection = NODES_COLUMN_NAMES[0]
+            comboBox.selection = NODECNAMES[0]
             comboBox.activated.connect(self.handleActivated)
 
         # Initialize textboxes with multi-space expression
