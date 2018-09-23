@@ -24,6 +24,7 @@ class Canvas(app.Canvas):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', **kwargs)
         self.graphId = graphId
+        self.color = color
         self.constants = []
         # TODO: Create separate objects for each collection (node, edge, arrow)
         with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
@@ -52,7 +53,7 @@ class Canvas(app.Canvas):
         # Window position
         self.position = 50, 50
         # Initialize node data
-        nodeData = set_marker_data(node_pos, SIZE, color, ps)
+        nodeData = set_marker_data(node_pos, SIZE, self.color, ps)
         """
         VVV--------------- ARROWHEAD PART ----------------VVV
         """
@@ -144,7 +145,7 @@ class Canvas(app.Canvas):
         self.update()
 
     def on_timer(self, event):
-        Call.apply_alg(self.graphId, 'force directed', *self.constants)
+        # Call.apply_alg(self.graphId, 'force directed', *self.constants)
 
         positions = Call.get_n_pos(self.graphId)
         n = len(positions)

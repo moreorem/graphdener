@@ -12,7 +12,7 @@ class CanvasWidget(QWidget):
         self.__layout()
         self.canvasContainer = {}
         self.gridslot = [i for i in func.iterate_grid(2)]
-        self.setMinimumSize(600, 600)
+        self.setMinimumSize(200, 200)
 
     def __controls(self):
         self.canvasWidget = QWidget()
@@ -20,6 +20,7 @@ class CanvasWidget(QWidget):
     def __layout(self):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
+        self.grid.setSpacing(10)
 
     def get_layout(self):
         return self.grid
@@ -27,15 +28,15 @@ class CanvasWidget(QWidget):
     def closeCanvas(self, canvasId):
         try:
             canvas = self.canvasContainer.pop(canvasId)
-            canvas.close()
             self.grid.removeWidget(canvas)
+            canvas.close()
         except KeyError as e:
             print("Cannot find canvas Id", e)
 
     def createCanvas(self, canvasId):
         if canvasId in self.canvasContainer.keys():
             print("Canvas with that id already exists!")
-            pass
+            return canvasId
         print("Drawing canvas with id: {}...".format(canvasId))
         positions = Call.get_n_pos(canvasId)
         va = np.array(positions)
@@ -44,7 +45,6 @@ class CanvasWidget(QWidget):
         ed = Call.get_adj(canvasId)
         # Get node types
         types = Call.get_n_type(canvasId)
-
         c_types = self.__createColors(types)
         # Create the color for each node
         col = [c_types[t] for t in types]
@@ -53,7 +53,7 @@ class CanvasWidget(QWidget):
         self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed,
                                                 node_pos=ve, color=col,
                                                 graphId=canvasId).native
-        self.grid.addWidget(self.canvasContainer[canvasId])
+        self.grid.addWidget(self.canvasContainer[canvasId],*self.gridslot[canvasId])
 
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 
@@ -65,3 +65,4 @@ class CanvasWidget(QWidget):
 
     def setCanvasId(self, canvasId):
         self.canvasId = canvasId
+

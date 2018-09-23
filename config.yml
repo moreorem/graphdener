@@ -25,3 +25,8 @@ constants:
     - 'label'
     - 'type'
     - 'weight'
+
+graph:
+  marker:
+    - size: 20
+  edge:

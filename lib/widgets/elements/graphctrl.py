@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (QLabel, QPushButton, QComboBox, QGridLayout)
 class GraphControl(QGridLayout):
     def __init__(self, parent=None):
         super(GraphControl, self).__init__()
-        self.canvasList = [0]
+        self.canvasList = []
         self.selectedCanvasId = 0
         self.__controls()
         self.__layout()
@@ -30,12 +30,14 @@ class GraphControl(QGridLayout):
     def addGraphId(self, graphId):
         self.canvasSelector.addItem(str(graphId))
         self.canvasList.append(graphId)
+        print(self.canvasList)
         return graphId
 
     def delGraphId(self):
-        graphId = self.selectedCanvasId
-        self.canvasSelector.removeItem(graphId)
-        self.canvaslist.pop(graphId)
+        selIdx = self.canvasSelector.currentIndex()
+        graphId = self.canvasSelector.currentText()
+        self.canvasSelector.removeItem(selIdx)
+        self.canvasList.pop(int(graphId))
         return graphId
 
     def enable(self, value):

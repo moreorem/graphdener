@@ -37,7 +37,6 @@ class AlgorithmOptions(QGridLayout):
         return [txtBox.text() for txtBox in self.forceConstants]
 
     def enabled(self, value):
-        if not value:
-            for i in range(len(LABELS)):
-                self.forceLabels[i].setEnabled(False)
-                self.forceConstants[i].setEnabled(False)
+        for i in range(len(LABELS)):
+            self.forceLabels[i].setEnabled(value)
+            self.forceConstants[i].setEnabled(value)

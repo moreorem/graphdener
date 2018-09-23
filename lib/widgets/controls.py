@@ -59,22 +59,25 @@ class ControlWidgets(QFrame):
 
     def algSelect(self, text):
         self.algorithm = text
+        print(self.algorithm)
+
         if text == 'force directed':
-            self.algOpt.enabled(False)
-        else:
             self.algOpt.enabled(True)
+        else:
+            self.algOpt.enabled(False)
 
     def newGraph(self, graphId):
-        # Creates new graph on new canvas and populates it
+        # Informs the graph control group to update graph id
         self.graphCtrl.addGraphId(graphId)
-        # TODO: Get new id directly from backend create_graph return
-        return newId
+
+    def killGraph(self):
+        return self.graphCtrl.delGraphId()
 
     def applyAlg(self):
         forceText = self.algOpt.get_text()
         # Applies distribution algorithm on selected graph
         print("apply {}".format(self.algorithm))
-        Call.apply_alg(self.selectedCanvasId, self.algorithm, *forceText)
+        Call.apply_alg(int(self.selectedCanvasId), self.algorithm, *forceText)
 
     # Activates the import wizard
     def import_wizard(self):

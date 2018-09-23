@@ -37,3 +37,4 @@ NODECNAMES = get_const('nodecnames')
 
 EDGECNAMES = get_const('edgecnames')
 
+# MARKERSIZE = get_const('size')

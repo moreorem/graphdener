@@ -1,7 +1,7 @@
 # !/usr/bin/python3.6
 import sys
 import os
-from PyQt5.QtWidgets import (QApplication, QMainWindow,
+from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QHBoxLayout, QMessageBox, QFrame)
 from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
-        self.mainFrame = QFrame(self)
+        self.mainFrame = QWidget()
         self.setCentralWidget(self.mainFrame)
         # Set main container's layout
         self.mainFrameLayout = QHBoxLayout()
@@ -43,11 +43,10 @@ class MainWindow(QMainWindow):
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
         self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
-        # self.controls.algBtn.clicked.connect(self.animate) # FIXME: Add an animate button instead
+        # FIXME: Add an animate button instead
 
         # Start backend
         result = Backend.start()
-        print(result)
         Call.connect()
 
     def drawGraph(self):
@@ -55,21 +54,13 @@ class MainWindow(QMainWindow):
         graphId = Call.create_graph()
         print("THE NEW GRAPH IS {}".format(graphId))
         Call.populate_graph(graphId)
-        self.controls.newGraph()
-
+        self.controls.newGraph(graphId)
         # Draw the graph on a new canvas with that ID
         self.canvasArea.createCanvas(graphId)
 
     def killGraph(self):
-        self.controls.changeCanvasId('remove')
-        canvasId = self.controls.selectedCanvasId
-        self.canvasArea.closeCanvas(canvasId)
-
-    # def animate(self):
-    #     if self.controls.algorithm == 'force directed':
-    #         forceText = [txtBox.text() for txtBox in self.controls.forceConstants]
-    #         self.canvasArea.canvasContainer[self.controls.selectedCanvasId].constants = self.controls.forceText
-    #         self.canvasArea.canvasContainer[self.controls.selectedCanvasId].timer.start()
+        graphId = self.controls.killGraph()
+        self.canvasArea.closeCanvas(graphId)
 
     # Ask before quit
     def closeEvent(self, event):
