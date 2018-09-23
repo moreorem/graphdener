@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         # Main window details
         self.setWindowTitle('Graphdener')
-        self.move(300, 300)
+        # self.setGeometry(300, 300, 150, 150)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
@@ -27,12 +27,12 @@ class MainWindow(QMainWindow):
         self.mainFrameLayout = QHBoxLayout()
         self.mainFrame.setLayout(self.mainFrameLayout)
 
-        # Initialize control group
+        # Initialize control group`
         self.controls = ControlWidgets()
         # Add control group to main frame
         self.mainFrameLayout.addLayout(self.controls.get_layout())
         self.mainFrameLayout.addWidget(self.controls)
-        self.mainFrameLayout.addStretch(1)
+        # self.mainFrameLayout.addStretch(1)
 
         # Initialize canvas area
         self.canvasArea = CanvasWidget()
@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         # FIXME: Add an animate button instead
 
         # Start backend
-        result = Backend.start()
+        # result = Backend.start()
         Call.connect()
 
     def drawGraph(self):
