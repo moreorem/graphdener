@@ -47,7 +47,7 @@ def alter_conc(list1, list2):
 
 
 def type_to_regex(t):
-    options = {'str': '*', 'qstr': '[^"]*', 'int': '\\d+'}
+    options = {'str': '*', 'qstr': '[^"]*', 'int': '\\d+', '': ''}
     try:
         return options[t]
     except KeyError as e:
@@ -65,16 +65,27 @@ def get_pattern(columns, delims):
     """
     Create regular expression pattern according to user input
     """
-    cols = ['{}(?P<{}>{}){}'.format(has_quotes(COLUMN_TYPES[name]),
-                                    name,
-                                    type_to_regex(COLUMN_TYPES[name]),
-                                    has_quotes(COLUMN_TYPES[name])
-                                    )
-            for name in columns]
+    print("getting pattern")
+    print([name for name in columns])
+
+    cols = ['{}{}{}{}'.format(
+        has_quotes(COLUMN_TYPES[name]),
+        parse_empty(name),
+        type_to_regex(COLUMN_TYPES[name]) + ')',
+        has_quotes(COLUMN_TYPES[name])
+    ) for name in columns]
+    print(cols)
     # Create the node regular expression string
     return ''.join(alter_conc(delims, cols))
 
 
+def parse_empty(name):
+        if name == '-':
+            return ''
+        else:
+            return '(?P<' + name + '>'
+
+
 if __name__ == '__main__':
-    a = alter_conc(['h', 'e', 'l', 'l', 'o'], ['f', 'o', 'o', 'o'])
+    parse_empty('sadf')
     print(a)

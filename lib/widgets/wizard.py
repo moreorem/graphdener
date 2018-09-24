@@ -10,6 +10,7 @@ from ..statics import NODECNAMES, EDGECNAMES
 class ImportWizard(QWizard):
     def __init__(self, parent=None, isSingleFile=False):
         super(ImportWizard, self).__init__(parent)
+        self.isSingleFile = isSingleFile
         if not isSingleFile:
             self.addPage(Page1(self))
             self.addPage(Page2(self))
@@ -35,7 +36,7 @@ class ImportWizard(QWizard):
         regexE = get_pattern(self.edgeColumns, self.edgeDelimiters)
         # Communicate and transmit to backend
         Call.connect()
-        result = Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns)
+        result = Call.send_paths(self.filepath, regexN, regexE, self.nodeColumns, self.edgeColumns, self.isSingleFile)
         # TODO: Make use of return state to enable graph controls
         if result == 'paths imported':
             return True
