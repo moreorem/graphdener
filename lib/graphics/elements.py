@@ -1,4 +1,6 @@
 from os import path as op
+import numpy as np
+from .util import create_arrowhead, get_segments_pos
 
 this_dir = op.abspath(op.dirname(__file__))
 GLFOLDER = '/glsl/'
@@ -26,3 +28,47 @@ class GlslBridge():
         self.argl = [a_vert, a_frag]
 
 
+class ArrowHead():
+    '''
+    n: int
+    represents number of edges
+    '''
+
+    def __init__(self, nodePos, edges):
+        # number of total points to draw n arrows is 3 * n
+        # na = 3 * n
+        BCD = []
+        vPos = nodePos[:, 0:2].tolist()
+        linesAB = get_segments_pos(vPos, edges)
+
+        for line in linesAB:
+            B, C, D = create_arrowhead(line[0], line[1])
+            BCD.append(B)
+            BCD.append(C)
+            BCD.append(D)
+
+        na = len(BCD)
+        # Set vertex number for total of arrowheads
+        self.arrowData = np.zeros(na, dtype=[
+            ('a_position', np.float32, 2),
+            ('a_fg_color', np.float32, 4),
+            ('a_bg_color', np.float32, 3),
+        ])
+        # Divide arrowhead vertex number by 3 to create color for every three vertices
+        col_n = na // 3
+        c = np.random.uniform(0.5, 1., (col_n, 3))
+        self.arrowData['a_bg_color'] = np.repeat(c, [3], axis=0)
+
+    def setArrowPos(self, nodePos, edgesIndex):
+        BCD = []
+        vPos = nodePos[:, 0:2].tolist()
+        linesAB = get_segments_pos(vPos, edgesIndex)
+        for line in linesAB:
+            B, C, D = create_arrowhead(line[0], line[1])
+            BCD.append(B)
+            BCD.append(C)
+            BCD.append(D)
+        self.arrowData['a_position'] = np.array(BCD)
+
+    def getArrowData(self):
+        return self.arrowData

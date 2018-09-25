@@ -8,7 +8,6 @@ attribute vec2 from_xy;
 attribute vec3 a_position;
 attribute vec4 a_fg_color;
 attribute vec3 a_bg_color;
-attribute float a_size;
 attribute float a_linewidth;
 
 varying vec3 bg_color;
@@ -26,12 +25,3 @@ void main(){
     gl_PointSize = u_scale.x * 2. + 2.;
 }
 
-
-// void arrowhead(vec3 A, vec3 B, vec3& v1, vec3& v2) 
-// {
-//     float h = 10*sqrtf(3), w = 10;
-//     vec3 U = (B - A)/(B - A).length();
-//     vec3 V = vec(-U.y, U.x);
-//     v1 = B - h*U + w*V;
-//     v2 = B - h*U - w*V;
-// }

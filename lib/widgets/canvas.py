@@ -40,6 +40,7 @@ class CanvasWidget(QWidget):
             return canvasId
         print("Drawing canvas with id: {}...".format(canvasId))
         positions = Call.get_n_pos(canvasId)
+
         va = np.array(positions)
         ve = np.hstack((va, np.zeros((len(positions), 1))))
         # Get adjacency list

@@ -91,7 +91,7 @@ def _straight_line_vertices(adjacency_mat, node_coords, directed=False):
     if directed:
         arrows = np.array(list(_get_directed_edges(adjacency_mat)))
         arrow_vertices = node_coords[arrows.ravel()]
-        arrow_vertices = arrow_vertices.reshape((len(arrow_vertices)/2, 4))
+        arrow_vertices = arrow_vertices.reshape((len(arrow_vertices) / 2, 4))
 
     return line_vertices, arrow_vertices
 
@@ -139,22 +139,22 @@ def create_arrowhead(A, B):
     B, v1, v2 : tuple
         The point of head, the v1 xy and v2 xy points of the two base vertices of the arrowhead.
     """
-    w = 0.003 # Half of the triangle base width
-    h = w / 0.26794919243 # tan(15)
+    w = 0.003  # Half of the triangle base width
+    h = w / 0.26794919243  # tan(15)
 
     AB = [B[0] - A[0], B[1] - A[1]]
     mag = math.sqrt(AB[0]**2.0 + AB[1]**2.0)
     if mag == 0:
         mag = 1.0
-    d = 0.012 # Distance from node
+    d = 0.012  # Distance from node
 
     u0 = AB[0] / mag
     u1 = AB[1] / mag
-    U = [u0, u1] # Unit vector of AB
+    U = [u0, u1]  # Unit vector of AB
 
-    V = [-U[1], U[0]] # Unit vector perpendicular to AB
+    V = [-U[1], U[0]]  # Unit vector perpendicular to AB
 
-    C = [ B[0] - d * u0, B[1] - d * u1 ]
+    C = [B[0] - d * u0, B[1] - d * u1]
 
     v1 = [C[0] - h * U[0] + w * V[0], C[1] - h * U[1] + w * V[1]]
     v2 = [C[0] - h * U[0] - w * V[0], C[1] - h * U[1] - w * V[1]]
@@ -164,6 +164,7 @@ def create_arrowhead(A, B):
 
 def get_segments_pos(vPos, edgeList):
     return [[vPos[i[0]], vPos[i[1]]] for i in edgeList]
+
 
 def set_marker_data(pos, size, color, pixelScale):
     n = len(pos)
@@ -179,7 +180,7 @@ def set_marker_data(pos, size, color, pixelScale):
     data['a_fg_color'] = 0, 0, 0, 1
 
     if color is None:
-            color = np.random.uniform(0.5, 1., (n, 3))
+        color = np.random.uniform(0.5, 1., (n, 3))
     else:
         color = np.array(list(color))
         data['a_bg_color'] = np.hstack((color, np.ones((n, 1))))

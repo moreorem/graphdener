@@ -47,7 +47,7 @@ class ImportWizard(QWizard):
             regex[0] = regexN
             regex[1] = regexE
             colNames = [self.nodeColumns, self.edgeColumns]
-            print(regex)
+            print("regular expressions: ", regex)
         # Send items to backend
         result = Call.send_paths(self.filepath, regex, self.isSingleFile, colNames)
         # TODO: Make use of return state to enable graph controls

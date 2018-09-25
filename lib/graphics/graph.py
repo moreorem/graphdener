@@ -11,7 +11,7 @@ from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
 from .util import create_arrowhead, get_segments_pos, set_marker_data
 from ..services.actions import Call
-from .elements import GlslBridge
+from .elements import GlslBridge, ArrowHead
 
 SIZE = 20
 
@@ -28,7 +28,7 @@ class Canvas(app.Canvas):
         self.node_pos = node_pos
         self.scale = (1., 1., 1.)
         self.translate = 6.5
-        print("GRAPH")
+
         self.programs = [gloo.Program(*bridge.vertgl),
                          gloo.Program(*bridge.edgegl),
                          gloo.Program(*bridge.argl)]
@@ -43,38 +43,39 @@ class Canvas(app.Canvas):
         VVV--------------- ARROWHEAD PART ----------------VVV
         """
         # arrow index length must be a multiple of 3
-        vPos = self.node_pos[:, 0:2].tolist()
-        linesAB = get_segments_pos(vPos, self.edges)
+        # vPos = self.node_pos[:, 0:2].tolist()
+        # linesAB = get_segments_pos(vPos, self.edges)
+        # BCD = []
+        # for line in linesAB:
+        #     B, C, D = create_arrowhead(line[0], line[1])
+        #     BCD.append(B)
+        #     BCD.append(C)
+        #     BCD.append(D)
 
-        BCD = []
-        for line in linesAB:
-            B, C, D = create_arrowhead(line[0], line[1])
-            BCD.append(B)
-            BCD.append(C)
-            BCD.append(D)
-
-        # Set vertex number for total of arrowheads
-        na = len(BCD)
-        arrow_data = np.zeros(na, dtype=[
-            ('a_position', np.float32, 2),
-            ('a_fg_color', np.float32, 4),
-            ('a_bg_color', np.float32, 3),
-        ])
-
-        arrow_data['a_position'] = np.array(BCD)
-
+        # # Set vertex number for total of arrowheads
+        # na = len(BCD)
+        # print(na)
+        # print(len(self.edges))
+        # arrowData = np.zeros(na, dtype=[
+        #     ('a_position', np.float32, 2),
+        #     ('a_fg_color', np.float32, 4),
+        #     ('a_bg_color', np.float32, 3),
+        # ])
+        # arrowData['a_position'] = np.array(BCD)
+        # print(arrowData)
+        self.arrows = ArrowHead(node_pos, self.edges)
         # Divide arrowhead vertex number by 3 to create color for every three vertices
-        col_n = na // 3
-        c = np.random.uniform(0.5, 1., (col_n, 3))
-        arrow_data['a_bg_color'] = np.repeat(c, [3], axis=0)
+        # col_n = na // 3
+        # c = np.random.uniform(0.5, 1., (col_n, 3))
+        # arrowData['a_bg_color'] = np.repeat(c, [3], axis=0)
 
-        self.vboar = gloo.VertexBuffer(arrow_data)
         """
         ^^^--------------- ARROWHEAD PART END ----------------^^^
         """
         # Initialize Buffers
         self.vbo = gloo.VertexBuffer(nodeData)
         self.index = gloo.IndexBuffer(self.edges)
+        self.vboar = gloo.VertexBuffer(self.arrows.getArrowData())
 
         # Initialize programs
         self._init_programs()
@@ -87,7 +88,7 @@ class Canvas(app.Canvas):
         set_state(clear_color='white', depth_test=False, blend=True,
                   blend_func=('src_alpha', 'one_minus_src_alpha'))
         set_viewport(0, 0, *self.physical_size)
-        self.timer = app.Timer(1/30, connect=self.on_timer)
+        self.timer = app.Timer(1 / 30, connect=self.on_timer)
         self.show()
 
     def on_resize(self, event):
@@ -137,6 +138,8 @@ class Canvas(app.Canvas):
         pos = np.hstack((positions, np.zeros((n, 1))))
 
         self.vbo.set_data(set_marker_data(pos, SIZE, self.color, self.pixel_scale))
+        self.arrows.setArrowPos(pos, self.edges)
+        self.vboar.set_data(self.arrows.getArrowData())
         self.update()
 
     def on_key_press(self, event):
@@ -182,7 +185,7 @@ class Canvas(app.Canvas):
     def _init_arrow_program(self, idx):
         program = self.programs[idx]
         program.bind(self.vboar)
-        program['size'] = 1.
+        # program['size'] = 1.
         program['u_scale'] = self.scale
         return program
 
