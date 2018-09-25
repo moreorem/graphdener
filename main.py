@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
         # FIXME: Add an animate button instead
 
         # Start backend
-        result = Backend.start()
+        # result = Backend.start()
         Call.connect()
 
     def drawGraph(self):

@@ -47,7 +47,7 @@ def alter_conc(list1, list2):
 
 
 def type_to_regex(t):
-    options = {'str': '*', 'qstr': '[^"]*', 'int': '\\d+', '': ''}
+    options = {'str': '*', 'qstr': '[^"]+', 'int': r'\d+', '': ''}
     try:
         return options[t]
     except KeyError as e:
@@ -56,7 +56,7 @@ def type_to_regex(t):
 
 def has_quotes(t):
     if t in ['qstr']:
-        return '"'
+        return r'"'
     else:
         return ''
 
@@ -66,7 +66,6 @@ def get_pattern(columns, delims):
     Create regular expression pattern according to user input
     """
     print("getting pattern")
-    print([name for name in columns])
 
     cols = ['{}{}{}{}'.format(
         has_quotes(COLUMN_TYPES[name]),
@@ -74,7 +73,7 @@ def get_pattern(columns, delims):
         type_to_regex(COLUMN_TYPES[name]) + ')',
         has_quotes(COLUMN_TYPES[name])
     ) for name in columns]
-    print(cols)
+
     # Create the node regular expression string
     return ''.join(alter_conc(delims, cols))
 

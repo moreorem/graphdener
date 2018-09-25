@@ -5,17 +5,14 @@
 """
 Dynamic planar graph layout.
 """
-from os import path as op
 import numpy as np
 import math
 from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
 from .util import create_arrowhead, get_segments_pos, set_marker_data
 from ..services.actions import Call
+from .elements import GlslBridge
 
-this_dir = op.abspath(op.dirname(__file__))
-GLFOLDER = '/glsl/'
-FULLPATH = this_dir + GLFOLDER
 SIZE = 20
 
 
@@ -23,31 +20,19 @@ class Canvas(app.Canvas):
     def __init__(self, edges, node_pos, graphId, color=None, **kwargs):
         # Initialize the canvas for real
         app.Canvas.__init__(self, keys='interactive', **kwargs)
+        bridge = GlslBridge()
         self.graphId = graphId
         self.color = color
         self.constants = []
-        # TODO: Create separate objects for each collection (node, edge, arrow)
-        with open(op.join(FULLPATH, 'n_vert.glsl'), 'rb') as f1:
-            n_vert = f1.read().decode('ASCII')
-        with open(op.join(FULLPATH, 'n_frag.glsl'), 'rb') as f2:
-            n_frag = f2.read().decode('ASCII')
-        with open(op.join(FULLPATH, 'e_vert.glsl'), 'rb') as f3:
-            e_vert = f3.read().decode('ASCII')
-        with open(op.join(FULLPATH, 'e_frag.glsl'), 'rb') as f4:
-            e_frag = f4.read().decode('ASCII')
-        with open(op.join(FULLPATH, 'a_vert.glsl'), 'rb') as f5:
-            a_vert = f5.read().decode('ASCII')
-        with open(op.join(FULLPATH, 'a_frag.glsl'), 'rb') as f6:
-            a_frag = f6.read().decode('ASCII')
-
-        self.programs = [gloo.Program(n_vert, n_frag),
-                         gloo.Program(e_vert, e_frag),
-                         gloo.Program(a_vert, a_frag)]
-
         self.edges = np.array(edges).astype(np.uint32)
         self.node_pos = node_pos
         self.scale = (1., 1., 1.)
         self.translate = 6.5
+        print("GRAPH")
+        self.programs = [gloo.Program(*bridge.vertgl),
+                         gloo.Program(*bridge.edgegl),
+                         gloo.Program(*bridge.argl)]
+
         ps = self.pixel_scale
 
         # Window position

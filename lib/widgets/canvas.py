@@ -28,6 +28,7 @@ class CanvasWidget(QWidget):
     def closeCanvas(self, canvasId):
         try:
             canvas = self.canvasContainer.pop(canvasId)
+            print("Closed canvas with Id", canvas.graphId)
             self.grid.removeWidget(canvas)
             canvas.close()
         except KeyError as e:
@@ -42,13 +43,13 @@ class CanvasWidget(QWidget):
         va = np.array(positions)
         ve = np.hstack((va, np.zeros((len(positions), 1))))
         # Get adjacency list
+
         ed = Call.get_adj(canvasId)
         # Get node types
         types = Call.get_n_type(canvasId)
         c_types = self.__createColors(types)
         # Create the color for each node
         col = [c_types[t] for t in types]
-
         # TODO: Set fixed canvas size for each canvas
         self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed,
                                                 node_pos=ve, color=col,

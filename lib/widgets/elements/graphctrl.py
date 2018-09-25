@@ -38,7 +38,7 @@ class GraphControl(QGridLayout):
         graphId = self.canvasSelector.currentText()
         self.canvasSelector.removeItem(selIdx)
         self.canvasList.pop(int(graphId))
-        return graphId
+        return int(graphId)
 
     def enable(self, value):
         self.drawBtn.setEnabled(value)
