@@ -60,15 +60,19 @@ class ArrowHead():
         self.arrowData['a_bg_color'] = np.repeat(c, [3], axis=0)
 
     def setArrowPos(self, nodePos, edgesIndex):
-        BCD = []
         vPos = nodePos[:, 0:2].tolist()
         linesAB = get_segments_pos(vPos, edgesIndex)
-        for line in linesAB:
+        aPos = np.array(self.__calcArrow(linesAB))
+        self.arrowData['a_position'] = aPos
+
+    def __calcArrow(self, segment):
+        BCD = []
+        for line in segment:
             B, C, D = create_arrowhead(line[0], line[1])
             BCD.append(B)
             BCD.append(C)
             BCD.append(D)
-        self.arrowData['a_position'] = np.array(BCD)
+        return BCD
 
     def getArrowData(self):
         return self.arrowData

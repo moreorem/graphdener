@@ -47,7 +47,6 @@ class ImportWizard(QWizard):
             regex[0] = regexN
             regex[1] = regexE
             colNames = [self.nodeColumns, self.edgeColumns]
-            print("regular expressions: ", regex)
         # Send items to backend
         result = Call.send_paths(self.filepath, regex, self.isSingleFile, colNames)
         # TODO: Make use of return state to enable graph controls
@@ -203,10 +202,10 @@ class Page2b(QWizardPage):
     def __init__(self, parent=None):
         super(Page2b, self).__init__(parent)
         nCols = len(UNIFIEDCNAMES)
-        self.setWindowTitle("Edge phase")
+        self.setWindowTitle("Unified phase")
 
         self.stepLabel = QLabel()
-        self.openFileBtn = QPushButton("Import Edge List")
+        self.openFileBtn = QPushButton("Import Unified")
         self.columnSelectors = []
         self.delimiterFields = []
 

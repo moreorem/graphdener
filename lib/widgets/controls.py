@@ -3,7 +3,8 @@ from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
 # from .elements.algoptions import AlgorithmControl
 # from .elements.graphctrl import GraphControl
-from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl)
+from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl, ColorLegend)
+
 
 
 class ControlWidgets(QFrame):
@@ -27,14 +28,15 @@ class ControlWidgets(QFrame):
         self.__actions()
         self.vbox.addStretch(1)
         self.setFrameShape(QFrame.VLine)
-
         self.setFrameShadow(QFrame.Sunken)
+        self.show()
 
     def __controls(self):
         self.graphCtrl = GraphControl()
         self.algCtrl = AlgorithmControl()
         self.algOpt = AlgorithmOptions()
         self.importCtrl = ImportControl()
+        self.w = ColorLegend(self)
 
     def __layout(self):
         self.vbox = QVBoxLayout()
@@ -43,6 +45,7 @@ class ControlWidgets(QFrame):
         self.vbox.addLayout(self.graphCtrl)
         self.vbox.addLayout(self.algCtrl)
         self.vbox.addLayout(self.algOpt)
+        self.vbox.addWidget(self.w)
 
     def __actions(self):
         # Buttons

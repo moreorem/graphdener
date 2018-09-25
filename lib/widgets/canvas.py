@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import (QWidget, QGridLayout)
 from ..services.actions import Call
 import numpy as np
 from .. import func
-
+from ..widgets.elements.legend import ColorLegend
 
 class CanvasWidget(QWidget):
     def __init__(self, parent=None):

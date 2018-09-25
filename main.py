@@ -2,12 +2,13 @@
 import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
-                             QHBoxLayout, QMessageBox, QFrame)
-from PyQt5.QtGui import QIcon
+                             QHBoxLayout, QMessageBox)
+from PyQt5.QtGui import QIcon, QPainter
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
 from lib.services.backend import Backend
 from lib.services.actions import Call
+from lib.widgets.elements.legend import ColorLegend
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -18,6 +19,7 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
+        self.setMinimumSize(1000,800)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container
@@ -35,7 +37,7 @@ class MainWindow(QMainWindow):
         self.mainFrameLayout.addStretch(1)
 
         # Initialize canvas area
-        self.canvasArea = CanvasWidget()
+        self.canvasArea = CanvasWidget(self)
         # Add canvas to main frame
         self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
@@ -43,7 +45,6 @@ class MainWindow(QMainWindow):
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
         self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
-        # FIXME: Add an animate button instead
 
         # Start backend
         # result = Backend.start()
@@ -78,4 +79,5 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     win = MainWindow()
     win.show()
+
     sys.exit(app.exec_())
