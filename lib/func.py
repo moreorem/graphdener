@@ -1,4 +1,3 @@
-from math import sqrt
 from .statics import COLUMN_TYPES
 # PENDING: Add custom binary length in order to cover bigger dimensions
 

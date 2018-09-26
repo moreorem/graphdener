@@ -31,7 +31,7 @@ class ImportWizard(QWizard):
         self.unifiedDelimiters = []
 
     def onFinished(self):
-        print("Finish")
+        print("Import Finished")
         # Ask input from edge import page
         self.page(1).receiveInputs()
         Call.connect()
@@ -40,7 +40,7 @@ class ImportWizard(QWizard):
         if self.isSingleFile:
             regexU = get_pattern(self.unifiedColumns, self.unifiedDelimiters)
             regex[0] = regexU
-            colNames = self.unifiedColumns
+            colNames = [self.unifiedColumns]
         else:
             regexN = get_pattern(self.nodeColumns, self.nodeDelimiters)
             regexE = get_pattern(self.edgeColumns, self.edgeDelimiters)
@@ -244,21 +244,23 @@ class Page2b(QWizardPage):
     def initializePage(self):
         self.stepLabel.setText("Edges information")
         for comboBox in self.columnSelectors:
-            comboBox.addItems(EDGECNAMES)
+            comboBox.addItems(UNIFIEDCNAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
-            comboBox.selection = NODECNAMES[0]
+            comboBox.selection = UNIFIEDCNAMES[0]
             comboBox.activated.connect(self.handleActivated)
 
         # Initialize textboxes with multi-space expression
         for delimiterField in self.delimiterFields:
             delimiterField.setText('\\s+')
-        self.delimiterFields[0].setText('^')
+        self.delimiterFields[0].setText('')
+        self.delimiterFields[-1].setText('')
+
 
     def handleActivated(self, index):
         self.sender().selection = self.sender().itemText(index)
 
     def receiveInputs(self):
         ''' activates on next button and sends the input to wizard '''
-        self.wizard().edgeDelimiters = [delim.text() for delim in self.delimiterFields]
-        self.wizard().edgeColumns = [comboBox.selection for comboBox in self.columnSelectors]
+        self.wizard().unifiedDelimiters = [delim.text() for delim in self.delimiterFields]
+        self.wizard().unifiedColumns = [comboBox.selection for comboBox in self.columnSelectors]

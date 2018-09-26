@@ -15,15 +15,15 @@ constants:
     - 'Spring constant'
     - 'Time step'
   nodecnames:
-    - 'id'
-    - 'label'
-    - 'type'
+    - 'n_id'
+    - 'n_label'
+    - 'n_type'
   edgecnames:
-    - 'id'
+    - 'e_id'
     - 'from'
     - 'to'
-    - 'label'
-    - 'type'
+    - 'e_label'
+    - 'e_type'
     - 'weight'
 
 graph:
