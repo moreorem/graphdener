@@ -66,6 +66,7 @@ def get_pattern(columns, delims):
     """
     print("getting pattern")
 
+    # FIXME: Too many brackets when removing columns
     cols = ['{}{}{}{}'.format(
         has_quotes(COLUMN_TYPES[name]),
         parse_empty(name),
