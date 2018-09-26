@@ -90,8 +90,7 @@ class ControlWidgets(QFrame):
         self.graphCtrl.enable(True)
 
     def checkImport(self, state):
-        self.isSingleFile = state
-        print(self.isSingleFile)
+        self.isSingleFile = self.importCtrl.singleChk.isChecked()
 
     def modifyIdList(self):
         pass

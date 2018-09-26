@@ -28,6 +28,7 @@ class Call():
         Returns
         -------
         """
+        # col = [(k, v) for k, v in colNames.items()]
         c = cls.client
         result = c.call('import', paths, regex, isSingleFile, colNames)
         return result

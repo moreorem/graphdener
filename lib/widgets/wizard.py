@@ -39,10 +39,12 @@ class ImportWizard(QWizard):
 
         if self.isSingleFile:
             # Ask input from unified import page
+            self.filepath = [self.filepath[1]]
             self.page(0).receiveInputs()
             print("Single file")
             regexU = get_pattern(self.unifiedColumns, self.unifiedDelimiters)
             regex[0] = regexU
+            regex = [regex[0]]
             colInfo = get_col_info(self.unifiedColumns)
         else:
             # Ask input from edge import page
@@ -54,10 +56,7 @@ class ImportWizard(QWizard):
             regex[1] = regexE
             colInfo = get_col_info(self.nodeColumns + self.edgeColumns)
 
-        print(colInfo)
-        print(regex)
         # Send items to backend
-
         result = Call.send_paths(self.filepath, regex, self.isSingleFile, colInfo)
         # TODO: Make use of return state to enable graph controls
         if result == 'paths imported':
