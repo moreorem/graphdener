@@ -27,7 +27,8 @@ COLOR_LIST = [(1.0, 0.8941176, 0.7686275),
                 (0.5411765, 0.1686275, 0.8862745),
                 (0.5764706, 0.4392157, 0.8588235)]
 
-COLUMN_TYPES = {'id': 'int', 'label': 'qstr', 'type': 'qstr', 'weight': 'int', 'from': 'int', 'to': 'int', '-': ''}
+# TODO: Get these constants by making a config function
+COLUMN_TYPES = {'n_id': 'int', 'n_label': 'qstr', 'n_type': 'qstr', 'weight': 'int', 'from': 'int', 'to': 'int', '-': '', 'e_id': 'int', 'e_label': 'qstr', 'e_type': 'qstr'}
 
 ALGS = get_const('alg')
 

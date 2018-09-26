@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog,
                              QComboBox, QWizard, QWizardPage, QLineEdit,
                              QVBoxLayout, QHBoxLayout)
 from ..services.actions import Call
-from ..func import get_pattern
+from ..func import get_pattern, get_col_info
 from ..statics import NODECNAMES, EDGECNAMES, UNIFIEDCNAMES
 
 
@@ -32,23 +32,33 @@ class ImportWizard(QWizard):
 
     def onFinished(self):
         print("Import Finished")
-        # Ask input from edge import page
-        self.page(1).receiveInputs()
+
+
         Call.connect()
         regex = ['', '']
 
         if self.isSingleFile:
+            # Ask input from unified import page
+            self.page(0).receiveInputs()
+            print("Single file")
             regexU = get_pattern(self.unifiedColumns, self.unifiedDelimiters)
             regex[0] = regexU
-            colNames = [self.unifiedColumns]
+            colInfo = get_col_info(self.unifiedColumns)
         else:
+            # Ask input from edge import page
+            self.page(1).receiveInputs()
+
             regexN = get_pattern(self.nodeColumns, self.nodeDelimiters)
             regexE = get_pattern(self.edgeColumns, self.edgeDelimiters)
             regex[0] = regexN
             regex[1] = regexE
-            colNames = [self.nodeColumns, self.edgeColumns]
+            colInfo = get_col_info(self.nodeColumns + self.edgeColumns)
+
+        print(colInfo)
+        print(regex)
         # Send items to backend
-        result = Call.send_paths(self.filepath, regex, self.isSingleFile, colNames)
+
+        result = Call.send_paths(self.filepath, regex, self.isSingleFile, colInfo)
         # TODO: Make use of return state to enable graph controls
         if result == 'paths imported':
             return True
@@ -243,19 +253,21 @@ class Page2b(QWizardPage):
 
     def initializePage(self):
         self.stepLabel.setText("Edges information")
+        i = 0
         for comboBox in self.columnSelectors:
             comboBox.addItems(UNIFIEDCNAMES)
             comboBox.addItem('-')
             # Initialize first selection to avoid error
-            comboBox.selection = UNIFIEDCNAMES[0]
+            comboBox.setCurrentIndex(i)
             comboBox.activated.connect(self.handleActivated)
+            comboBox.selection = comboBox.currentText()
+            i += 1
 
         # Initialize textboxes with multi-space expression
         for delimiterField in self.delimiterFields:
             delimiterField.setText('\\s+')
         self.delimiterFields[0].setText('')
         self.delimiterFields[-1].setText('')
-
 
     def handleActivated(self, index):
         self.sender().selection = self.sender().itemText(index)

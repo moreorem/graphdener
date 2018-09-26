@@ -84,6 +84,11 @@ def parse_empty(name):
             return '(?P<' + name + '>'
 
 
-if __name__ == '__main__':
-    parse_empty('sadf')
-    print(a)
+# Returns a dictionary of column names and types to be mapped in the backend for recognizing regex captures
+def get_col_info(columnNames):
+    result = {}
+    for name in columnNames:
+        if name not in ['-', '']:
+            result[name] = COLUMN_TYPES[name]
+    return result
+

@@ -3,7 +3,7 @@ import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QHBoxLayout, QMessageBox)
-from PyQt5.QtGui import QIcon, QPainter
+from PyQt5.QtGui import QIcon
 from lib.widgets.controls import ControlWidgets
 from lib.widgets.canvas import CanvasWidget
 from lib.services.backend import Backend
@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        self.setMinimumSize(1000,800)
+        self.setMinimumSize(800, 600)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # Initialize main container

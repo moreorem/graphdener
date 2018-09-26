@@ -22,3 +22,11 @@ def get_const(section):
         cfg = yaml.load(ymlfile)
     const = cfg['constants'][section]
     return const
+
+
+def get_type(section):
+    with open(MAIN_DIRECTORY + CONFIG_NAME) as ymlfile:
+        cfg = yaml.load(ymlfile)
+    const = cfg['types'][section]
+    return const
+
