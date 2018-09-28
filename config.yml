@@ -20,12 +20,24 @@ constants:
     - 'n_type'
   edgecnames:
     - 'e_id'
-    - 'from'
-    - 'to'
+    - 'e_from'
+    - 'e_to'
     - 'e_label'
     - 'e_type'
-    - 'weight'
-
+    - 'e_weight'
+  columntypes:
+    {
+      'n_id': 'int',
+      'n_label': 'qstr',
+      'n_type': 'qstr',
+      'e_weight': 'int',
+      'e_from': 'int',
+      'e_to': 'int',
+      '-': '',
+      'e_id': 'int',
+      'e_label': 'qstr',
+      'e_type': 'qstr'
+    }
 graph:
   marker:
     - size: 20
