@@ -44,9 +44,9 @@ def alter_conc(list1, list2):
     except ValueError as e:
         print("list2 must be -1 shorter than list1", e)
 
-
+# FIXME: Ideal regex is this: (?P<n_id>\d+)\s+"(?P<n_label>[^"]*)"(?:\s+"(?P<n_type>[^"]*)")?
 def type_to_regex(t):
-    options = {'str': '*' + ')', 'qstr': '[^"]+' + ')', 'int': r'\d+' + ')', '': ''}
+    options = {'str': '*' + ')', 'qstr': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
     try:
         return options[t]
     except KeyError as e:
@@ -55,7 +55,8 @@ def type_to_regex(t):
 
 def has_quotes(t):
     if t in ['qstr']:
-        return r'"'
+        # Remove ? if there is problem
+        return r'"?'
     else:
         return ''
 
