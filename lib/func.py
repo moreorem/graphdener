@@ -69,7 +69,6 @@ def get_pattern(columns, delims):
     print("getting pattern")
     # Rename columns that have the same names to prevent regex error
     rename_duplicates(columns)
-    print(columns)
     # FIXME: Too many brackets when removing columns
     cols = ['{}{}{}{}'.format(
         has_quotes(COLUMN_TYPES[clean(name)]),
@@ -77,7 +76,6 @@ def get_pattern(columns, delims):
         type_to_regex(COLUMN_TYPES[clean(name)]),
         has_quotes(COLUMN_TYPES[clean(name)])
     ) for name in columns]
-    print(cols)
     # Create the node regular expression string
     return ''.join(alter_conc(delims, cols))
 
@@ -115,10 +113,8 @@ def clean(name):
     if len(name) > 1:
         try:
             if type(eval(name[-1])) == int:
-                print(name[:-1])
                 return name[:-1]
         except:
             return name
     else:
-        print(name)
         return name

@@ -12,7 +12,7 @@ from lib.widgets.elements.legend import ColorLegend
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
-
+# PENDING: Add color coded legend for the node types
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()

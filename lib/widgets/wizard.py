@@ -33,10 +33,9 @@ class ImportWizard(QWizard):
     def onFinished(self):
         print("Import Finished")
 
-
         Call.connect()
         regex = ['', '']
-
+        # PENDING: Clear everything that has todo with singlefile condition
         if self.isSingleFile:
             # Ask input from unified import page
             self.filepath = [self.filepath[1]]
