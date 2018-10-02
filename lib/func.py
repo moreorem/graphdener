@@ -1,5 +1,6 @@
 from .statics import COLUMN_TYPES
-# PENDING: Add custom binary length in order to cover bigger dimensions
+# Counter counts the number of occurrences of each item
+from collections import Counter
 
 
 def iterate_grid(d):
@@ -66,14 +67,17 @@ def get_pattern(columns, delims):
     Create regular expression pattern according to user input
     """
     print("getting pattern")
-
+    # Rename columns that have the same names to prevent regex error
+    rename_duplicates(columns)
+    print(columns)
     # FIXME: Too many brackets when removing columns
     cols = ['{}{}{}{}'.format(
-        has_quotes(COLUMN_TYPES[name]),
+        has_quotes(COLUMN_TYPES[clean(name)]),
         parse_empty(name),
-        type_to_regex(COLUMN_TYPES[name]),
-        has_quotes(COLUMN_TYPES[name])
+        type_to_regex(COLUMN_TYPES[clean(name)]),
+        has_quotes(COLUMN_TYPES[clean(name)])
     ) for name in columns]
+    print(cols)
     # Create the node regular expression string
     return ''.join(alter_conc(delims, cols))
 
@@ -89,7 +93,32 @@ def parse_empty(name):
 def get_col_info(columnNames):
     result = {}
     for name in columnNames:
+        name = clean(name)
         if name not in ['-', '']:
             result[name] = COLUMN_TYPES[name]
     return result
 
+
+def rename_duplicates(mylist):
+    # so we have: {'name':3, 'state':1, 'city':1, 'zip':2}
+    counts = Counter(mylist)
+    for s, num in counts.items():
+        # ignore strings that only appear once
+        if num > 1 and len(s) > 1:
+            # suffix starts at 1 and increases by 1 each time
+            for suffix in range(1, num + 1):
+                # replace each appearance
+                mylist[mylist.index(s)] = s + str(suffix)
+
+
+def clean(name):
+    if len(name) > 1:
+        try:
+            if type(eval(name[-1])) == int:
+                print(name[:-1])
+                return name[:-1]
+        except:
+            return name
+    else:
+        print(name)
+        return name
