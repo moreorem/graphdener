@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         # Initialize canvas area
         self.canvasArea = CanvasWidget(self)
         # Add canvas to main frame
-        self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
+        # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
 
         # Draw / Close Button action

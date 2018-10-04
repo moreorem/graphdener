@@ -10,12 +10,6 @@ from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportC
 class ControlWidgets(QFrame):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
-    # TODO: Use signals to notify the main window instead of connecting in it
-    # canvasChanged = pyqtSignal(int)
-    # self.canvasChanged.emit(self.canvas) //in method
-    # self.controls.canvasChanged.connect() // in main
-    # vComboChanged = pyqtSignal(str)
-
     # PENDING: Fix maximum controls width
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
@@ -52,7 +46,7 @@ class ControlWidgets(QFrame):
         self.algCtrl.algBtn.clicked.connect(self.applyAlg)
         self.importCtrl.importBtn.clicked.connect(self.import_wizard)
         # Checkboxes
-        self.importCtrl.singleChk.stateChanged.connect(self.checkImport)
+        # self.importCtrl.singleChk.stateChanged.connect(self.checkImport)
         # Dropdowns
         self.algCtrl.algSelector.activated[str].connect(self.algSelect)
         self.graphCtrl.canvasSelector.activated[int].connect(self.graphCtrl.selectCanvas)
@@ -84,7 +78,7 @@ class ControlWidgets(QFrame):
 
     # Activates the import wizard
     def import_wizard(self):
-        exPopup = ImportWizard(self, self.isSingleFile)
+        exPopup = ImportWizard(self)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
         self.graphCtrl.enable(True)

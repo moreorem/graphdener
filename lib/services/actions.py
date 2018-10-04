@@ -12,7 +12,7 @@ class Call():
             Call.client = RPCClient("127.0.0.1", port=6000, timeout=3000)
 
     @classmethod
-    def send_paths(cls, paths, regex, isSingleFile, colNames):
+    def send_paths(cls, paths, regex, colNames):
         """
         Send paths of node and edge file to be imported by the backend.
 
@@ -30,7 +30,7 @@ class Call():
         """
         # col = [(k, v) for k, v in colNames.items()]
         c = cls.client
-        result = c.call('import', paths, regex, isSingleFile, colNames)
+        result = c.call('import', paths, regex, colNames)
         return result
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
@@ -65,25 +65,27 @@ class Call():
             print(e)
         return result
 
-    @classmethod
-    def get_vert(cls, detail_type, canvas_id):
-        c = cls.client
-        print("getting vertex...")
-        try:
-            result = c.call('get', 'vert', detail_type, canvas_id)
-        except EnvironmentError as e:
-            result = e
-        return result
+    # PENDING: Deprecated
+    # @classmethod
+    # def get_vert(cls, detail_type, canvas_id):
+    #     c = cls.client
+    #     print("getting vertex...")
+    #     try:
+    #         result = c.call('get', 'vert', detail_type, canvas_id)
+    #     except EnvironmentError as e:
+    #         result = e
+    #     return result
 
-    @classmethod
-    def get_edge(cls, detail_type, canvas_id):
-        c = cls.client
-        print("getting edges...")
-        try:
-            result = c.call('get', 'edge', detail_type, canvas_id)
-        except EnvironmentError as e:
-            result = e
-        return result
+    # PENDING: Deprecated
+    # @classmethod
+    # def get_edge(cls, detail_type, canvas_id):
+    #     c = cls.client
+    #     print("getting edges...")
+    #     try:
+    #         result = c.call('get', 'edge', detail_type, canvas_id)
+    #     except EnvironmentError as e:
+    #         result = e
+    #     return result
 
     # NEW ORIGIN
     @classmethod

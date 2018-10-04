@@ -12,11 +12,9 @@ class ImportControl(QGridLayout):
 
     def __controls(self):
         self.importBtn = QPushButton("Import Wizard")
-        self.singleChk = QCheckBox("Single page import")
 
     def __layout(self):
         self.addWidget(self.importBtn, 0, 0)
-        self.addWidget(self.singleChk, 0, 1)
 
     def enabled(self, value):
         if not value:

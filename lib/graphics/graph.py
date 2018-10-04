@@ -13,7 +13,7 @@ from .util import create_arrowhead, get_segments_pos, set_marker_data
 from ..services.actions import Call
 from .elements import GlslBridge, ArrowHead
 
-SIZE = 20
+MARKER_SIZE = 30
 
 
 class Canvas(app.Canvas):
@@ -38,40 +38,10 @@ class Canvas(app.Canvas):
         # Window position
         self.position = 50, 50
         # Initialize node data
-        nodeData = set_marker_data(node_pos, SIZE, self.color, ps)
-        """
-        VVV--------------- ARROWHEAD PART ----------------VVV
-        """
-        # arrow index length must be a multiple of 3
-        # vPos = self.node_pos[:, 0:2].tolist()
-        # linesAB = get_segments_pos(vPos, self.edges)
-        # BCD = []
-        # for line in linesAB:
-        #     B, C, D = create_arrowhead(line[0], line[1])
-        #     BCD.append(B)
-        #     BCD.append(C)
-        #     BCD.append(D)
+        nodeData = set_marker_data(node_pos, MARKER_SIZE, self.color, ps)
 
-        # # Set vertex number for total of arrowheads
-        # na = len(BCD)
-        # print(na)
-        # print(len(self.edges))
-        # arrowData = np.zeros(na, dtype=[
-        #     ('a_position', np.float32, 2),
-        #     ('a_fg_color', np.float32, 4),
-        #     ('a_bg_color', np.float32, 3),
-        # ])
-        # arrowData['a_position'] = np.array(BCD)
-        # print(arrowData)
-        self.arrows = ArrowHead(node_pos, self.edges)
-        # Divide arrowhead vertex number by 3 to create color for every three vertices
-        # col_n = na // 3
-        # c = np.random.uniform(0.5, 1., (col_n, 3))
-        # arrowData['a_bg_color'] = np.repeat(c, [3], axis=0)
+        self.arrows = ArrowHead(node_pos, self.edges, MARKER_SIZE)
 
-        """
-        ^^^--------------- ARROWHEAD PART END ----------------^^^
-        """
         # Initialize Buffers
         self.vbo = gloo.VertexBuffer(nodeData)
         self.index = gloo.IndexBuffer(self.edges)
@@ -131,13 +101,11 @@ class Canvas(app.Canvas):
         self.update()
 
     def on_timer(self, event):
-        # Call.apply_alg(self.graphId, 'force directed', *self.constants)
-
         positions = Call.get_n_pos(self.graphId)
         n = len(positions)
         pos = np.hstack((positions, np.zeros((n, 1))))
 
-        self.vbo.set_data(set_marker_data(pos, SIZE, self.color, self.pixel_scale))
+        self.vbo.set_data(set_marker_data(pos, MARKER_SIZE, self.color, self.pixel_scale))
         self.arrows.setArrowPos(pos, self.edges)
         self.vboar.set_data(self.arrows.getArrowData())
         self.update()
@@ -185,7 +153,6 @@ class Canvas(app.Canvas):
     def _init_arrow_program(self, idx):
         program = self.programs[idx]
         program.bind(self.vboar)
-        # program['size'] = 1.
         program['u_scale'] = self.scale
         return program
 

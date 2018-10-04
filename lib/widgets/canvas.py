@@ -12,7 +12,7 @@ class CanvasWidget(QWidget):
         self.__layout()
         self.canvasContainer = {}
         self.gridslot = [i for i in func.iterate_grid(2)]
-        self.setMinimumSize(200, 200)
+        self.setMinimumSize(400, 200)
 
     def __controls(self):
         self.canvasWidget = QWidget()
@@ -20,7 +20,6 @@ class CanvasWidget(QWidget):
     def __layout(self):
         self.grid = QGridLayout()
         self.setLayout(self.grid)
-        self.grid.setSpacing(10)
 
     def get_layout(self):
         return self.grid
@@ -55,7 +54,7 @@ class CanvasWidget(QWidget):
         self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed,
                                                 node_pos=ve, color=col,
                                                 graphId=canvasId).native
-        self.grid.addWidget(self.canvasContainer[canvasId],*self.gridslot[canvasId])
+        self.grid.addWidget(self.canvasContainer[canvasId], *self.gridslot[canvasId])
 
         # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 

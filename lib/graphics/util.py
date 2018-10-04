@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-def create_arrowhead(A, B):
+def create_arrowhead(A, B, marker_size):
     """
     Use trigonometry to calculate the arrowheads vertex positions according to the edge direction.
 
@@ -24,7 +24,7 @@ def create_arrowhead(A, B):
     mag = math.sqrt(AB[0]**2.0 + AB[1]**2.0)
     if mag == 0:
         mag = 1.0
-    d = 0.012  # Distance from node
+    d = (marker_size - 5) / 1000.0 #0.045  # Distance from node
 
     u0 = AB[0] / mag
     u1 = AB[1] / mag

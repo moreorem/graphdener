@@ -34,15 +34,16 @@ class ArrowHead():
     represents number of edges
     '''
 
-    def __init__(self, nodePos, edges):
+    def __init__(self, nodePos, edges, marker_size):
         # number of total points to draw n arrows is 3 * n
         # na = 3 * n
         BCD = []
+        self.marker_size = marker_size
         vPos = nodePos[:, 0:2].tolist()
         linesAB = get_segments_pos(vPos, edges)
 
         for line in linesAB:
-            B, C, D = create_arrowhead(line[0], line[1])
+            B, C, D = create_arrowhead(line[0], line[1], self.marker_size)
             BCD.append(B)
             BCD.append(C)
             BCD.append(D)
@@ -68,7 +69,7 @@ class ArrowHead():
     def __calcArrow(self, segment):
         BCD = []
         for line in segment:
-            B, C, D = create_arrowhead(line[0], line[1])
+            B, C, D = create_arrowhead(line[0], line[1], self.marker_size)
             BCD.append(B)
             BCD.append(C)
             BCD.append(D)
