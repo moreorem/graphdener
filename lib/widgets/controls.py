@@ -83,8 +83,8 @@ class ControlWidgets(QFrame):
         exPopup.show()
         self.graphCtrl.enable(True)
 
-    def checkImport(self, state):
-        self.isSingleFile = self.importCtrl.singleChk.isChecked()
+    # def checkImport(self, state):
+    #     self.isSingleFile = self.importCtrl.singleChk.isChecked()
 
     def modifyIdList(self):
         pass

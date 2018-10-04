@@ -45,6 +45,8 @@ class ImportWizard(QWizard):
 
         # Send items to backend
         result = Call.send_paths(self.filepath, regex, colInfo)
+        r = Call.get_stat(0)
+        print(r)
         # TODO: Make use of return state to enable graph controls
         if result == 'paths imported':
             return True

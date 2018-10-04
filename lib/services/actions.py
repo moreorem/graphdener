@@ -65,28 +65,6 @@ class Call():
             print(e)
         return result
 
-    # PENDING: Deprecated
-    # @classmethod
-    # def get_vert(cls, detail_type, canvas_id):
-    #     c = cls.client
-    #     print("getting vertex...")
-    #     try:
-    #         result = c.call('get', 'vert', detail_type, canvas_id)
-    #     except EnvironmentError as e:
-    #         result = e
-    #     return result
-
-    # PENDING: Deprecated
-    # @classmethod
-    # def get_edge(cls, detail_type, canvas_id):
-    #     c = cls.client
-    #     print("getting edges...")
-    #     try:
-    #         result = c.call('get', 'edge', detail_type, canvas_id)
-    #     except EnvironmentError as e:
-    #         result = e
-    #     return result
-
     # NEW ORIGIN
     @classmethod
     def get_adj(cls, canvas_id):
@@ -117,6 +95,17 @@ class Call():
             result = c.call('getnpos', canvas_id)
         except EnvironmentError as e:
             result = e
+        return result
+
+    @classmethod
+    def get_stat(cls, canvas_id):
+        c = cls.client
+        print("getting stats...")
+        try:
+            result = c.call('getstat')
+        except EnvironmentError as e:
+            result = e
+        print(result)
         return result
 
 
