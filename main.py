@@ -24,7 +24,6 @@ class MainWindow(QMainWindow):
 
         # Initialize main container
         self.mainFrame = QWidget()
-        self.setCentralWidget(self.mainFrame)
         # Set main container's layout
         self.mainFrameLayout = QHBoxLayout()
         self.mainFrame.setLayout(self.mainFrameLayout)
@@ -41,6 +40,7 @@ class MainWindow(QMainWindow):
         # Add canvas to main frame
         # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
+        self.setCentralWidget(self.mainFrame)
 
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)

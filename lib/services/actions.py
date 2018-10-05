@@ -105,7 +105,6 @@ class Call():
             result = c.call('getstat')
         except EnvironmentError as e:
             result = e
-        print(result)
         return result
 
 

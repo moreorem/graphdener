@@ -139,6 +139,7 @@ class Canvas(app.Canvas):
     def _init_node_program(self, idx):
         program = self.programs[idx]
         program.bind(self.vbo)
+        program['a_size'] = MARKER_SIZE
         program['u_size'] = 1
         program['u_antialias'] = 1
         program['u_scale'] = self.scale
@@ -146,6 +147,7 @@ class Canvas(app.Canvas):
 
     def _init_edge_program(self, idx):
         program = self.programs[idx]
+        program['opacity'] = 0.9
         program.bind(self.vbo)
         program['u_scale'] = self.scale
         return program

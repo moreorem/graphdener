@@ -42,9 +42,9 @@ class ImportWizard(QWizard):
         regex[0] = regexN
         regex[1] = regexE
         colInfo = get_col_info(self.nodeColumns + self.edgeColumns)
-
         # Send items to backend
         result = Call.send_paths(self.filepath, regex, colInfo)
+        # TODO: Find why it prints two times
         r = Call.get_stat(0)
         print(r)
         # TODO: Make use of return state to enable graph controls
