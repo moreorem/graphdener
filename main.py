@@ -2,15 +2,17 @@
 import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
-                             QHBoxLayout, QMessageBox)
+                             QHBoxLayout, QMessageBox, QStatusBar)
 from PyQt5.QtGui import QIcon
-from lib.widgets.controls import ControlWidgets
-from lib.widgets.canvas import CanvasWidget
+from lib.widgets import (ControlWidgets, CanvasWidget, StatusBar)
+# from lib.widgets.controls import ControlWidgets
+# from lib.widgets.canvas import CanvasWidget
 from lib.services.backend import Backend
 from lib.services.actions import Call
-from lib.widgets.elements.legend import ColorLegend
+# from lib.widgets.elements.legend import ColorLegend
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
+
 
 # PENDING: Add color coded legend for the node types
 class MainWindow(QMainWindow):
@@ -30,6 +32,7 @@ class MainWindow(QMainWindow):
 
         # Initialize control group
         self.controls = ControlWidgets()
+        self.statusBar = QStatusBar()
         # Add control group to main frame
         self.mainFrameLayout.addLayout(self.controls.get_layout())
         self.mainFrameLayout.addWidget(self.controls)
@@ -40,6 +43,7 @@ class MainWindow(QMainWindow):
         # Add canvas to main frame
         # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
         self.mainFrameLayout.addWidget(self.canvasArea)
+        # self.mainFrameLayout.addWidget(self.statusBar)
         self.setCentralWidget(self.mainFrame)
 
         # Draw / Close Button action

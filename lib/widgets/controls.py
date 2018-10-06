@@ -1,16 +1,14 @@
 from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QCheckBox, QFrame)
 from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
-# from .elements.algoptions import AlgorithmControl
-# from .elements.graphctrl import GraphControl
 from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl, ColorLegend)
-
 
 
 class ControlWidgets(QFrame):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
     # PENDING: Fix maximum controls width
+    # PENDING: Decide on wether to use qwidget or qframe
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
         self.maxCanvasId = 0
@@ -22,7 +20,7 @@ class ControlWidgets(QFrame):
         self.__actions()
         self.vbox.addStretch(1)
         self.setFrameShape(QFrame.VLine)
-        self.setFrameShadow(QFrame.Sunken)
+        # self.setFrameShadow(QFrame.Sunken)
         self.show()
 
     def __controls(self):
@@ -45,8 +43,6 @@ class ControlWidgets(QFrame):
         # Buttons
         self.algCtrl.algBtn.clicked.connect(self.applyAlg)
         self.importCtrl.importBtn.clicked.connect(self.import_wizard)
-        # Checkboxes
-        # self.importCtrl.singleChk.stateChanged.connect(self.checkImport)
         # Dropdowns
         self.algCtrl.algSelector.activated[str].connect(self.algSelect)
         self.graphCtrl.canvasSelector.activated[int].connect(self.graphCtrl.selectCanvas)
@@ -56,12 +52,14 @@ class ControlWidgets(QFrame):
 
     def algSelect(self, text):
         self.algorithm = text
-        print(self.algorithm)
-
         if text == 'force directed':
-            self.algOpt.enabled(True)
+            self.algOpt.enabled('forced', True)
+        elif text == 'random':
+            self.algOpt.enabled('forced', False)
+            self.algOpt.enabled('rand', True)
         else:
-            self.algOpt.enabled(False)
+            self.algOpt.enabled('forced', False)
+            self.algOpt.enabled('rand', False)
 
     def newGraph(self, graphId):
         # Informs the graph control group to update graph id
@@ -71,10 +69,15 @@ class ControlWidgets(QFrame):
         return self.graphCtrl.delGraphId()
 
     def applyAlg(self):
-        forceText = self.algOpt.get_text()
+        if self.algorithm == 'force directed':
+            algText = self.algOpt.get_text('force directed')
+        elif self.algorithm == 'random':
+            algText = self.algOpt.get_text('random')
+        else:
+            algText = ['']
         # Applies distribution algorithm on selected graph
         print("apply {}".format(self.algorithm))
-        Call.apply_alg(int(self.selectedCanvasId), self.algorithm, *forceText)
+        Call.apply_alg(int(self.selectedCanvasId), self.algorithm, *algText)
 
     # Activates the import wizard
     def import_wizard(self):
@@ -82,9 +85,6 @@ class ControlWidgets(QFrame):
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
         self.graphCtrl.enable(True)
-
-    # def checkImport(self, state):
-    #     self.isSingleFile = self.importCtrl.singleChk.isChecked()
 
     def modifyIdList(self):
         pass

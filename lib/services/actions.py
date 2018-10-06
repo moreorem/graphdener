@@ -43,7 +43,8 @@ class Call():
         elif algorithm == "circular":
             c.call('ciralg', graphId)
         elif algorithm == "random":
-            c.call('random', graphId)
+            parameters = int(eval(*args))
+            c.call('random', graphId, parameters)
 
     @classmethod
     def create_graph(cls):
