@@ -45,7 +45,7 @@ class ControlWidgets(QFrame):
         self.importCtrl.importBtn.clicked.connect(self.import_wizard)
         # Dropdowns
         self.algCtrl.algSelector.activated[str].connect(self.algSelect)
-        self.graphCtrl.canvasSelector.activated[int].connect(self.graphCtrl.selectCanvas)
+        self.graphCtrl.canvasSelector.activated[int].connect(self.selectCanvas)
 
     def get_layout(self):
         return self.vbox
@@ -67,6 +67,12 @@ class ControlWidgets(QFrame):
 
     def killGraph(self):
         return self.graphCtrl.delGraphId()
+
+    def selectCanvas(self, data):
+        self.selectedCanvasId = data
+        r = Call.get_stat(0)
+        self.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
+        self.importCtrl.edgeCount.setText("Edges: " + str(r[0]))
 
     def applyAlg(self):
         if self.algorithm == 'force directed':

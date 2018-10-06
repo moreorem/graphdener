@@ -24,9 +24,6 @@ class GraphControl(QGridLayout):
         self.addWidget(self.drawBtn, 2, 0)
         self.addWidget(self.closeBtn, 2, 1)
 
-    def selectCanvas(self, data):
-        self.selectedCanvasId = data
-
     def addGraphId(self, graphId):
         self.canvasSelector.addItem(str(graphId))
         self.canvasList.append(graphId)
