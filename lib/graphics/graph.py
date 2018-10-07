@@ -9,11 +9,10 @@ import numpy as np
 import math
 from vispy import gloo, app
 from vispy.gloo import set_viewport, set_state, clear
-from .util import create_arrowhead, get_segments_pos, set_marker_data
+from .util import set_marker_data
 from ..services.actions import Call
 from .elements import GlslBridge, ArrowHead
-
-MARKER_SIZE = 30
+from ..statics import MARKER_SIZE
 
 
 class Canvas(app.Canvas):
@@ -157,15 +156,3 @@ class Canvas(app.Canvas):
         program.bind(self.vboar)
         program['u_scale'] = self.scale
         return program
-
-
-if __name__ == '__main__':
-    n = 1000000
-    ne = 50000
-    ed = np.random.randint(size=(ne, 2), low=0,
-                           high=n).astype(np.uint32)
-    n_p = np.hstack((20.25 * np.random.randn(n, 2),
-                     np.zeros((n, 1))))
-    vPos = n_p[:, 0:2].tolist()
-    c = Canvas(title="Graph", edges=ed, node_pos=n_p)
-    app.run()

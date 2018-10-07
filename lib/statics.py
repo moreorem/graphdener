@@ -1,4 +1,4 @@
-from lib.services.config import get_const
+from lib.services.config import (get_const, get_attr)
 
 # Color list for node types
 COLOR_LIST = [(1.0, 0.8941176, 0.7686275),
@@ -39,4 +39,5 @@ NODECNAMES = get_const('nodecnames')
 EDGECNAMES = get_const('edgecnames')
 
 UNIFIEDCNAMES = NODECNAMES + EDGECNAMES
-# MARKERSIZE = get_const('size')
+
+MARKER_SIZE = get_attr('marker_size')

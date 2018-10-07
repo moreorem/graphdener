@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QStatusBar
+from PyQt5.QtWidgets import (QStatusBar, QHBoxLayout)
 
 
 class StatusBar(QStatusBar):
@@ -10,12 +10,18 @@ class StatusBar(QStatusBar):
         super(StatusBar, self).__init__(parent)
         self.__controls()
         self.__layout()
-        self.__actions()
+        # self.__actions()
         self.vbox.addStretch(1)
 
     def __controls(self):
         pass
+
     def __layout(self):
-        self.vbox = QVBoxLayout()
+        self.vbox = QHBoxLayout()
         # Add subcomponents
 
+    def write_out(self, msg):
+        self.showMessage(str(msg))
+
+    def get_layout(self):
+        self.vbox

@@ -27,6 +27,12 @@ def get_const(section):
 def get_type(section):
     with open(MAIN_DIRECTORY + CONFIG_NAME) as ymlfile:
         cfg = yaml.load(ymlfile)
-    const = cfg['types'][section]
-    return const
+    typ = cfg['types'][section]
+    return typ
 
+
+def get_attr(section):
+    with open(MAIN_DIRECTORY + CONFIG_NAME) as ymlfile:
+        cfg = yaml.load(ymlfile)
+    attr = cfg['graph'][section]
+    return attr

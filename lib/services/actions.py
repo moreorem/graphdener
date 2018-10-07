@@ -5,6 +5,7 @@ from mprpc import RPCClient
 class Call():
     ''' This class is used to communicate with the rust backend '''
     client = None
+    console = None
 
     @staticmethod
     def connect():
@@ -49,7 +50,8 @@ class Call():
     @classmethod
     def create_graph(cls):
         c = cls.client
-        print("Creating graph...")
+        msg = "Creating graph..."
+        cls.console_out(msg)
         try:
             result = c.call('newgraph')
         except EnvironmentError as e:
@@ -117,3 +119,10 @@ class Call():
         except EnvironmentError as e:
             result = e
         return result
+
+    @staticmethod
+    def console_out(msg):
+        Call.console.write_out(msg)
+        print(msg)
+
+# class Console():

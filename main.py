@@ -2,7 +2,7 @@
 import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
-                             QHBoxLayout, QMessageBox, QStatusBar)
+                             QHBoxLayout, QVBoxLayout, QMessageBox)
 from PyQt5.QtGui import QIcon
 from lib.widgets import (ControlWidgets, CanvasWidget, StatusBar)
 # from lib.widgets.controls import ControlWidgets
@@ -24,34 +24,41 @@ class MainWindow(QMainWindow):
         self.setMinimumSize(800, 600)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
+        # BUILD THE GUI FROM OUTER TO INNER LAYOUTS
         # Initialize main container
-        self.mainFrame = QWidget()
+        self.totalWidget = QWidget()
+        # Initialize status bar
+        self.statusBar = StatusBar(self)
         # Set main container's layout
+        self.totalLayout = QVBoxLayout()
+        self.totalWidget.setLayout(self.totalLayout)
+        # Set controls and canvas containers layout
         self.mainFrameLayout = QHBoxLayout()
-        self.mainFrame.setLayout(self.mainFrameLayout)
-
+        # Add mainframe layout to total
+        self.totalLayout.addLayout(self.mainFrameLayout)
+        # Add status bar widget to total
+        self.totalLayout.addWidget(self.statusBar)
         # Initialize control group
-        self.controls = ControlWidgets()
-        self.statusBar = QStatusBar()
+        self.controls = ControlWidgets(self)
+        # Initialize canvas area
+        self.canvasArea = CanvasWidget(self)
         # Add control group to main frame
         self.mainFrameLayout.addLayout(self.controls.get_layout())
         self.mainFrameLayout.addWidget(self.controls)
-        self.mainFrameLayout.addStretch(1)
-
-        # Initialize canvas area
-        self.canvasArea = CanvasWidget(self)
-        # Add canvas to main frame
-        # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
+        # Add canvase area to main frame
         self.mainFrameLayout.addWidget(self.canvasArea)
-        # self.mainFrameLayout.addWidget(self.statusBar)
-        self.setCentralWidget(self.mainFrame)
+        # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
+
+        self.setCentralWidget(self.totalWidget)
+        self.mainFrameLayout.addStretch(1)
 
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
         self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
 
+        Call.console = self.statusBar
         # Start backend
-        # result = Backend.start()
+        # Backend.start()
         Call.connect()
 
     def drawGraph(self):

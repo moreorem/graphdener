@@ -27,8 +27,6 @@ class GraphControl(QGridLayout):
     def addGraphId(self, graphId):
         self.canvasSelector.addItem(str(graphId))
         self.canvasList.append(graphId)
-        print(self.canvasList)
-        return graphId
 
     def delGraphId(self):
         selIdx = self.canvasSelector.currentIndex()

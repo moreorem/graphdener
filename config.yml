@@ -39,6 +39,5 @@ constants:
       'e_type': 'qstr'
     }
 graph:
-  marker:
-    - size: 20
+  marker_size: 30
   edge:
