@@ -108,4 +108,12 @@ class Call():
             result = e
         return result
 
-
+    @classmethod
+    def kill_graph(cls, canvas_id):
+        c = cls.client
+        print("Destroying graph...")
+        try:
+            result = c.call('killgraph', canvas_id)
+        except EnvironmentError as e:
+            result = e
+        return result
