@@ -62,13 +62,10 @@ class MainWindow(QMainWindow):
         Call.connect()
 
     def drawGraph(self):
-        # Inform backend to create and initialize the graph
-        graphId = Call.create_graph()
-        print("THE NEW GRAPH IS {}".format(graphId))
-        Call.populate_graph(graphId)
+        # Tell canvaswidget to do the draw process
+        graphId = self.canvasArea.createCanvas()
+        # Inform controls about changes
         self.controls.newGraph(graphId)
-        # Draw the graph on a new canvas with that ID
-        self.canvasArea.createCanvas(graphId)
 
     def killGraph(self):
         graphId = self.controls.killGraph()
@@ -79,7 +76,6 @@ class MainWindow(QMainWindow):
         quit_msg = "Are you sure you want to exit the program?"
         reply = QMessageBox.question(
             self, 'Message', quit_msg, QMessageBox.Yes, QMessageBox.No)
-
         if reply == QMessageBox.Yes:
             Backend.stop()
         else:

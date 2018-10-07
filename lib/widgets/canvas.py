@@ -5,6 +5,7 @@ import numpy as np
 from .. import func
 from ..widgets.elements.legend import ColorLegend
 
+
 class CanvasWidget(QWidget):
     def __init__(self, parent=None):
         super(CanvasWidget, self).__init__(parent)
@@ -34,28 +35,26 @@ class CanvasWidget(QWidget):
         except KeyError as e:
             print("Cannot find canvas Id", e)
 
-    def createCanvas(self, canvasId):
-        if canvasId in self.canvasContainer.keys():
-            print("Canvas with that id already exists!")
-            return canvasId
-        print("Drawing canvas with id: {}...".format(canvasId))
-        positions = Call.get_n_pos(canvasId)
-        va = np.array(positions)
-        ve = np.hstack((va, np.zeros((len(positions), 1))))
-        # Get adjacency list
-        ed = Call.get_adj(canvasId)
-        # Get node types
-        types = Call.get_n_type(canvasId)
-        c_types = self.__createColors(types)
-        # Create the color for each node
-        col = [c_types[t] for t in types]
-        # TODO: Set fixed canvas size for each canvas
-        self.canvasContainer[canvasId] = Canvas(title='Visualizer', edges=ed,
-                                                node_pos=ve, color=col,
-                                                graphId=canvasId).native
-        self.grid.addWidget(self.canvasContainer[canvasId], *self.gridslot[canvasId])
-
-        # TODO: Improve grid_iteration in order to iterate once in every canvas creation
+    def createCanvas(self):
+        if len(self.canvasContainer.keys()) < 4:
+            graphId = Call.create_graph()
+            Call.populate_graph(graphId)
+            print("Drawing canvas with id: {}...".format(graphId))
+            positions = Call.get_n_pos(graphId)
+            va = np.array(positions)
+            ve = np.hstack((va, np.zeros((len(positions), 1))))
+            # Get adjacency list
+            ed = Call.get_adj(graphId)
+            # Get node types
+            types = Call.get_n_type(graphId)
+            c_types = self.__createColors(types)
+            # Create the color for each node
+            col = [c_types[t] for t in types]
+            # TODO: Set fixed canvas size for each canvas
+            self.canvasContainer[graphId] = Canvas(title='Visualizer', edges=ed, node_pos=ve, color=col, graphId=graphId).native
+            self.grid.addWidget(self.canvasContainer[graphId], *self.gridslot[graphId])
+            return graphId
+            # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 
     def __createColors(self, types):
         t = list(set(types))
@@ -65,4 +64,3 @@ class CanvasWidget(QWidget):
 
     def setCanvasId(self, canvasId):
         self.canvasId = canvasId
-
