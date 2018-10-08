@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import (QWidget, QGridLayout)
 from ..services.actions import Call
 import numpy as np
 from .. import func
-from ..widgets.elements.legend import ColorLegend
 
 
 class CanvasWidget(QWidget):
@@ -13,7 +12,8 @@ class CanvasWidget(QWidget):
         self.__layout()
         self.canvasContainer = {}
         self.gridslot = [i for i in func.iterate_grid(2)]
-        self.setMinimumSize(400, 200)
+        self.setMinimumSize(600, 600)
+        self.colorTypes = {}
 
     def __controls(self):
         self.canvasWidget = QWidget()
@@ -59,6 +59,11 @@ class CanvasWidget(QWidget):
     def __createColors(self, types):
         t = list(set(types))
         rgb_palette = np.random.uniform(0, 1, (len(t), 3)).astype(np.float32)
+        # Make color map to send to the legend
+        c = rgb_palette.dot(255).astype(int)
+        colors = list(map(tuple, c))
+        self.colorTypes = dict(zip(t, colors))
+        # Make color map to send to the graph
         color_types = dict(zip(t, rgb_palette))
         return color_types
 

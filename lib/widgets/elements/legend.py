@@ -1,20 +1,18 @@
-from PyQt5.QtWidgets import QGridLayout, QWidget, QLabel, QVBoxLayout, QListView
-from PyQt5.QtGui import (QColor, QPainter, QStandardItemModel, QStandardItem, QBrush)
-from PyQt5.QtCore import QPointF
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QWidget, QListView
+from PyQt5.QtGui import (QColor, QStandardItemModel, QStandardItem, QBrush)
 import math
 
 
 class ColorLegend(QListView):
     def __init__(self, parent=None):
         super(ColorLegend, self).__init__(parent)
-        model = QStandardItemModel(self)
-        item = QStandardItem()
-        item.setText("BALALSKDL")
-        item.setBackground(QColor(255,255,0,255))
-        self.setModel(model)
-        model.appendRow(item)
-        self.show()
+        self.model = QStandardItemModel(self)
+        self.setModel(self.model)
 
     def addType(self, name, color):
-        pass
+        print(color)
+        item = QStandardItem()
+        item.setText(name)
+        item.setSelectable(False)
+        item.setBackground(QColor(*color, 255))
+        self.model.appendRow(item)

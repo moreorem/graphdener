@@ -55,12 +55,13 @@ class MainWindow(QMainWindow):
 
         Call.console = self.statusBar
         # Start backend
-        Backend.start()
+        # Backend.start()
         Call.connect()
 
     def drawGraph(self):
         # Tell canvaswidget to do the draw process
         graphId = self.canvasArea.createCanvas()
+        self.controls.setTypeList(self.canvasArea.colorTypes)
         # Inform controls about changes
         self.controls.newGraph(graphId)
 

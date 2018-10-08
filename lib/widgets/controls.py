@@ -20,17 +20,15 @@ class ControlWidgets(QFrame):
         self.__actions()
         self.vbox.addStretch(1)
         self.setFrameShape(QFrame.VLine)
-        # self.setFrameShadow(QFrame.Sunken)
 
     def __controls(self):
         self.graphCtrl = GraphControl()
         self.algCtrl = AlgorithmControl()
         self.algOpt = AlgorithmOptions()
         self.importCtrl = ImportControl()
-        self.m = ColorLegend(self)
-        self.m.move(60, 200)
-        self.m.resize(50, 50)
-        self.m.update()
+        self.typeList = ColorLegend(self)
+        self.typeList.move(60, 200)
+        self.typeList.resize(50, 50)
 
     def __layout(self):
         self.vbox = QVBoxLayout()
@@ -39,7 +37,7 @@ class ControlWidgets(QFrame):
         self.vbox.addLayout(self.graphCtrl)
         self.vbox.addLayout(self.algCtrl)
         self.vbox.addLayout(self.algOpt)
-        self.vbox.addWidget(self.m)
+        self.vbox.addWidget(self.typeList)
 
     def __actions(self):
         # Buttons
@@ -94,5 +92,8 @@ class ControlWidgets(QFrame):
         exPopup.show()
         self.graphCtrl.enable(True)
 
-    def modifyIdList(self):
-        pass
+    # Populate list widget with colors and type names
+    def setTypeList(self, colorMap):
+        print(colorMap)
+        for k in colorMap.keys():
+            self.typeList.addType(k, colorMap[k])
