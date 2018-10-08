@@ -126,4 +126,3 @@ class Call():
     def console_out(msg, prefix=''):
         Call.console.write_out(msg)
         print(msg)
-

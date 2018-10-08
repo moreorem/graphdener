@@ -27,7 +27,7 @@ class CanvasWidget(QWidget):
 
     def closeCanvas(self, canvasId):
         try:
-            print(Call.kill_graph(canvasId))
+            Call.kill_graph(canvasId)
             canvas = self.canvasContainer.pop(canvasId)
             print("Closed canvas with Id", canvas.graphId)
             self.grid.removeWidget(canvas)

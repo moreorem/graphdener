@@ -21,14 +21,16 @@ class ControlWidgets(QFrame):
         self.vbox.addStretch(1)
         self.setFrameShape(QFrame.VLine)
         # self.setFrameShadow(QFrame.Sunken)
-        self.show()
 
     def __controls(self):
         self.graphCtrl = GraphControl()
         self.algCtrl = AlgorithmControl()
         self.algOpt = AlgorithmOptions()
         self.importCtrl = ImportControl()
-        self.w = ColorLegend(self)
+        self.m = ColorLegend(self)
+        self.m.move(60, 200)
+        self.m.resize(50, 50)
+        self.m.update()
 
     def __layout(self):
         self.vbox = QVBoxLayout()
@@ -37,7 +39,7 @@ class ControlWidgets(QFrame):
         self.vbox.addLayout(self.graphCtrl)
         self.vbox.addLayout(self.algCtrl)
         self.vbox.addLayout(self.algOpt)
-        self.vbox.addWidget(self.w)
+        self.vbox.addWidget(self.m)
 
     def __actions(self):
         # Buttons

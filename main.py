@@ -3,13 +3,10 @@ import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QHBoxLayout, QVBoxLayout, QMessageBox)
-from PyQt5.QtGui import QIcon
 from lib.widgets import (ControlWidgets, CanvasWidget, StatusBar)
-# from lib.widgets.controls import ControlWidgets
-# from lib.widgets.canvas import CanvasWidget
 from lib.services.backend import Backend
 from lib.services.actions import Call
-# from lib.widgets.elements.legend import ColorLegend
+from PyQt5.QtGui import QIcon
 
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -58,7 +55,7 @@ class MainWindow(QMainWindow):
 
         Call.console = self.statusBar
         # Start backend
-        # Backend.start()
+        Backend.start()
         Call.connect()
 
     def drawGraph(self):
