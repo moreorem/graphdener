@@ -67,5 +67,5 @@ class CanvasWidget(QWidget):
         color_types = dict(zip(t, rgb_palette))
         return color_types
 
-    def setCanvasId(self, canvasId):
-        self.canvasId = canvasId
+    # def setCanvasId(self, canvasId):
+    #     self.canvasId = canvasId

@@ -98,6 +98,7 @@ class Call():
         cls.console_out("Calulating positions...")
         try:
             result = c.call('getnpos', canvas_id)
+            print(result)
         except EnvironmentError as e:
             result = e
         return result

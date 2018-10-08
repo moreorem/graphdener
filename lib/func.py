@@ -46,8 +46,11 @@ def alter_conc(list1, list2):
         print("list2 must be -1 shorter than list1", e)
 
 # FIXME: Ideal regex is this: (?P<n_id>\d+)\s+"(?P<n_label>[^"]*)"(?:\s+"(?P<n_type>[^"]*)")?
+# ^(\d+),(?P<name>[\w\s]+), for words which contain spaces
+
+
 def type_to_regex(t):
-    options = {'str': '*' + ')', 'qstr': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
+    options = {'str': r'[\w\s]+' + ')', 'qstr': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
     try:
         return options[t]
     except KeyError as e:

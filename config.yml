@@ -27,6 +27,7 @@ constants:
     - 'e_weight'
   columntypes:
     {
+      # str for strings without quotes, qstr for strings with quotes
       'n_id': 'int',
       'n_label': 'qstr',
       'n_type': 'qstr',
@@ -39,5 +40,5 @@ constants:
       'e_type': 'qstr'
     }
 graph:
-  marker_size: 30
+  marker_size: 40
   edge:

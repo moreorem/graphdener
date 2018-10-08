@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QWidget, QPushButton, QVBoxLayout, QCheckBox, QFrame)
+from PyQt5.QtWidgets import (QVBoxLayout, QFrame)
 from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
 from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl, ColorLegend)
@@ -7,8 +7,6 @@ from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportC
 class ControlWidgets(QFrame):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
-    # PENDING: Fix maximum controls width
-    # PENDING: Decide on wether to use qwidget or qframe
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
         self.maxCanvasId = 0
@@ -45,7 +43,7 @@ class ControlWidgets(QFrame):
         self.importCtrl.importBtn.clicked.connect(self.import_wizard)
         # Dropdowns
         self.algCtrl.algSelector.activated[str].connect(self.algSelect)
-        self.graphCtrl.canvasSelector.activated[int].connect(self.selectCanvas)
+        self.graphCtrl.canvasSelector.activated[int].connect(self.selectGraph)
 
     def get_layout(self):
         return self.vbox
@@ -68,11 +66,12 @@ class ControlWidgets(QFrame):
     def killGraph(self):
         return self.graphCtrl.delGraphId()
 
-    def selectCanvas(self, data):
+    def selectGraph(self, data):
         self.selectedCanvasId = data
         r = Call.get_stat(0)
         self.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
         self.importCtrl.edgeCount.setText("Edges: " + str(r[0]))
+        # TODO: Enable only the graph that is selected
 
     def applyAlg(self):
         if self.algorithm == 'force directed':
@@ -94,6 +93,5 @@ class ControlWidgets(QFrame):
 
     # Populate list widget with colors and type names
     def setTypeList(self, colorMap):
-        print(colorMap)
         for k in colorMap.keys():
             self.typeList.addType(k, colorMap[k])

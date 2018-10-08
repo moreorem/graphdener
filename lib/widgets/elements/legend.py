@@ -1,6 +1,5 @@
-from PyQt5.QtWidgets import QWidget, QListView
-from PyQt5.QtGui import (QColor, QStandardItemModel, QStandardItem, QBrush)
-import math
+from PyQt5.QtWidgets import QListView
+from PyQt5.QtGui import (QColor, QStandardItemModel, QStandardItem)
 
 
 class ColorLegend(QListView):

@@ -45,14 +45,13 @@ class MainWindow(QMainWindow):
         # Add canvase area to main frame
         self.mainFrameLayout.addWidget(self.canvasArea)
         # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
-
         self.setCentralWidget(self.totalWidget)
         self.mainFrameLayout.addStretch(1)
 
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
         self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
-
+        # Declare the console to the action class
         Call.console = self.statusBar
         # Start backend
         # Backend.start()
