@@ -6,6 +6,7 @@ class Call():
     ''' This class is used to communicate with the rust backend '''
     client = None
     console = None
+    graphId = 0
 
     @staticmethod
     def connect():
@@ -36,17 +37,17 @@ class Call():
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
     @classmethod
-    def apply_alg(cls, graphId, algorithm, *args):
+    def apply_alg(cls, algorithm, *args):
         c = cls.client
         cls.console_out("Applying algorithm...")
         if algorithm == "force directed":
             parameters = [float(eval(x)) for x in args]
-            c.call('diralg', graphId, parameters)
+            c.call('diralg', cls.graphId, parameters)
         elif algorithm == "circular":
-            c.call('ciralg', graphId)
+            c.call('ciralg', cls.graphId)
         elif algorithm == "random":
             parameters = int(eval(*args))
-            c.call('random', graphId, parameters)
+            c.call('random', cls.graphId, parameters)
         cls.console_out("Ready")
 
     @classmethod
@@ -64,11 +65,11 @@ class Call():
 
 
     @classmethod
-    def populate_graph(cls, id):
+    def populate_graph(cls):
         c = cls.client
-        cls.console_out(id, "Populating graph ")
+        cls.console_out(cls.graphId, "Populating graph ")
         try:
-            result = c.call('populate', id)
+            result = c.call('populate', cls.graphId)
             cls.console_out(result, "Populated graph ")
         except EnvironmentError as e:
             print(e)
@@ -76,55 +77,55 @@ class Call():
         return result
 
     @classmethod
-    def get_adj(cls, canvas_id):
+    def get_adj(cls):
         c = cls.client
         cls.console_out("Gathering edges...")
         try:
-            result = c.call('getadj', canvas_id)
+            result = c.call('getadj', cls.graphId)
         except EnvironmentError as e:
             result = e
         cls.console_out("Ready")
         return result
 
     @classmethod
-    def get_n_type(cls, canvas_id):
+    def get_n_type(cls):
         c = cls.client
         cls.console_out("Gathering types...")
         try:
-            result = c.call('getntype', canvas_id)
+            result = c.call('getntype', cls.graphId)
         except EnvironmentError as e:
             result = e
         cls.console_out("Ready")
         return result
 
     @classmethod
-    def get_n_pos(cls, canvas_id):
+    def get_n_pos(cls):
         c = cls.client
         cls.console_out("Calulating positions...")
         try:
-            result = c.call('getnpos', canvas_id)
+            result = c.call('getnpos', cls.graphId)
         except EnvironmentError as e:
             result = e
         cls.console_out("Ready")
         return result
 
     @classmethod
-    def get_stat(cls, canvas_id):
+    def get_stat(cls):
         c = cls.client
         try:
-            result = c.call('getstat')
+            result = c.call('getstat', cls.graphId)
         except EnvironmentError as e:
             result = e
         cls.console_out("Ready")
         return result
 
     @classmethod
-    def kill_graph(cls, canvas_id):
+    def kill_graph(cls):
         c = cls.client
         cls.console_out("Destroying graph...")
         try:
-            result = c.call('killgraph', canvas_id)
-            cls.console_out(canvas_id, "Killed graph ")
+            result = c.call('killgraph', cls.graphId)
+            cls.console_out(cls.graphId, "Killed graph ")
         except EnvironmentError as e:
             result = e
         cls.console_out("Ready")

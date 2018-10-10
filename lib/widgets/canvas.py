@@ -38,15 +38,15 @@ class CanvasWidget(QWidget):
     def createCanvas(self):
         if len(self.canvasContainer.keys()) < 4:
             graphId = Call.create_graph()
-            Call.populate_graph(graphId)
+            Call.populate_graph()
             print("Drawing canvas with id: {}...".format(graphId))
-            positions = Call.get_n_pos(graphId)
+            positions = Call.get_n_pos()
             va = np.array(positions)
             ve = np.hstack((va, np.zeros((len(positions), 1))))
             # Get adjacency list
-            ed = Call.get_adj(graphId)
+            ed = Call.get_adj()
             # Get node types
-            types = Call.get_n_type(graphId)
+            types = Call.get_n_type()
             c_types = self.__createColors(types)
             # Create the color for each node
             col = [c_types[t] for t in types]

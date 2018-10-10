@@ -1,5 +1,6 @@
 import sys
-from PyQt5 import QtGui, QtCore, QLayout
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtGui import QLayout
 # from PyQt5.QtWidgets import
 
 

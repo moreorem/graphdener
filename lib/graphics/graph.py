@@ -100,7 +100,7 @@ class Canvas(app.Canvas):
         self.update()
 
     def on_timer(self, event):
-        positions = Call.get_n_pos(self.graphId)
+        positions = Call.get_n_pos()
         n = len(positions)
         pos = np.hstack((positions, np.zeros((n, 1))))
 

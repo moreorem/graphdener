@@ -67,8 +67,9 @@ class ControlWidgets(QFrame):
         return self.graphCtrl.delGraphId()
 
     def selectGraph(self, data):
-        self.selectedCanvasId = data
-        r = Call.get_stat(0)
+        # self.selectedCanvasId = data
+        Call.graphId = int(data)
+        r = Call.get_stat()
         self.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
         self.importCtrl.edgeCount.setText("Edges: " + str(r[0]))
         # TODO: Enable only the graph that is selected
@@ -82,7 +83,7 @@ class ControlWidgets(QFrame):
             algText = ['']
         # Applies distribution algorithm on selected graph
         print("apply {}".format(self.algorithm))
-        Call.apply_alg(int(self.selectedCanvasId), self.algorithm, *algText)
+        Call.apply_alg(self.algorithm, *algText)
 
     # Activates the import wizard
     def import_wizard(self):

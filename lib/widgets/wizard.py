@@ -36,7 +36,6 @@ class ImportWizard(QWizard):
 
         regex[0] = regexN
         regex[1] = regexE
-        print(regex)
         colInfo = get_col_info(self.nodeColumns + self.edgeColumns)
         # Send items to backend
         result = Call.send_paths(self.filepath, regex, colInfo)
