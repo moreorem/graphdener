@@ -41,4 +41,4 @@ constants:
     }
 graph:
   marker_size: 40
-  edge:
+  arrow_size: 0.05

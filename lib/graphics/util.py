@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from ..statics import ARROWHEAD_SIZE
 
 def create_arrowhead(A, B, marker_size):
     """
@@ -17,7 +18,7 @@ def create_arrowhead(A, B, marker_size):
     B, v1, v2 : tuple
         The point of head, the v1 xy and v2 xy points of the two base vertices of the arrowhead.
     """
-    w = 0.003  # Half of the triangle base width
+    w = ARROWHEAD_SIZE  # Half of the triangle base width
     h = w / 0.26794919243  # tan(15)
 
     AB = [B[0] - A[0], B[1] - A[1]]
