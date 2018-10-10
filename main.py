@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        self.setMinimumSize(800, 600)
+        self.setMinimumSize(800, 800)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
 
         # BUILD THE GUI FROM OUTER TO INNER LAYOUTS

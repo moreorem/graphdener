@@ -39,6 +39,3 @@ class GraphControl(QGridLayout):
         self.drawBtn.setEnabled(value)
         self.closeBtn.setEnabled(value)
         self.canvasSelector.setEnabled(value)
-
-
-

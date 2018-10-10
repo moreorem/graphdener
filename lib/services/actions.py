@@ -31,7 +31,7 @@ class Call():
         """
         # col = [(k, v) for k, v in colNames.items()]
         c = cls.client
-        result = c.call('import', paths, regex, colNames)
+        result = c.call('import', paths, regex)
         Call.console_out(result)
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
@@ -59,7 +59,9 @@ class Call():
             cls.console_out(result, "Created graph with id: ")
         except EnvironmentError as e:
             print(e)
+        cls.console_out("Ready")
         return result
+
 
     @classmethod
     def populate_graph(cls, id):
@@ -70,6 +72,7 @@ class Call():
             cls.console_out(result, "Populated graph ")
         except EnvironmentError as e:
             print(e)
+        cls.console_out("Ready")
         return result
 
     @classmethod
@@ -80,6 +83,7 @@ class Call():
             result = c.call('getadj', canvas_id)
         except EnvironmentError as e:
             result = e
+        cls.console_out("Ready")
         return result
 
     @classmethod
@@ -90,6 +94,7 @@ class Call():
             result = c.call('getntype', canvas_id)
         except EnvironmentError as e:
             result = e
+        cls.console_out("Ready")
         return result
 
     @classmethod
@@ -101,6 +106,7 @@ class Call():
             print(result)
         except EnvironmentError as e:
             result = e
+        cls.console_out("Ready")
         return result
 
     @classmethod
@@ -110,6 +116,7 @@ class Call():
             result = c.call('getstat')
         except EnvironmentError as e:
             result = e
+        cls.console_out("Ready")
         return result
 
     @classmethod
@@ -121,6 +128,7 @@ class Call():
             cls.console_out(canvas_id, "Killed graph ")
         except EnvironmentError as e:
             result = e
+        cls.console_out("Ready")
         return result
 
     @staticmethod
