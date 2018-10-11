@@ -1,10 +1,10 @@
-from PyQt5.QtWidgets import (QVBoxLayout, QFrame)
+from PyQt5.QtWidgets import (QVBoxLayout, QFrame, QWidget)
 from ..services.actions import Call
 from lib.widgets.wizard import ImportWizard
 from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl, ColorLegend)
 
 
-class ControlWidgets(QFrame):
+class ControlWidgets(QWidget):
     '''Class that contains the buttons and sliders that control the graph and general interaction'''
 
     def __init__(self, parent=None):
@@ -17,7 +17,7 @@ class ControlWidgets(QFrame):
         self.__layout()
         self.__actions()
         self.vbox.addStretch(1)
-        self.setFrameShape(QFrame.VLine)
+        # self.setFrameShape(QFrame.VLine)
 
     def __controls(self):
         self.graphCtrl = GraphControl()
@@ -67,7 +67,7 @@ class ControlWidgets(QFrame):
         return self.graphCtrl.delGraphId()
 
     def selectGraph(self, data):
-        # self.selectedCanvasId = data
+        # self.selectedCanvasId = dat
         Call.graphId = int(data)
         r = Call.get_stat()
         self.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))

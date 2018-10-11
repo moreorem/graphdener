@@ -2,7 +2,7 @@
 import sys
 import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
-                             QHBoxLayout, QVBoxLayout, QMessageBox)
+                             QMessageBox, QGridLayout)
 from lib.widgets import (ControlWidgets, CanvasWidget, StatusBar)
 from lib.services.backend import Backend
 from lib.services.actions import Call
@@ -25,28 +25,34 @@ class MainWindow(QMainWindow):
         # Initialize main container
         self.totalWidget = QWidget()
         # Initialize status bar
-        self.statusBar = StatusBar(self)
-        # Set main container's layout
-        self.totalLayout = QVBoxLayout()
-        self.totalWidget.setLayout(self.totalLayout)
-        # Set controls and canvas containers layout
-        self.mainFrameLayout = QHBoxLayout()
-        # Add mainframe layout to total
-        self.totalLayout.addLayout(self.mainFrameLayout)
-        # Add status bar widget to total
-        self.totalLayout.addWidget(self.statusBar)
+        self.statusBar = StatusBar()
+        # Initialize canvas area
+        self.canvasArea = CanvasWidget()
         # Initialize control group
         self.controls = ControlWidgets(self)
-        # Initialize canvas area
-        self.canvasArea = CanvasWidget(self)
+        # Set main container's layout
+        self.totalLayout = QGridLayout()
+        # Set controls and canvas containers layout
+        # self.mainFrameLayout = QHBoxLayout()
+        # Add mainframe layout to total
+        # self.totalLayout.addLayout(self.mainFrameLayout)
         # Add control group to main frame
-        self.mainFrameLayout.addLayout(self.controls.get_layout())
-        self.mainFrameLayout.addWidget(self.controls)
+        # self.totalLayout.addWidget(self.controls, 0, 0)
+        self.totalLayout.addLayout(self.controls.get_layout(), 0, 0)
         # Add canvase area to main frame
-        self.mainFrameLayout.addWidget(self.canvasArea)
-        # self.mainFrameLayout.addLayout(self.canvasArea.get_layout())
+        # self.totalLayout.addLayout(self.canvasArea.get_layout(), 0,1)
+        self.totalLayout.addWidget(self.canvasArea, 0, 1)
+        # Add status bar widget to total
+        self.totalLayout.addWidget(self.statusBar, 1, 0)
+        # Declare analogies
+        self.totalLayout.setRowStretch(1, 0)
+        self.totalLayout.setRowStretch(0, 1)
+        self.totalLayout.setColumnStretch(0, -1)
+        self.totalLayout.setColumnStretch(1, 5)
+
+        self.totalWidget.setLayout(self.totalLayout)
         self.setCentralWidget(self.totalWidget)
-        self.mainFrameLayout.addStretch(1)
+        # self.totalLayout.addStretch(1)
 
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
