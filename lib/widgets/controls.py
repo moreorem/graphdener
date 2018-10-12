@@ -67,7 +67,6 @@ class ControlWidgets(QWidget):
         return self.graphCtrl.delGraphId()
 
     def selectGraph(self, data):
-        # self.selectedCanvasId = dat
         Call.graphId = int(data)
         r = Call.get_stat()
         self.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
@@ -90,7 +89,9 @@ class ControlWidgets(QWidget):
         exPopup = ImportWizard(self)
         exPopup.setGeometry(100, 200, 800, 600)
         exPopup.show()
+        # self.graphCtrl.canvasSelector.setCurrentIndex(0)
         self.graphCtrl.enable(True)
+
 
     # Populate list widget with colors and type names
     def setTypeList(self, colorMap):

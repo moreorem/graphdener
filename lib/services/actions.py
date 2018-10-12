@@ -63,7 +63,6 @@ class Call():
         cls.console_out("Ready")
         return result
 
-
     @classmethod
     def populate_graph(cls):
         c = cls.client

@@ -5,7 +5,7 @@ import numpy as np
 from .. import func
 
 
-class CanvasWidget(QWidget):
+class CanvasWidget(QFrame):
     def __init__(self, parent=None):
         super(CanvasWidget, self).__init__(parent)
         # QStackedWidget.__init__(self)

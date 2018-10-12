@@ -18,9 +18,7 @@ class MainWindow(QMainWindow):
         # Main window details
         self.setWindowTitle('Graphdener')
         self.move(300, 300)
-        self.setMinimumSize(800, 800)
         self.setWindowIcon(QIcon(SCRIPT_DIR + os.path.sep + 'icon.png'))
-
         # BUILD THE GUI FROM OUTER TO INNER LAYOUTS
         # Initialize main container
         self.totalWidget = QWidget()
@@ -32,22 +30,16 @@ class MainWindow(QMainWindow):
         self.controls = ControlWidgets(self)
         # Set main container's layout
         self.totalLayout = QGridLayout()
-        # Set controls and canvas containers layout
-        # self.mainFrameLayout = QHBoxLayout()
-        # Add mainframe layout to total
-        # self.totalLayout.addLayout(self.mainFrameLayout)
-        # Add control group to main frame
-        # self.totalLayout.addWidget(self.controls, 0, 0)
+        # Add Controls layout
         self.totalLayout.addLayout(self.controls.get_layout(), 0, 0)
-        # Add canvase area to main frame
-        # self.totalLayout.addLayout(self.canvasArea.get_layout(), 0,1)
+        # Add canvas area to main frame
         self.totalLayout.addWidget(self.canvasArea, 0, 1)
         # Add status bar widget to total
         self.totalLayout.addWidget(self.statusBar, 1, 0)
         # Declare analogies
         self.totalLayout.setRowStretch(1, 0)
         self.totalLayout.setRowStretch(0, 1)
-        self.totalLayout.setColumnStretch(0, -1)
+        self.totalLayout.setColumnStretch(0, 0)
         self.totalLayout.setColumnStretch(1, 5)
 
         self.totalWidget.setLayout(self.totalLayout)
