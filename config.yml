@@ -29,15 +29,15 @@ constants:
     {
       # str for strings without quotes, qstr for strings with quotes
       'n_id': 'int',
-      'n_label': 'qstr',
-      'n_type': 'qstr',
+      'n_label': 'str',
+      'n_type': 'str',
       'e_weight': 'int',
       'e_from': 'int',
       'e_to': 'int',
       '-': '',
       'e_id': 'int',
-      'e_label': 'qstr',
-      'e_type': 'qstr'
+      'e_label': 'str',
+      'e_type': 'str'
     }
 graph:
   marker_size: 40

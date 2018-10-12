@@ -50,7 +50,7 @@ def alter_conc(list1, list2):
 
 
 def type_to_regex(t):
-    options = {'str': r'[\w\s]+' + ')', 'qstr': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
+    options = {'str': r"[\w\s'/-:]*" + ')', 'qstr': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
     try:
         return options[t]
     except KeyError as e:
