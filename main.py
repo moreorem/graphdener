@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         # Initialize canvas area
         self.canvasArea = CanvasWidget()
         # Initialize control group
-        self.controls = ControlWidgets()
+        self.controls = ControlWidgets(self)
         # Set main container's layout
         self.totalLayout = QGridLayout()
         # Add Controls layout
@@ -44,6 +44,7 @@ class MainWindow(QMainWindow):
 
         self.totalWidget.setLayout(self.totalLayout)
         self.setCentralWidget(self.totalWidget)
+        # self.totalLayout.addStretch(1)
 
         # Draw / Close Button action
         self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
