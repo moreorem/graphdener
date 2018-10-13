@@ -1,8 +1,6 @@
 directories:
   backend:
     - /home/orestes/Workspace/src/github.com/moreorem/graphdener-backend/target/debug/
-  export:
-    - \path\to\xml\upload\ # resources\export\
 
 constants:
   alg:
@@ -27,7 +25,6 @@ constants:
     - 'e_weight'
   columntypes:
     {
-      # str for strings without quotes, qstr for strings with quotes
       'n_id': 'int',
       'n_label': 'str',
       'n_type': 'str',
@@ -42,3 +39,5 @@ constants:
 graph:
   marker_size: 40
   arrow_size: 0.05
+importer:
+  acceptedsymbols: :.()&'-

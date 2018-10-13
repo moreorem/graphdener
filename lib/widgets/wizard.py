@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog,
                              QComboBox, QWizard, QWizardPage, QLineEdit,
-                             QVBoxLayout, QHBoxLayout)
+                             QVBoxLayout, QHBoxLayout, QCheckBox)
 from ..services.actions import Call
 from ..func import get_pattern, get_col_info
 from ..statics import NODECNAMES, EDGECNAMES
@@ -23,6 +23,8 @@ class ImportWizard(QWizard):
         self.nodeDelimiters = []
         self.edgeColumns = []
         self.edgeDelimiters = []
+        self.isQuotedN = True
+        self.isQuotedE = True
 
     def onFinished(self):
         print("Import Finished")
@@ -30,12 +32,13 @@ class ImportWizard(QWizard):
         regex = ['', '']
         # Ask input from edge import page
         self.page(1).receiveInputs()
-
-        regexN = get_pattern(self.nodeColumns, self.nodeDelimiters)
-        regexE = get_pattern(self.edgeColumns, self.edgeDelimiters)
+        print(self.isQuotedN, self.isQuotedE)
+        regexN = get_pattern(self.nodeColumns, self.nodeDelimiters, self.isQuotedN)
+        regexE = get_pattern(self.edgeColumns, self.edgeDelimiters, self.isQuotedE)
 
         regex[0] = regexN
         regex[1] = regexE
+        print(regex) # FIXME: Remove
         colInfo = get_col_info(self.nodeColumns + self.edgeColumns)
         # Send items to backend
         result = Call.send_paths(self.filepath, regex, colInfo)
@@ -61,11 +64,14 @@ class Page1(QWizardPage):
         self.openFileBtn = QPushButton("Import Node List")
         self.stepLabel = QLabel()
         self.formatLabel = QLabel()
+        self.quoteCheck = QCheckBox("Quoted Strings?")
+        self.quoteCheck.setChecked(True)
 
         layout = QVBoxLayout()
         layout.addWidget(self.stepLabel)
         layout.addWidget(self.openFileBtn)
         layout.addWidget(self.formatLabel)
+        layout.addWidget(self.quoteCheck)
         patternLayout = QHBoxLayout()
 
         for i in range(nCols + 1):
@@ -78,6 +84,7 @@ class Page1(QWizardPage):
         layout.addLayout(patternLayout)
         # Bind actions
         self.openFileBtn.clicked.connect(self.openFileNameDialog)
+        self.quoteCheck.stateChanged.connect(self.checkAction)
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
@@ -88,6 +95,9 @@ class Page1(QWizardPage):
         # if user selected a file store its path to a variable
         if fileName:
             self.wizard().filepath[0] = fileName
+
+    def checkAction(self):
+        self.wizard().isQuotedN = self.quoteCheck.isChecked()
 
     def initializePage(self):
         self.stepLabel.setText("Nodes information")
@@ -125,6 +135,8 @@ class Page2(QWizardPage):
 
         self.stepLabel = QLabel()
         self.openFileBtn = QPushButton("Import Edge List")
+        self.quoteCheck = QCheckBox("Quoted Strings?")
+        self.quoteCheck.setChecked(True)
         self.columnSelectors = []
         self.delimiterFields = []
 
@@ -137,6 +149,7 @@ class Page2(QWizardPage):
         layout = QVBoxLayout()
         layout.addWidget(self.stepLabel)
         layout.addWidget(self.openFileBtn)
+        layout.addWidget(self.quoteCheck)
         patternLayout = QHBoxLayout()
 
         for i in range(nCols + 1):
@@ -149,6 +162,7 @@ class Page2(QWizardPage):
         layout.addLayout(patternLayout)
         # Bind actions
         self.openFileBtn.clicked.connect(self.openFileNameDialog)
+        self.quoteCheck.stateChanged.connect(self.checkAction)
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
@@ -159,6 +173,9 @@ class Page2(QWizardPage):
         # if user selected a file store its path to a variable
         if fileName:
             self.wizard().filepath[1] = fileName
+
+    def checkAction(self):
+        self.wizard().isQuotedE = self.quoteCheck.isChecked()
 
     def initializePage(self):
         self.stepLabel.setText("Edges information")

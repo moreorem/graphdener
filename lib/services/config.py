@@ -36,3 +36,10 @@ def get_attr(section):
         cfg = yaml.load(ymlfile)
     attr = cfg['graph'][section]
     return attr
+
+def get_importer(section):
+    with open(MAIN_DIRECTORY + CONFIG_NAME) as ymlfile:
+        cfg = yaml.load(ymlfile)
+    attr = cfg['importer'][section]
+    return attr
+

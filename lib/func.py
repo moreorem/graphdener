@@ -1,25 +1,6 @@
-from .statics import COLUMN_TYPES
+from .statics import COLUMN_TYPES, ACCEPTED_SYMBOLS
 # Counter counts the number of occurrences of each item
 from collections import Counter
-
-
-def iterate_grid(d):
-    """
-    Returns a generator over a square grid of d dimensions
-
-    Keyword arguments:
-    d -- the m == n dimension of the grid e.g. 2x2
-    @type d: int
-    """
-    binlen = '{{0:0{}b}}'.format(d)
-
-    for i in range(d**2):
-        y = [int(x) for x in list(binlen.format(i))]
-        yield y
-
-
-def regex_builder():
-    pass
 
 
 def alter_conc(list1, list2):
@@ -49,23 +30,26 @@ def alter_conc(list1, list2):
 # ^(\d+),(?P<name>[\w\s]+), for words which contain spaces
 
 
-def type_to_regex(t):
-    options = {'str': r"[\w\s'/-:]*" + ')', 'qstr': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
+def type_to_regex(t, isQuoted):
+    if isQuoted:
+        options = {'str': '[^"]*' + ')?', 'int': r'\d+' + ')', '': ''}
+    else:
+        options = {'str': r"[\w\s" + r'' + ACCEPTED_SYMBOLS + ']*' + ')', 'int': r'\d+' + ')', '': ''}
     try:
         return options[t]
     except KeyError as e:
         print("Invalid type", e)
 
 
-def has_quotes(t):
-    if t in ['qstr']:
+def has_quotes(t, isQuoted):
+    if t in ['str'] and isQuoted:
         # Remove ? if there is problem
         return r'"?'
     else:
         return ''
 
 
-def get_pattern(columns, delims):
+def get_pattern(columns, delims, isQuoted):
     """
     Create regular expression pattern according to user input
     """
@@ -74,10 +58,10 @@ def get_pattern(columns, delims):
     rename_duplicates(columns)
     # FIXME: Too many brackets when removing columns
     cols = ['{}{}{}{}'.format(
-        has_quotes(COLUMN_TYPES[clean(name)]),
+        has_quotes(COLUMN_TYPES[clean(name)], isQuoted),
         parse_empty(name),
-        type_to_regex(COLUMN_TYPES[clean(name)]),
-        has_quotes(COLUMN_TYPES[clean(name)])
+        type_to_regex(COLUMN_TYPES[clean(name)], isQuoted),
+        has_quotes(COLUMN_TYPES[clean(name)], isQuoted)
     ) for name in columns]
     # Create the node regular expression string
     return ''.join(alter_conc(delims, cols))
