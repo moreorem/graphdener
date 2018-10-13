@@ -57,14 +57,14 @@ class MainWindow(QMainWindow):
 
     def drawGraph(self):
         # Tell canvaswidget to do the draw process
-        graphId = self.canvasArea.createCanvas()
+        graphId = self.canvasArea.drawGraph()
         self.controls.setTypeList(self.canvasArea.colorTypes)
         # Inform controls about changes
         self.controls.newGraph(graphId)
 
     def killGraph(self):
         graphId = self.controls.killGraph()
-        self.canvasArea.closeCanvas(graphId)
+        self.canvasArea.closeGraph(graphId)
 
     # Ask before quit
     def closeEvent(self, event):

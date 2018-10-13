@@ -5,7 +5,7 @@ class GraphControl(QGridLayout):
     def __init__(self, parent=None):
         super(GraphControl, self).__init__()
         self.canvasList = []
-        self.selectedCanvasId = 0
+        self.selectedGraphId = 0
         self.__controls()
         self.__layout()
         self.setVerticalSpacing(2)
@@ -26,6 +26,7 @@ class GraphControl(QGridLayout):
 
     def addGraphId(self, graphId):
         self.canvasSelector.addItem(str(graphId))
+        self.canvasSelector.setCurrentText(str(graphId))
         self.canvasList.append(graphId)
 
     def delGraphId(self):

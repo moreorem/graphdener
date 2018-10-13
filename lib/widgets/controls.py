@@ -64,7 +64,8 @@ class ControlWidgets(QWidget):
         self.graphCtrl.addGraphId(graphId)
 
     def killGraph(self):
-        return self.graphCtrl.delGraphId()
+        self.typeList.clear()
+        # return self.graphCtrl.delGraphId()
 
     def selectGraph(self, data):
         Call.graphId = int(data)

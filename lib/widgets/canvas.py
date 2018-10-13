@@ -32,18 +32,17 @@ class CanvasWidget(QFrame):
     def get_layout(self):
         return self.stackLayout
 
-    def closeCanvas(self, canvasId):
+    def closeGraph(self, graphId):
         try:
-            Call.kill_graph(canvasId)
-            canvas = self.canvasContainer.pop(canvasId)
+            Call.kill_graph()
+            canvas = self.canvasContainer.pop(graphId)
             print("Closed canvas with Id", canvas.graphId)
-            # self.grid.removeWidget(canvas)
             self.stack.removeWidget(canvas)
             canvas.close()
         except KeyError as e:
             print("Cannot find canvas Id", e)
 
-    def createCanvas(self):
+    def drawGraph(self):
         if len(self.canvasContainer.keys()) < 4:
             graphId = Call.create_graph()
             Call.populate_graph()

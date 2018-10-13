@@ -15,3 +15,6 @@ class ColorLegend(QListView):
         item.setSelectable(False)
         item.setBackground(QColor(*color, 255))
         self.model.appendRow(item)
+
+    def clear(self):
+        self.model.clear()
