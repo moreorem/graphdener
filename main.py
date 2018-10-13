@@ -66,8 +66,8 @@ class MainWindow(QMainWindow):
     # Activate backend to create structs and draw graph
     def drawGraph(self):
         # Tell canvaswidget to do the draw process
-        graphId = self.canvasArea.drawGraph()
-        Call.graphId = graphId
+        self.canvasArea.drawGraph()
+        graphId = Call.graphId
         self.controls.graphCtrl.addGraphId(graphId)
         self.controls.graphCtrl.enable(True)
         # Populate the legend

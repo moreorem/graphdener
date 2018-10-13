@@ -34,6 +34,7 @@ class CanvasWidget(QStackedWidget):
     def drawGraph(self):
         graphId = Call.create_graph()
         Call.populate_graph()
+        Call.graphId = graphId
         print("Drawing canvas with id: {}...".format(graphId))
         positions = Call.get_n_pos()
         va = np.array(positions)

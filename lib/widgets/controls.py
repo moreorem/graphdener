@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QVBoxLayout, QFrame, QWidget)
+from PyQt5.QtWidgets import (QVBoxLayout, QWidget)
 from ..services.actions import Call
 from .elements import (AlgorithmControl, GraphControl, AlgorithmOptions, ImportControl, ColorLegend)
 
@@ -59,8 +59,6 @@ class ControlWidgets(QWidget):
         # Informs the graph control group to update graph id
         self.graphCtrl.addGraphId(graphId)
         self.graphCtrl.graphSelector.setCurrentText(str(graphId))
-
-
 
     def applyAlg(self):
         if self.algorithm == 'force directed':
