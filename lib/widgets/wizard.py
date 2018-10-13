@@ -25,26 +25,22 @@ class ImportWizard(QWizard):
         self.edgeDelimiters = []
         self.isQuotedN = True
         self.isQuotedE = True
+        self.isValid = False
 
     def onFinished(self):
-        print("Import Finished")
         Call.connect()
         regex = ['', '']
         # Ask input from edge import page
         self.page(1).receiveInputs()
-        print(self.isQuotedN, self.isQuotedE)
         regexN = get_pattern(self.nodeColumns, self.nodeDelimiters, self.isQuotedN)
         regexE = get_pattern(self.edgeColumns, self.edgeDelimiters, self.isQuotedE)
-
         regex[0] = regexN
         regex[1] = regexE
-        print(regex) # FIXME: Remove
-        colInfo = get_col_info(self.nodeColumns + self.edgeColumns)
         # Send items to backend
-        result = Call.send_paths(self.filepath, regex, colInfo)
+        result = Call.send_paths(self.filepath, regex)
+        if result:
+            self.parentWidget().drawGraph()
         # TODO: Make use of return state to enable graph controls
-        if result == 'paths imported':
-            return True
 
 
 class Page1(QWizardPage):

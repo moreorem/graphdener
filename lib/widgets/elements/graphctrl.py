@@ -12,31 +12,27 @@ class GraphControl(QGridLayout):
         self.enable(False)
 
     def __controls(self):
-        self.drawBtn = QPushButton("Draw Graph")
         self.closeBtn = QPushButton("Kill Graph")
         # Add canvas selector
         self.csLabel = QLabel("Canvas Selector")
-        self.canvasSelector = QComboBox()
+        self.graphSelector = QComboBox()
 
     def __layout(self):
         self.addWidget(self.csLabel, 0, 0)
-        self.addWidget(self.canvasSelector, 1, 0)
-        self.addWidget(self.drawBtn, 2, 0)
-        self.addWidget(self.closeBtn, 2, 1)
+        self.addWidget(self.graphSelector, 1, 0)
+        self.addWidget(self.closeBtn, 1, 1)
 
     def addGraphId(self, graphId):
-        self.canvasSelector.addItem(str(graphId))
-        self.canvasSelector.setCurrentText(str(graphId))
+        self.graphSelector.addItem(str(graphId))
+        self.graphSelector.setCurrentText(str(graphId))
         self.canvasList.append(graphId)
 
     def delGraphId(self):
-        selIdx = self.canvasSelector.currentIndex()
-        graphId = self.canvasSelector.currentText()
-        self.canvasSelector.removeItem(selIdx)
+        selIdx = self.graphSelector.currentIndex()
+        graphId = self.graphSelector.currentText()
+        self.graphSelector.removeItem(selIdx)
         self.canvasList.pop(int(graphId))
         return int(graphId)
 
     def enable(self, value):
-        self.drawBtn.setEnabled(value)
-        self.closeBtn.setEnabled(value)
-        self.canvasSelector.setEnabled(value)
+        self.graphSelector.setEnabled(value)

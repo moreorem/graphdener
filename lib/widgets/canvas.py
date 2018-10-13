@@ -1,33 +1,22 @@
 from ..graphics.graph import Canvas
-from PyQt5.QtWidgets import (QWidget, QGridLayout, QStackedWidget, QHBoxLayout, QFrame, QLabel, QStackedLayout)
+from PyQt5.QtWidgets import (QStackedWidget, QStackedLayout)
 from ..services.actions import Call
 import numpy as np
-from .. import func
 
 
-class CanvasWidget(QFrame):
+class CanvasWidget(QStackedWidget):
     def __init__(self, parent=None):
         super(CanvasWidget, self).__init__(parent)
-        # QStackedWidget.__init__(self)
-        self.__controls()
         self.__layout()
-        self.canvasContainer = {}
-        self.stackLayout.addWidget(self.stack)
-        # self.gridslot = [i for i in func.iterate_grid(2)]
-        self.setMinimumSize(600, 600)
+        self.stackLayout.addWidget(self)
+        self.graphContainer = {}
+        self.setMinimumSize(400, 400)
         self.colorTypes = {}
-
-    def __controls(self):
-        self.stack = QStackedWidget()
-        # self.canvasWidget = QWidget()
 
     def __layout(self):
         self.stackLayout = QStackedLayout()
-        self.stackLayout.setStackingMode
-        self.setLayout(self.stackLayout)
-
-        # self.grid = QGridLayout()
-        # self.setLayout(self.grid)
+        # self.stackLayout.setStackingMode
+        # self.setLayout(self.stackLayout)
 
     def get_layout(self):
         return self.stackLayout
@@ -35,36 +24,34 @@ class CanvasWidget(QFrame):
     def closeGraph(self, graphId):
         try:
             Call.kill_graph()
-            canvas = self.canvasContainer.pop(graphId)
+            canvas = self.graphContainer.pop(graphId)
             print("Closed canvas with Id", canvas.graphId)
-            self.stack.removeWidget(canvas)
+            self.removeWidget(canvas)
             canvas.close()
         except KeyError as e:
             print("Cannot find canvas Id", e)
 
     def drawGraph(self):
-        if len(self.canvasContainer.keys()) < 4:
-            graphId = Call.create_graph()
-            Call.populate_graph()
-            print("Drawing canvas with id: {}...".format(graphId))
-            positions = Call.get_n_pos()
-            va = np.array(positions)
-            ve = np.hstack((va, np.zeros((len(positions), 1))))
-            # Get adjacency list
-            ed = Call.get_adj()
-            # Get node types
-            types = Call.get_n_type()
-            c_types = self.__createColors(types)
-            # Create the color for each node
-            col = [c_types[t] for t in types]
-            # TODO: Set fixed canvas size for each canvas
-            self.canvasContainer[graphId] = Canvas(title='Visualizer', edges=ed, node_pos=ve, color=col, graphId=graphId).native
-            self.stack.addWidget(self.canvasContainer[graphId])
-            print(self.stack.count())
-            # self.grid.addWidget(self.canvasContainer[graphId], *self.gridslot[graphId])
+        graphId = Call.create_graph()
+        Call.populate_graph()
+        print("Drawing canvas with id: {}...".format(graphId))
+        positions = Call.get_n_pos()
+        va = np.array(positions)
+        ve = np.hstack((va, np.zeros((len(positions), 1))))
+        # Get adjacency list
+        ed = Call.get_adj()
+        # Get node types
+        types = Call.get_n_type()
+        c_types = self.__createColors(types)
+        # Create the color for each node
+        col = [c_types[t] for t in types]
+        self.graphContainer[graphId] = Canvas(title='Visualizer',
+                                               edges=ed, node_pos=ve,
+                                               color=col,
+                                               graphId=graphId).native
+        self.addWidget(self.graphContainer[graphId])
+        if self.count() == 1:
             self.display(graphId)
-            return graphId
-            # TODO: Improve grid_iteration in order to iterate once in every canvas creation
 
     def __createColors(self, types):
         t = list(set(types))
@@ -78,7 +65,4 @@ class CanvasWidget(QFrame):
         return color_types
 
     def display(self, i):
-        self.stack.setCurrentWidget(self.canvasContainer[0])
-
-    def hide(self, w):
-        self.removeWidget(w)
+        self.setCurrentWidget(self.graphContainer[i])

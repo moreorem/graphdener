@@ -4,6 +4,7 @@ import os
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget,
                              QMessageBox, QGridLayout)
 from lib.widgets import (ControlWidgets, CanvasWidget, StatusBar)
+from lib.widgets.wizard import ImportWizard
 from lib.services.backend import Backend
 from lib.services.actions import Call
 from PyQt5.QtGui import QIcon
@@ -27,7 +28,7 @@ class MainWindow(QMainWindow):
         # Initialize canvas area
         self.canvasArea = CanvasWidget()
         # Initialize control group
-        self.controls = ControlWidgets(self)
+        self.controls = ControlWidgets()
         # Set main container's layout
         self.totalLayout = QGridLayout()
         # Add Controls layout
@@ -41,32 +42,56 @@ class MainWindow(QMainWindow):
         self.totalLayout.setRowStretch(0, 1)
         self.totalLayout.setColumnStretch(0, 0)
         self.totalLayout.setColumnStretch(1, 5)
-
         self.totalWidget.setLayout(self.totalLayout)
         self.setCentralWidget(self.totalWidget)
-        # self.totalLayout.addStretch(1)
-
-        # Draw / Close Button action
-        self.controls.graphCtrl.drawBtn.clicked.connect(self.drawGraph)
-        self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
+        self.__actions()
         # Declare the console to the action class
         Call.console = self.statusBar
         # Start backend
         # Backend.start()
         Call.connect()
 
+    # Bind actions
+    def __actions(self):
+        self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
+        self.controls.importCtrl.importBtn.clicked.connect(self.import_wizard)
+        self.controls.graphCtrl.graphSelector.activated[int].connect(self.selectGraph)
+
+    # Activates the import wizard
+    def import_wizard(self):
+        exPopup = ImportWizard(self)
+        exPopup.setGeometry(100, 200, 800, 600)
+        exPopup.show()
+
+    # Activate backend to create structs and draw graph
     def drawGraph(self):
         # Tell canvaswidget to do the draw process
         graphId = self.canvasArea.drawGraph()
+        Call.graphId = graphId
+        self.controls.graphCtrl.addGraphId(graphId)
+        self.controls.graphCtrl.enable(True)
+        # Populate the legend
+        self.controls.typeList.clear()
         self.controls.setTypeList(self.canvasArea.colorTypes)
         # Inform controls about changes
         self.controls.newGraph(graphId)
+        return graphId
 
+    # Activates every time you select a graph from the dropdown
+    def selectGraph(self, data):
+        Call.graphId = int(data)
+        r = Call.get_stat()
+        self.controls.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
+        self.controls.importCtrl.edgeCount.setText("Edges: " + str(r[0]))
+        self.canvasArea.display(Call.graphId)
+
+    # Destroy graph which is selected
     def killGraph(self):
-        graphId = self.controls.killGraph()
+        graphId = Call.graphId
+        self.controls.graphCtrl.delGraphId(graphId)
         self.canvasArea.closeGraph(graphId)
 
-    # Ask before quit
+    # Ask before quit dialog
     def closeEvent(self, event):
         quit_msg = "Are you sure you want to exit the program?"
         reply = QMessageBox.question(
