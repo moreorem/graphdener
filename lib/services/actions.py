@@ -32,8 +32,10 @@ class Call():
         """
         # col = [(k, v) for k, v in colNames.items()]
         c = cls.client
+        cls.console_out("Importing...")
         result = c.call('import', paths, regex)
         Call.console_out(result)
+        cls.console_out("Ready")
         return result
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm

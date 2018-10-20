@@ -1,4 +1,4 @@
-from ..graphics.graph import Canvas
+from ..graphics.graph import Graph
 from PyQt5.QtWidgets import (QStackedWidget, QStackedLayout)
 from ..services.actions import Call
 import numpy as np
@@ -15,8 +15,6 @@ class CanvasWidget(QStackedWidget):
 
     def __layout(self):
         self.stackLayout = QStackedLayout()
-        # self.stackLayout.setStackingMode
-        # self.setLayout(self.stackLayout)
 
     def get_layout(self):
         return self.stackLayout
@@ -46,11 +44,12 @@ class CanvasWidget(QStackedWidget):
         c_types = self.__createColors(types)
         # Create the color for each node
         col = [c_types[t] for t in types]
-        self.graphContainer[graphId] = Canvas(title='Visualizer',
-                                               edges=ed, node_pos=ve,
-                                               color=col,
-                                               graphId=graphId).native
+        self.graphContainer[graphId] = Graph(title='Visualizer',
+                                             edges=ed, node_pos=ve,
+                                             color=col,
+                                             graphId=graphId).native
         self.addWidget(self.graphContainer[graphId])
+        print(self.graphContainer[graphId].translate)
         if self.count() == 1:
             self.display(graphId)
 
@@ -67,3 +66,9 @@ class CanvasWidget(QStackedWidget):
 
     def display(self, i):
         self.setCurrentWidget(self.graphContainer[i])
+
+    def animate(self, trigger):
+        print(dir(self.currentWidget().app))
+        if trigger:
+            print(self.graphContainer[0].app)
+            self.currentWidget().Timer.start()

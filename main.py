@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
         # Initialize status bar
         self.statusBar = StatusBar()
         # Initialize canvas area
-        self.canvasArea = CanvasWidget()
+        self.canvas = CanvasWidget()
         # Initialize control group
         self.controls = ControlWidgets()
         # Set main container's layout
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         # Add Controls layout
         self.totalLayout.addLayout(self.controls.get_layout(), 0, 0)
         # Add canvas area to main frame
-        self.totalLayout.addWidget(self.canvasArea, 0, 1)
+        self.totalLayout.addWidget(self.canvas, 0, 1)
         # Add status bar widget to total
         self.totalLayout.addWidget(self.statusBar, 1, 0)
         # Declare analogies
@@ -56,6 +56,7 @@ class MainWindow(QMainWindow):
         self.controls.graphCtrl.closeBtn.clicked.connect(self.killGraph)
         self.controls.importCtrl.importBtn.clicked.connect(self.import_wizard)
         self.controls.graphCtrl.graphSelector.activated[int].connect(self.selectGraph)
+        self.controls.algCtrl.animateBtn.clicked.connect(self.animate)
 
     # Activates the import wizard
     def import_wizard(self):
@@ -66,13 +67,13 @@ class MainWindow(QMainWindow):
     # Activate backend to create structs and draw graph
     def drawGraph(self):
         # Tell canvaswidget to do the draw process
-        self.canvasArea.drawGraph()
+        self.canvas.drawGraph()
         graphId = Call.graphId
         self.controls.graphCtrl.addGraphId(graphId)
         self.controls.graphCtrl.enable(True)
         # Populate the legend
         self.controls.typeList.clear()
-        self.controls.setTypeList(self.canvasArea.colorTypes)
+        self.controls.setTypeList(self.canvas.colorTypes)
         # Inform controls about changes
         self.controls.newGraph(graphId)
         return graphId
@@ -83,13 +84,13 @@ class MainWindow(QMainWindow):
         r = Call.get_stat()
         self.controls.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
         self.controls.importCtrl.edgeCount.setText("Edges: " + str(r[0]))
-        self.canvasArea.display(Call.graphId)
+        self.canvas.display(Call.graphId)
 
     # Destroy graph which is selected
     def killGraph(self):
         graphId = Call.graphId
         self.controls.graphCtrl.delGraphId(graphId)
-        self.canvasArea.closeGraph(graphId)
+        self.canvas.closeGraph(graphId)
 
     # Ask before quit dialog
     def closeEvent(self, event):
@@ -100,6 +101,12 @@ class MainWindow(QMainWindow):
             Backend.stop()
         else:
             event.ignore()
+
+    def animate(self):
+        if self.controls.toggleAnimation():
+            self.canvas.animate(True)
+        else:
+            self.canvas.animate(False)
 
 
 if __name__ == '__main__':

@@ -7,7 +7,8 @@ Dynamic planar graph layout.
 """
 import numpy as np
 import math
-from vispy import gloo, app
+from vispy import gloo
+from vispy.app import Canvas, Timer
 from vispy.gloo import set_viewport, set_state, clear
 from .util import set_marker_data
 from ..services.actions import Call
@@ -15,10 +16,10 @@ from .elements import GlslBridge, ArrowHead
 from ..statics import MARKER_SIZE
 
 
-class Canvas(app.Canvas):
+class Graph(Canvas):
     def __init__(self, edges, node_pos, graphId, color=None, **kwargs):
         # Initialize the canvas for real
-        app.Canvas.__init__(self, keys='interactive', **kwargs)
+        Canvas.__init__(self, keys='interactive', **kwargs)
         bridge = GlslBridge()
         self.graphId = graphId
         self.color = color
@@ -57,7 +58,7 @@ class Canvas(app.Canvas):
         set_state(clear_color='white', depth_test=False, blend=True,
                   blend_func=('src_alpha', 'one_minus_src_alpha'))
         set_viewport(0, 0, *self.physical_size)
-        self.timer = app.Timer(1 / 30, connect=self.on_timer)
+        self.timer = Timer(1 / 30, connect=self.on_timer)
         self.show()
 
     def on_resize(self, event):
@@ -115,6 +116,12 @@ class Canvas(app.Canvas):
                 self.timer.stop()
             else:
                 self.timer.start()
+
+    def animate(self, trigger):
+        if trigger:
+            self.timer.start()
+        else:
+            self.timer.stop()
 
     def _calc_scale(self, dx=1., dy=1., dz=1.):
         scale_x, scale_y, scale_z = self.program_n['u_scale']

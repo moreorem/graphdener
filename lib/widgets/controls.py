@@ -61,8 +61,10 @@ class ControlWidgets(QWidget):
         self.graphCtrl.graphSelector.setCurrentText(str(graphId))
 
     def applyAlg(self):
+        self.algCtrl.enableAnimator(False)
         if self.algorithm == 'force directed':
             algText = self.algOpt.get_text('force directed')
+            self.algCtrl.enableAnimator(True)
         elif self.algorithm == 'random':
             algText = self.algOpt.get_text('random')
         else:
@@ -75,3 +77,11 @@ class ControlWidgets(QWidget):
     def setTypeList(self, colorMap):
         for k in colorMap.keys():
             self.typeList.addType(k, colorMap[k])
+
+    def toggleAnimation(self):
+        if self.algCtrl.animateBtn.text == "Animate":
+            self.algCtrl.animateBtn.setText("Stop")
+            return True
+        else:
+            self.algCtrl.animateBtn.setText("Animate")
+            return False

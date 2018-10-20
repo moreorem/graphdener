@@ -1,7 +1,6 @@
 directories:
   backend:
     - /home/orestes/Workspace/src/github.com/moreorem/graphdener-backend/target/debug/
-
 constants:
   alg:
     - 'random'
