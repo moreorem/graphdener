@@ -49,7 +49,6 @@ class CanvasWidget(QStackedWidget):
                                              color=col,
                                              graphId=graphId).native
         self.addWidget(self.graphContainer[graphId])
-        print(self.graphContainer[graphId].translate)
         if self.count() == 1:
             self.display(graphId)
 
@@ -67,8 +66,6 @@ class CanvasWidget(QStackedWidget):
     def display(self, i):
         self.setCurrentWidget(self.graphContainer[i])
 
-    def animate(self, trigger):
-        print(dir(self.currentWidget().app))
-        if trigger:
-            print(self.graphContainer[0].app)
-            self.currentWidget().Timer.start()
+    def animate(self):
+        # Use call to vispy canvas to use the method for enablinganimation
+        self.currentWidget()._vispy_canvas.animate()

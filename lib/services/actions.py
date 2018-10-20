@@ -7,6 +7,7 @@ class Call():
     client = None
     console = None
     graphId = 0
+    algorithm = None
 
     @staticmethod
     def connect():
@@ -15,22 +16,6 @@ class Call():
 
     @classmethod
     def send_paths(cls, paths, regex):
-        """
-        Send paths of node and edge file to be imported by the backend.
-
-        Parameters
-        ----------
-        paths : array
-            [Nodes path, Edge path]
-        regexN : array
-            regular expression of node file
-        regexE : array
-            regular expression of edge file
-
-        Returns
-        -------
-        """
-        # col = [(k, v) for k, v in colNames.items()]
         c = cls.client
         cls.console_out("Importing...")
         result = c.call('import', paths, regex)

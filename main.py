@@ -104,9 +104,9 @@ class MainWindow(QMainWindow):
 
     def animate(self):
         if self.controls.toggleAnimation():
-            self.canvas.animate(True)
+            self.canvas.animate()
         else:
-            self.canvas.animate(False)
+            self.canvas.animate()
 
 
 if __name__ == '__main__':

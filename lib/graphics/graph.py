@@ -14,6 +14,8 @@ from .util import set_marker_data
 from ..services.actions import Call
 from .elements import GlslBridge, ArrowHead
 from ..statics import MARKER_SIZE
+import threading
+import time
 
 
 class Graph(Canvas):
@@ -27,7 +29,6 @@ class Graph(Canvas):
         self.edges = np.array(edges).astype(np.uint32)
         self.node_pos = node_pos
         self.scale = (1., 1., 1.)
-        self.translate = 6.5
 
         self.programs = [gloo.Program(*bridge.vertgl),
                          gloo.Program(*bridge.edgegl),
@@ -101,6 +102,8 @@ class Graph(Canvas):
         self.update()
 
     def on_timer(self, event):
+        # PENDING: Call algorithm on every tic and on different thread
+        Call.apply_alg()
         positions = Call.get_n_pos()
         n = len(positions)
         pos = np.hstack((positions, np.zeros((n, 1))))
@@ -108,6 +111,7 @@ class Graph(Canvas):
         self.vbo.set_data(set_marker_data(pos, MARKER_SIZE, self.color, self.pixel_scale))
         self.arrows.setArrowPos(pos, self.edges)
         self.vboar.set_data(self.arrows.getArrowData())
+
         self.update()
 
     def on_key_press(self, event):
@@ -117,11 +121,12 @@ class Graph(Canvas):
             else:
                 self.timer.start()
 
-    def animate(self, trigger):
-        if trigger:
-            self.timer.start()
-        else:
+    def animate(self):
+        if self.timer.running:
             self.timer.stop()
+        else:
+            # Maybe spawn a thread with a while timer loop to call algorithm
+            self.timer.start()
 
     def _calc_scale(self, dx=1., dy=1., dz=1.):
         scale_x, scale_y, scale_z = self.program_n['u_scale']
@@ -163,3 +168,8 @@ class Graph(Canvas):
         program.bind(self.vboar)
         program['u_scale'] = self.scale
         return program
+
+    def test(self, delay):
+        while(self.timer.running):
+            print("Call Algorithm")
+            time.sleep(delay)
