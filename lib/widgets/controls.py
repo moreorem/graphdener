@@ -9,13 +9,12 @@ class ControlWidgets(QWidget):
     def __init__(self, parent=None):
         super(ControlWidgets, self).__init__(parent)
         self.selectedCanvasId = 0
-        self.algorithm = 'random'
+        self.algorithm = 'rand uniform'
         self.isSingleFile = False
         self.__controls()
         self.__layout()
         self.__actions()
         self.vbox.addStretch(1)
-        # self.setFrameShape(QFrame.VLine)
 
     def __controls(self):
         self.graphCtrl = GraphControl()
@@ -45,33 +44,29 @@ class ControlWidgets(QWidget):
         return self.vbox
 
     def algSelect(self, text):
-        self.algorithm = text
+        Call.algorithm = text
+        print(Call.algorithm)
         if text == 'force directed':
             self.algOpt.enabled('forced', True)
-        elif text == 'random':
+        elif text == 'rand uniform' or text == 'rand normalized':
             self.algOpt.enabled('forced', False)
             self.algOpt.enabled('rand', True)
         else:
             self.algOpt.enabled('forced', False)
             self.algOpt.enabled('rand', False)
 
-    def newGraph(self, graphId):
-        # Informs the graph control group to update graph id
-        self.graphCtrl.addGraphId(graphId)
-        self.graphCtrl.graphSelector.setCurrentText(str(graphId))
-
     def applyAlg(self):
         self.algCtrl.enableAnimator(False)
-        if self.algorithm == 'force directed':
+        if Call.algorithm == 'force directed':
             algText = self.algOpt.get_text('force directed')
             self.algCtrl.enableAnimator(True)
-        elif self.algorithm == 'random':
+        elif Call.algorithm == 'rand uniform' or Call.algorithm == 'rand normalized':
             algText = self.algOpt.get_text('random')
         else:
             algText = ['']
         # Applies distribution algorithm on selected graph
-        print("apply {}".format(self.algorithm))
-        Call.apply_alg(self.algorithm, *algText)
+        Call.algParams = algText
+        Call.apply_alg()
 
     # Populate list widget with colors and type names
     def setTypeList(self, colorMap):

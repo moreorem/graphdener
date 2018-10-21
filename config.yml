@@ -3,7 +3,8 @@ directories:
     - /home/orestes/Workspace/src/github.com/moreorem/graphdener-backend/target/debug/
 constants:
   alg:
-    - 'random'
+    - 'rand uniform'
+    - 'rand normalized'
     - 'circular'
     - 'force directed'
   forcelabels:
@@ -11,6 +12,8 @@ constants:
     - 'Repulsive force constant'
     - 'Spring constant'
     - 'Time step'
+  # Mandatory columns should not be changed. These include id, type, from, to.
+  # The user may add extra columns the data of which is considered metadata 
   nodecnames:
     - 'n_id'
     - 'n_label'
@@ -35,8 +38,10 @@ constants:
       'e_label': 'str',
       'e_type': 'str'
     }
+# User may change graph options such as marker/arrow size and framerate limiter
 graph:
   marker_size: 40
   arrow_size: 0.05
+  framecap: 60
 importer:
   acceptedsymbols: :.()&'-

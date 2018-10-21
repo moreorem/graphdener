@@ -14,3 +14,5 @@ MARKER_SIZE = get_attr('marker_size')
 ARROWHEAD_SIZE = get_attr('arrow_size')
 
 ACCEPTED_SYMBOLS = get_importer('acceptedsymbols')
+
+FRAME_CAP = get_attr('framecap')

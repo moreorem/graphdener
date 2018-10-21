@@ -29,11 +29,6 @@ class GlslBridge():
 
 
 class ArrowHead():
-    '''
-    n: int
-    represents number of edges
-    '''
-
     def __init__(self, nodePos, edges, marker_size):
         # number of total points to draw n arrows is 3 * n
         # na = 3 * n

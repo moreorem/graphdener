@@ -69,13 +69,17 @@ class MainWindow(QMainWindow):
         # Tell canvaswidget to do the draw process
         self.canvas.drawGraph()
         graphId = Call.graphId
+        # Insert GraphID in dropdown selector
         self.controls.graphCtrl.addGraphId(graphId)
         self.controls.graphCtrl.enable(True)
         # Populate the legend
         self.controls.typeList.clear()
         self.controls.setTypeList(self.canvas.colorTypes)
+        # Print the graph stats
+        r = Call.get_stat()
+        self.controls.importCtrl.nodeCount.setText("Nodes: " + str(r[1]))
+        self.controls.importCtrl.edgeCount.setText("Edges: " + str(r[0]))
         # Inform controls about changes
-        self.controls.newGraph(graphId)
         return graphId
 
     # Activates every time you select a graph from the dropdown
@@ -89,7 +93,7 @@ class MainWindow(QMainWindow):
     # Destroy graph which is selected
     def killGraph(self):
         graphId = Call.graphId
-        self.controls.graphCtrl.delGraphId(graphId)
+        self.controls.graphCtrl.delGraphId()
         self.canvas.closeGraph(graphId)
 
     # Ask before quit dialog
@@ -105,8 +109,10 @@ class MainWindow(QMainWindow):
     def animate(self):
         if self.controls.toggleAnimation():
             self.canvas.animate()
+            self.controls.toggleAnimation()
         else:
             self.canvas.animate()
+            self.controls.toggleAnimation()
 
 
 if __name__ == '__main__':

@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QPushButton, QLabel, QFileDialog,
                              QComboBox, QWizard, QWizardPage, QLineEdit,
                              QVBoxLayout, QHBoxLayout, QCheckBox)
 from ..services.actions import Call
-from ..func import get_pattern, get_col_info
+from ..func import get_pattern
 from ..statics import NODECNAMES, EDGECNAMES
 
 
@@ -87,7 +87,7 @@ class Page1(QWizardPage):
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(
             self, "QFileDialog.getOpenFileName()", "",
-            "All Files (*);;Python Files (*.py)", options=options)
+            "All Files (*);;Text Files (*.txt);;CSV Files (*.csv)", options=options)
         # if user selected a file store its path to a variable
         if fileName:
             self.wizard().filepath[0] = fileName
@@ -165,7 +165,7 @@ class Page2(QWizardPage):
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(
             self, "QFileDialog.getOpenFileName()", "",
-            "All Files (*);;Python Files (*.py)", options=options)
+            "All Files (*);;Text Files (*.txt);;CSV Files (*.csv)", options=options)
         # if user selected a file store its path to a variable
         if fileName:
             self.wizard().filepath[1] = fileName

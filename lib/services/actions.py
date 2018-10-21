@@ -8,6 +8,7 @@ class Call():
     console = None
     graphId = 0
     algorithm = None
+    algParams = None
 
     @staticmethod
     def connect():
@@ -25,17 +26,21 @@ class Call():
 
     # PENDING: Replace constants with kwargs to be compatible with every algorithm
     @classmethod
-    def apply_alg(cls, algorithm, *args):
+    def apply_alg(cls):
         c = cls.client
+        algorithm = cls.algorithm
         cls.console_out("Applying algorithm...")
         if algorithm == "force directed":
-            parameters = [float(eval(x)) for x in args]
+            parameters = [float(eval(x)) for x in cls.algParams]
             c.call('diralg', cls.graphId, parameters)
         elif algorithm == "circular":
             c.call('ciralg', cls.graphId)
-        elif algorithm == "random":
-            parameters = int(eval(*args))
-            c.call('random', cls.graphId, parameters)
+        elif algorithm == "rand uniform":
+            parameters = int(eval(cls.algParams[0]))
+            c.call('randomu', cls.graphId, parameters)
+        elif algorithm == "rand normalized":
+            parameters = int(eval(cls.algParams[0]))
+            c.call('randomn', cls.graphId, parameters)
         cls.console_out("Ready")
 
     @classmethod

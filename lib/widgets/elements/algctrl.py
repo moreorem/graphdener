@@ -5,7 +5,6 @@ from ...statics import ALGS
 class AlgorithmControl(QGridLayout):
     def __init__(self, parent=None):
         super(AlgorithmControl, self).__init__()
-        # self.selectedAlgorithm = 0
         self.__controls()
         self.__layout()
         self.__populate()

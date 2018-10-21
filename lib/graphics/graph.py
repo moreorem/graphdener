@@ -13,7 +13,7 @@ from vispy.gloo import set_viewport, set_state, clear
 from .util import set_marker_data
 from ..services.actions import Call
 from .elements import GlslBridge, ArrowHead
-from ..statics import MARKER_SIZE
+from ..statics import MARKER_SIZE, FRAME_CAP
 import threading
 import time
 
@@ -59,7 +59,7 @@ class Graph(Canvas):
         set_state(clear_color='white', depth_test=False, blend=True,
                   blend_func=('src_alpha', 'one_minus_src_alpha'))
         set_viewport(0, 0, *self.physical_size)
-        self.timer = Timer(1 / 30, connect=self.on_timer)
+        self.timer = Timer(1 / FRAME_CAP, connect=self.on_timer)
         self.show()
 
     def on_resize(self, event):
@@ -111,7 +111,6 @@ class Graph(Canvas):
         self.vbo.set_data(set_marker_data(pos, MARKER_SIZE, self.color, self.pixel_scale))
         self.arrows.setArrowPos(pos, self.edges)
         self.vboar.set_data(self.arrows.getArrowData())
-
         self.update()
 
     def on_key_press(self, event):
