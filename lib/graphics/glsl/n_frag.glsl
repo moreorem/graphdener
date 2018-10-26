@@ -2,7 +2,6 @@
 
 // Constants
 // ------------------------------------
-
 // Varyings
 // ------------------------------------
 varying vec4 v_fg_color;
@@ -10,12 +9,9 @@ varying vec4 v_bg_color;
 varying float v_size;
 varying float v_linewidth;
 varying float v_antialias;
-
 // Functions
 // ------------------------------------
 float marker(vec2 P, float size);
-
-
 // Main
 // ------------------------------------
 void main()

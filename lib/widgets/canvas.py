@@ -23,8 +23,7 @@ class CanvasWidget(QStackedWidget):
         try:
             Call.kill_graph()
             canvas = self.graphContainer.pop(graphId)
-            print("Closed canvas with Id", canvas.graphId)
-            self.removeWidget(canvas)
+            self.removeWidget(self.currentWidget())
             canvas.close()
         except KeyError as e:
             print("Cannot find canvas Id", e)

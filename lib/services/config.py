@@ -2,7 +2,7 @@ import yaml
 import os
 ''' Contains Paths of the program'''
 
-MAIN_DIRECTORY = os.path.dirname(os.path.realpath(__file__ + '/../..')) + '/'
+MAIN_DIRECTORY = os.path.dirname(os.path.realpath(__file__ + '/../..')) + '/assets/'
 CONFIG_NAME = 'config.yml'
 
 
